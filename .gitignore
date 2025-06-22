@@ -295,3 +295,4 @@ src/Educational.Blazor.Server.Tiered/Logs/*
 *.exe
 *.out
 *.app
+Educational_BeiFen/
