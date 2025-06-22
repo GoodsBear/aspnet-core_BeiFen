@@ -18,12 +18,12 @@ namespace Educational.Staffs
             this.basicRepository = basicRepository;
         }
 
-        public async Task<ApiResult<StaffInfo>> AddStaff(StaffInfo staffInfo)
+        public async Task<ApiResult> AddStaff(StaffInfo staffInfo)
         {
             try
             {
                 await basicRepository.InsertAsync(staffInfo);
-                return ApiResult<StaffInfo>.Success(ResultCode.Ok, staffInfo);
+                return ApiResult.Success(ResultCode.Ok);
             }
             catch (Exception)
             {

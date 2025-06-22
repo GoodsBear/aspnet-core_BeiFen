@@ -11,7 +11,7 @@ namespace Educational.Staffs
 {
     public interface IStaffServices:IApplicationService
     {
-        Task<ApiResult<StaffInfo>> AddStaff(StaffInfo staffInfo);
+        Task<ApiResult> AddStaff(StaffInfo staffInfo);
         Task<ApiResult<StaffInfo>> Login(LoginDTO loginDTO);
     }
 }
