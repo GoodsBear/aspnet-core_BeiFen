@@ -1,4 +1,5 @@
-﻿using Educational.Staffs;
+﻿using Educational.RBAC;
+using Educational.Staffs;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -39,7 +40,11 @@ public class EducationalDbContext :
 
     }
 
-    public DbSet<StaffInfo> staffInfos { get; set; }
+    public DbSet<StaffInfo> staffInfos { get; set; } // 员工信息表
+
+    public DbSet<Role> Role { get; set; } //角色表
+
+    public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限表
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
