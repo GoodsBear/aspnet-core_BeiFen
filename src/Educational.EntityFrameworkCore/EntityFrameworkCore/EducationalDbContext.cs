@@ -1,4 +1,6 @@
-﻿using Educational.Staffs;
+﻿using Educational.Announcements;
+using Educational.Positions;
+using Educational.Staffs;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -40,7 +42,8 @@ public class EducationalDbContext :
     }
 
     public DbSet<StaffInfo> staffInfos { get; set; }
-
+    public DbSet<Position> positions { get; set; }
+    public DbSet<Announcement> announcements { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
