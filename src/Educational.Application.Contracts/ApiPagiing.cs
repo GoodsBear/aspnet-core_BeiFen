@@ -10,7 +10,7 @@ namespace Educational
 	{
 		public int TotleCount { get; set; }
 		public int TotlePage { get; set; }
-		public List<T> Data { get; set; }
+		public T Data { get; set; }
 	}
 	public class Seach
 	{

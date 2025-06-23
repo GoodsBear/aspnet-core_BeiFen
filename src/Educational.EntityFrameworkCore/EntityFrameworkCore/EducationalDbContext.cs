@@ -1,4 +1,5 @@
 ﻿using Educational.Classgrade;
+using Educational.Courses;
 using Educational.Students;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -47,6 +48,7 @@ public class EducationalDbContext :
 	public DbSet<Grade> Grade { get; set; }
     //家长
 	public DbSet<Parent> Parent { get; set; }
+	public DbSet<Course> Course { get; set; }
 	protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -77,11 +79,17 @@ public class EducationalDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.GradeName).IsRequired().HasMaxLength(50);
         });
-        builder.Entity<Parent>(b =>
-        {
-            b.ToTable(EducationalConsts.DbTablePrefix + "Parent", EducationalConsts.DbSchema);
-            b.ConfigureByConvention(); //auto configure for the base class props
-            b.Property(x => x.PardentName).IsRequired().HasMaxLength(50);
-        });
-    }
+		builder.Entity<Parent>(b =>
+		{
+			b.ToTable(EducationalConsts.DbTablePrefix + "Parent", EducationalConsts.DbSchema);
+			b.ConfigureByConvention(); //auto configure for the base class props
+			b.Property(x => x.PardentName).IsRequired().HasMaxLength(50);
+		});
+		builder.Entity<Course>(b =>
+		{
+			b.ToTable(EducationalConsts.DbTablePrefix + "Course", EducationalConsts.DbSchema);
+			b.ConfigureByConvention(); //auto configure for the base class props
+			b.Property(x => x.CourseName).IsRequired().HasMaxLength(50);
+		});
+	}
 }
