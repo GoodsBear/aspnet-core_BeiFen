@@ -24,6 +24,7 @@ namespace Educational.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("Educational.Announcements.Announcement", b =>
             modelBuilder.Entity("Educational.RBAC.Permissions", b =>
                 {
                     b.Property<Guid>("Id")
@@ -52,6 +53,11 @@ namespace Educational.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
                         .HasColumnType("longtext")
@@ -71,6 +77,7 @@ namespace Educational.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
+                    b.Property<string>("Title")
                     b.Property<Guid>("ParentId")
                         .HasColumnType("char(36)");
 
@@ -79,6 +86,12 @@ namespace Educational.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("announcements");
+                });
+
+            modelBuilder.Entity("Educational.Positions.Position", b =>
                     b.Property<string>("PermissionsDesc")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -136,6 +149,13 @@ namespace Educational.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
+                    b.Property<string>("PositionName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("positions");
                     b.Property<string>("RoleDesc")
                         .IsRequired()
                         .HasMaxLength(255)
