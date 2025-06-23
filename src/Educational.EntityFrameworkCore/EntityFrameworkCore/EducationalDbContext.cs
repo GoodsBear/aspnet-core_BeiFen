@@ -45,7 +45,6 @@ public class EducationalDbContext :
     public DbSet<StaffInfo> staffInfos { get; set; }
     public DbSet<Position> positions { get; set; }
     public DbSet<Announcement> announcements { get; set; }
-    public DbSet<StaffInfo> staffInfos { get; set; } // 员工信息表
 
     public DbSet<Role> Role { get; set; } //角色表
 
