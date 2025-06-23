@@ -2,99 +2,113 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.Staffs
 {
-    /// <summary>
-    /// 员工信息表
-    /// 继承 FullAuditedAggregateRoot<Guid>，自动拥有审计字段
-    /// </summary>
-    public class StaffInfo : FullAuditedAggregateRoot<Guid>
+    public class AddorUpdStaffDTO
     {
+        /// <summary>
+        /// 姓名（必填）
+        /// </summary>
         [Required]
-        [MaxLength(100)]
         [Comment("姓名")]
-        [DisplayName("姓名")]
         public string StaffName { get; set; }
 
+        /// <summary>
+        /// 登录账号
+        /// </summary>
         [Required]
-        [MaxLength(50)]
         [Comment("登录账号")]
-        [DisplayName("登录账号")]
         public string StaffAccount { get; set; }
-
+        /// <summary>
+        /// 登录密码
+        /// </summary>
         [Required]
-        [MaxLength(64)] // 存 SHA256 密码足够
         [Comment("登录密码")]
-        [DisplayName("登录密码")]
         public string StaffPassword { get; set; }
-
-        [MaxLength(20)]
+        /// <summary>
+        /// 电话
+        /// </summary>
+        [Required]
         [Comment("电话")]
-        [DisplayName("电话")]
         public string StaffPhone { get; set; }
 
-        [MaxLength(100)]
+        /// <summary>
+        /// 所属机构（必填）
+        /// </summary>
+        [Required]
         [Comment("所属机构")]
-        [DisplayName("所属机构")]
         public string Organization { get; set; }
 
-        [MaxLength(10)]
+        /// <summary>
+        /// 性别（必填，例如 男/女/其他）
+        /// </summary>
+        [Required]
         [Comment("性别")]
-        [DisplayName("性别")]
         public string StaffGender { get; set; }
 
-        [MaxLength(50)]
+        /// <summary>
+        /// 职位（必填）
+        /// </summary>
+        [Required]
         [Comment("职位")]
-        [DisplayName("职位")]
         public string Position { get; set; }
 
-        [MaxLength(50)]
+        /// <summary>
+        /// 权限角色
+        /// </summary>
         [Comment("权限角色")]
-        [DisplayName("权限角色")]
         public string Role { get; set; }
 
-        [MaxLength(50)]
+        /// <summary>
+        /// 人员类型
+        /// </summary>
         [Comment("人员类型")]
-        [DisplayName("人员类型")]
         public string StaffType { get; set; }
 
+        /// <summary>
+        /// 入职日期
+        /// </summary>
         [Comment("入职日期")]
-        [DisplayName("入职日期")]
         public DateTime? EntryDate { get; set; }
 
+        /// <summary>
+        /// 当前状态（可用/禁用等）
+        /// </summary>
         [Comment("状态")]
-        [DisplayName("状态")]
         public StaffStatus Status { get; set; }
 
-        [MaxLength(50)]
+        /// <summary>
+        /// 学历
+        /// </summary>
         [Comment("学历")]
-        [DisplayName("学历")]
         public string Education { get; set; }
 
+        /// <summary>
+        /// 出生日期
+        /// </summary>
         [Comment("生日")]
-        [DisplayName("生日")]
         public DateTime? Birthday { get; set; }
 
-        [MaxLength(50)]
+        /// <summary>
+        /// 毕业学校
+        /// </summary>
         [Comment("毕业学校")]
-        [DisplayName("毕业学校")]
         public string GraduationSchool { get; set; }
 
-        [MaxLength(500)]
+        /// <summary>
+        /// 简介
+        /// </summary>
         [Comment("简介")]
-        [DisplayName("简介")]
         public string Introduction { get; set; }
-
-        [MaxLength(100)]
+        /// <summary>
+        /// 照片（路径或URL）
+        /// </summary>
         [Comment("照片")]
-        [DisplayName("照片")]
         public string PhotoUrl { get; set; }
     }
 }
