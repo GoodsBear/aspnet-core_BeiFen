@@ -3,6 +3,9 @@ using Educational.Announcements;
 using Educational.Dto.Announcements;
 using Educational.Dto.Positions;
 using Educational.Positions;
+using Educational.RBAC;
+using Educational.RBAC.PermissionsManager;
+using Educational.RBAC.RoleManager;
 using Educational.Staffs;
 
 namespace Educational;
@@ -25,5 +28,13 @@ public class EducationalApplicationAutoMapperProfile : Profile
         // 公告映射
         CreateMap<Announcement, AnnouncementDto>().ReverseMap();
         CreateMap<CreateUpdateAnnouncement, Announcement>().ReverseMap();
+
+        CreateMap<CreateUpdateRoleDto, Role>().ReverseMap();
+        CreateMap<Role, RoleDto>().ReverseMap();
+
+
+        CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
+        CreateMap<Permissions, PermissionsDto>().ReverseMap();
+
     }
 }
