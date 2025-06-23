@@ -52,8 +52,11 @@ namespace Educational.Tools
                     .ToList();
 
 
-                // 合并标题单元格
-                sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, propertyInfos.Count - 1));
+                // 判断是否需要合并单元格（当字段数 > 1 时才合并）
+                if (propertyInfos.Count > 1)
+                {
+                    sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, propertyInfos.Count - 1));
+                }
 
                 // 表头
                 IRow headerRow = sheet.CreateRow(1);
