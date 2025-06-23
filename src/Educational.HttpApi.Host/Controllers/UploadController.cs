@@ -19,10 +19,10 @@ namespace Educational.Controllers
             this.env = env;
         }
         /// <summary>
-        /// 上传图片到 wwwroot/upload/images 文件夹
+        /// 上传图片到 wwwroot/Uploads/images/yyyyMMdd 目录
         /// </summary>
         /// <param name="file">上传的图片文件</param>
-        /// <returns>返回图片完整访问 URL</returns>
+        /// <returns>文件完整访问 URL</returns>
         [HttpPost("image")]
         public async Task<string> UploadImageAsync(IFormFile file)
         {
@@ -39,7 +39,7 @@ namespace Educational.Controllers
                 throw new UserFriendlyException("图片大小不能超过 2MB！");
             }
 
-            // 校验文件扩展名（限制图片格式）
+            // 校验文件扩展名
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (Array.IndexOf(allowedExtensions, ext) < 0)
@@ -47,11 +47,12 @@ namespace Educational.Controllers
                 throw new UserFriendlyException("仅支持图片格式：jpg, jpeg, png, gif, bmp");
             }
 
-            // 确定保存路径： wwwroot/upload/images
-            var uploadFolder = Path.Combine(env.WebRootPath, "upload", "images");
+            // 根据日期生成子文件夹（yyyyMMdd）
+            var dateFolder = DateTime.Now.ToString("yyyyMMdd");
+            var uploadFolder = Path.Combine(env.WebRootPath, "Uploads", "images", dateFolder);
+
             if (!Directory.Exists(uploadFolder))
             {
-                // 如果目录不存在则创建
                 Directory.CreateDirectory(uploadFolder);
             }
 
@@ -59,16 +60,16 @@ namespace Educational.Controllers
             var fileName = $"{Guid.NewGuid()}{ext}";
             var filePath = Path.Combine(uploadFolder, fileName);
 
-            // 保存文件到目标路径
+            // 保存文件
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
-            // 构建完整 URL，便于前端直接访问
+            // 构建完整访问 URL
             var request = HttpContext.Request;
             var baseUrl = $"{request.Scheme}://{request.Host}";
-            var fileUrl = $"{baseUrl}/upload/images/{fileName}";
+            var fileUrl = $"{baseUrl}/Uploads/images/{dateFolder}/{fileName}";
 
             return fileUrl;
         }
