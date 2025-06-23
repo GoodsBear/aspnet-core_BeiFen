@@ -1,7 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Educational.Enmu;
+using Educational.Tools;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NPOI.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
@@ -24,42 +30,285 @@ namespace Educational.Staffs
             {
                 await basicRepository.InsertAsync(staffInfo);
                 return ApiResult.Success(ResultCode.Ok);
+        /// <summary>分页查询员工信息</summary>
+        /// <param name="search">查询条件</param>
+        /// <returns>分页结果，包含员工信息</returns>
+        public async Task<ApiResult<ApiPaging<List<ShowStaffDTO>>>> GetStaffListAsync([FromQuery]SearchStaffDTO search)
+        {
+            try
+            {
+                // 获取员工数据源
+                var staffinfo = await basicRepository.GetQueryableAsync();
+
+                // 按员工姓名模糊查询
+                if (!search.StaffName.IsNullOrEmpty())
+                {
+                    staffinfo = staffinfo.Where(s => s.StaffName.Contains(search.StaffName));
+                }
+
+                // 按员工状态筛选
+                if (search.Status != null)
+                {
+                    staffinfo = staffinfo.Where(s => s.Status == search.Status);
+                }
+
+                // 分页处理
+                var stafflist = staffinfo.Page(search.PageIndex, search.PageSize);
+
+                // 映射成前端显示用的 DTO 列表
+                var resultList = ObjectMapper.Map<List<StaffInfo>, List<ShowStaffDTO>>(stafflist.ToList());
+
+                // 封装分页数据
+                ApiPaging<List<ShowStaffDTO>> paging = new ApiPaging<List<ShowStaffDTO>>
+                {
+                    TotleCount = stafflist.Count(),
+                    TotlePage = (int)Math.Ceiling(stafflist.Count() * 1.0 / search.PageSize),
+                    Data = resultList
+                };
+
+                // 返回成功结果
+                return ApiResult<ApiPaging<List<ShowStaffDTO>>>.Success(ResultCode.Ok, paging);
+            }
+            catch (Exception ex)
+            {
+                throw; // 暂时抛出，可拓展成统一异常处理
+            }
+        }
+
+        /// <summary>
+        /// 添加员工信息
+        /// </summary>
+        /// <param name="addorUpdStaffDTO">前端传入的员工数据 DTO</param>
+        /// <returns>返回封装的 ApiResult 包含新增员工信息</returns>
+        public async Task<ApiResult<ShowStaffDTO>> AddStaff(AddorUpdStaffDTO addorUpdStaffDTO)
+        {
+            try
+            {
+                // 检查员工名称是否重复
+                var isExist = await basicRepository.AnyAsync(x => x.StaffName == addorUpdStaffDTO.StaffName);
+                if (isExist)
+                {
+                    return ApiResult<ShowStaffDTO>.Fail(ResultCode.Fail, "员工名称已存在");
+                }
+                addorUpdStaffDTO.StaffPassword = Sha256Hash(addorUpdStaffDTO.StaffPassword);
+                // 将前端传入的 AddorUpdStaffDTO 映射成实体 StaffInfo，用于数据库操作
+                var staffinfo = ObjectMapper.Map<AddorUpdStaffDTO, StaffInfo>(addorUpdStaffDTO);
+
+                // 将新员工数据插入数据库
+                await basicRepository.InsertAsync(staffinfo);
+
+                // 将插入后的实体对象映射成返回给前端的 ShowStaffDTO
+                var showstaffinfo = ObjectMapper.Map<StaffInfo, ShowStaffDTO>(staffinfo);
+
+                // 封装返回结果，状态码 OK，附带员工信息
+                return ApiResult<ShowStaffDTO>.Success(ResultCode.Ok, showstaffinfo);
             }
             catch (Exception)
             {
-
-                throw;
+                // 捕获异常（可以考虑在此处记录日志）
+                throw; // 暂时继续抛出异常，可以扩展为日志记录或自定义错误返回
             }
+        }
+
+        /// <summary>
+        /// 编辑员工信息（不修改密码）
+        /// </summary>
+        /// <param name="addorUpdStaffDTO">前端传入的员工数据 DTO</param>
+        /// <returns>返回封装的 ApiResult 包含编辑后的员工信息</returns>
+        public async Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, AddorUpdStaffDTO addorUpdStaffDTO)
+        {
+            try
+            {
+                // 根据员工ID查出原始数据
+                var staffinfo = await basicRepository.FindAsync(staffId);
+                // 将 DTO 映射成数据库实体
+                ObjectMapper.Map(addorUpdStaffDTO, staffinfo);
+
+                // 更新员工信息到数据库
+                await basicRepository.UpdateAsync(staffinfo);
+
+                // 映射成返回给前端的 DTO
+                var showstaffinfo = ObjectMapper.Map<StaffInfo, ShowStaffDTO>(staffinfo);
+
+                // 返回结果
+                return ApiResult<ShowStaffDTO>.Success(ResultCode.Ok, showstaffinfo);
+            }
+            catch (Exception)
+            {
+                // 获取异常（可以考虑在此处记录日志）
+                throw; // 暂时直接抛出异常，可以扩展为日志记录或自定义错误返回
+            }
+        }
+
+        /// <summary>
+        /// 删除员工信息
+        /// </summary>
+        /// <param name="staffId">员工 ID</param>
+        /// <returns>返回封装的 ApiResult 表示操作结果</returns>
+        public async Task<ApiResult> DeleteStaff(Guid staffId)
+        {
+            try
+            {
+                // 根据员工ID查出员工信息
+                var staffinfo = await basicRepository.FindAsync(staffId);
+                if (staffinfo == null)
+                {
+                    return ApiResult.Fail(ResultCode.Fail, "员工不存在");
+                }
+
+                // 从数据库中删除
+                await basicRepository.DeleteAsync(staffinfo);
+
+                // 返回操作成功
+                return ApiResult.Success(ResultCode.Ok);
+            }
+            catch (Exception)
+            {
+                // 获取异常（可以考虑在此处记录日志）
+                throw; // 暂时直接抛出异常，可以扩展为日志记录或自定义错误返回
+            }
+        }
+
+        /// <summary>
+        /// 修改员工状态
+        /// </summary>
+        /// <param name="staffId">员工 ID</param>
+        /// <param name="status">要修改成的员工状态</param>
+        /// <returns>返回封装的 ApiResult 表示操作结果</returns>
+        public async Task<ApiResult> UpdateStaffStatus(Guid staffId, StaffStatus status)
+        {
+            try
+            {
+                // 根据员工ID查出员工信息
+                var staffinfo = await basicRepository.FindAsync(staffId);
+                if (staffinfo == null)
+                {
+                    return ApiResult.Fail(ResultCode.Fail, "员工不存在");
+                }
+
+                // 修改员工状态
+                staffinfo.Status = status;
+
+                // 更新到数据库
+                await basicRepository.UpdateAsync(staffinfo);
+
+                // 返回操作成功
+                return ApiResult.Success(ResultCode.Ok);
+            }
+            catch (Exception)
+            {
+                // 获取异常（可以考虑在此处记录日志）
+                throw; // 暂时直接抛出异常，可以扩展为日志记录或自定义错误返回
+            }
+        }
+
+        /// <summary>
+        /// 修改员工密码
+        /// </summary>
+        /// <param name="staffId">员工 ID</param>
+        /// <param name="newPassword">新密码</param>
+        /// <returns>返回封装的 ApiResult，状态码表示操作结果</returns>
+        public async Task<ApiResult> UpdateStaffPassword(Guid staffId, string newPassword)
+        {
+            try
+            {
+                // 查询员工信息
+                var staffinfo = await basicRepository.FindAsync(staffId);
+                if (staffinfo == null)
+                {
+                    return ApiResult.Fail(ResultCode.Fail, "员工不存在");
+                }
+
+                // 加密密码并更新
+                staffinfo.StaffPassword = Sha256Hash(newPassword);
+                await basicRepository.UpdateAsync(staffinfo);
+
+                // 返回成功
+                return ApiResult.Success(ResultCode.Ok);
+            }
+            catch (Exception)
+            {
+                // 获取异常（可以考虑在此处记录日志）
+                throw; // 暂时直接抛出异常，可以扩展为日志记录或自定义错误返回
+            }
+        }
+
+        /// <summary>
+        /// 导出员工列表
+        /// </summary>
+        /// <param name="search">查询条件</param>
+        /// <returns>返回导出结果</returns>
+        public async Task<ApiResult<ExportResult>> GetExportStaffList()
+        {
+            // 获取员工数据源
+            var staffinfo = await basicRepository.GetQueryableAsync();
+            // 映射成DTO
+            var staffdto=ObjectMapper.Map<List<StaffInfo>,List<ShowStaffDTO>>(staffinfo.ToList());
+            // 调用导出帮助类生成 Excel
+            var fileBytes = ExcelExporter.Export(staffdto, "员工信息", "员工信息表");
+            // 返回导出结果
+            return ApiResult<ExportResult>.Success(ResultCode.Ok, new ExportResult
+            {
+                FileName = $"员工信息_{DateTime.Now:yyyyMMddHHmmss}.xlsx",
+                FileContent = fileBytes
+            });
         }
 
         /// <summary>
         /// 登录
         /// </summary>
-        /// <param name="loginDTO"></param>
-        /// <returns></returns>
-        public async Task<ApiResult<StaffInfo>> Login([FromQuery]LoginDTO loginDTO)
+        /// <param name="loginDTO">登录请求 DTO，包含账户和密码</param>
+        /// <returns>返回登录结果</returns>
+        public async Task<ApiResult<StaffInfo>> Login([FromQuery] LoginDTO loginDTO)
         {
             try
             {
                 // 查找用户
                 var staff = await basicRepository.FirstOrDefaultAsync(x => x.StaffAccount == loginDTO.StaffAccount);
 
+                // 如果用户不存在，返回失败
                 if (staff == null)
                 {
                     return ApiResult<StaffInfo>.Fail(ResultCode.Fail, "用户不存在");
                 }
 
-                // 验证密码（这里假设密码是明文存储或简单比较，实际建议使用加密哈希对比）
-                if (staff.StaffPassword != loginDTO.StaffPassword)
+                // 使用 SHA256 加密输入的密码并与数据库中的密码进行比对
+                string hashedPassword = Sha256Hash(loginDTO.StaffPassword); // 调用加密方法
+
+                if (staff.StaffPassword != hashedPassword)
                 {
                     return ApiResult<StaffInfo>.Fail(ResultCode.Fail, "密码错误");
                 }
+
+                // 登录成功，返回用户信息
                 return ApiResult<StaffInfo>.Success(ResultCode.Ok, staff);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                // 异常处理（记录日志等）
+                Logger.LogError(ex, "登录时发生异常");
+                throw; // 继续抛出异常
+            }
+        }
 
-                throw;
+        /// <summary>
+        /// 使用 SHA256 加密密码
+        /// </summary>
+        /// <param name="input">原始密码</param>
+        /// <returns>SHA256 加密后的密码</returns>
+        private string Sha256Hash(string input)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+                StringBuilder stringBuilder = new StringBuilder();
+
+                foreach (byte b in bytes)
+                {
+                    stringBuilder.Append(b.ToString("x2"));
+                }
+
+                return stringBuilder.ToString();
             }
         }
     }

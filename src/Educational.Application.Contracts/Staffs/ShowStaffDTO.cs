@@ -1,89 +1,57 @@
-﻿using System;
+﻿using Educational.Enmu;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Educational.Enmu;
 
 namespace Educational.Staffs
 {
     public class ShowStaffDTO
     {
-        /// <summary>
-        /// 姓名（必填）
-        /// </summary>
+        [DisplayName("姓名")]
         public string StaffName { get; set; }
 
-        /// <summary>
-        /// 电话/登录账号（必填）
-        /// </summary>
+        [DisplayName("登录账号")]
         public string StaffAccount { get; set; }
-        /// <summary>
-        /// 电话/登录账号（必填）
-        /// </summary>
-        public string StaffPassword { get; set; }
-        /// <summary>
-        /// 电话/登录账号（必填）
-        /// </summary>
+        [DisplayName("电话")]
         public string StaffPhone { get; set; }
 
-        /// <summary>
-        /// 所属机构（必填）
-        /// </summary>
+        [DisplayName("所属机构")]
         public string Organization { get; set; }
 
-        /// <summary>
-        /// 性别（必填，例如 男/女/其他）
-        /// </summary>
+        [DisplayName("性别")]
         public string StaffGender { get; set; }
 
-        /// <summary>
-        /// 职位（必填）
-        /// </summary>
+        [DisplayName("职位")]
         public string Position { get; set; }
 
-        /// <summary>
-        /// 权限角色
-        /// </summary>
+        [DisplayName("权限角色")]
         public string Role { get; set; }
 
-        /// <summary>
-        /// 人员类型
-        /// </summary>
+        [DisplayName("人员类型")]
         public string StaffType { get; set; }
 
-        /// <summary>
-        /// 入职日期
-        /// </summary>
+        [DisplayName("入职日期")]
         public DateTime? EntryDate { get; set; }
 
-        /// <summary>
-        /// 当前状态（可用/禁用等）
-        /// </summary>
+        [DisplayName("状态")]
         public StaffStatus Status { get; set; }
 
-        /// <summary>
-        /// 学历
-        /// </summary>
+        [DisplayName("学历")]
         public string Education { get; set; }
 
-        /// <summary>
-        /// 出生日期
-        /// </summary>
+        [DisplayName("生日")]
         public DateTime? Birthday { get; set; }
 
-        /// <summary>
-        /// 毕业学校
-        /// </summary>
+        [DisplayName("毕业学校")]
         public string GraduationSchool { get; set; }
 
-        /// <summary>
-        /// 简介
-        /// </summary>
+        [DisplayName("简介")]
         public string Introduction { get; set; }
-        /// <summary>
-        /// 照片（路径或URL）
-        /// </summary>
+
+        [DisplayName("照片")]
         public string PhotoUrl { get; set; }
     }
 }
