@@ -45,9 +45,7 @@ public class EducationalDbContext :
     public DbSet<StaffInfo> staffInfos { get; set; }
     public DbSet<Position> positions { get; set; }
     public DbSet<Announcement> announcements { get; set; }
-
     public DbSet<Role> Role { get; set; } //角色表
-
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限表
 
     protected override void OnModelCreating(ModelBuilder builder)
