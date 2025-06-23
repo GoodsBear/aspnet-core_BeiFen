@@ -1,4 +1,5 @@
-﻿using Educational.Organization;
+using Educational.Organization;
+using System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,7 @@ namespace Educational
     {
         public int TotleCount { get; set; }
         public int TotlePage { get; set; }
-        public List<T> Data { get; set; }
-
-        public static implicit operator ApiPaging<T>(ApiPaging<List<OrganizationDto>> v)
-        {
-            throw new NotImplementedException();
-        }
+        public T Data { get; set; }
     }
     public class Seach
     {

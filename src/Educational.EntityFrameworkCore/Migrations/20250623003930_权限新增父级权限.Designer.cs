@@ -4,6 +4,7 @@ using Educational.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    partial class EducationalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250623003930_权限新增父级权限")]
+    partial class 权限新增父级权限
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +27,7 @@ namespace Educational.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("Educational.Organization.OrganizationLevel", b =>
+            modelBuilder.Entity("Educational.RBAC.Permissions", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
@@ -71,17 +74,26 @@ namespace Educational.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ParentId")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(1)");
+
+                    b.Property<string>("PermissionName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("PermissionsDesc")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppOrganizationLevel", (string)null);
+                    b.ToTable("Permissions");
                 });
 
-            modelBuilder.Entity("Educational.Organization.OrganizationModel", b =>
+            modelBuilder.Entity("Educational.RBAC.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
@@ -92,10 +104,6 @@ namespace Educational.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
-
-                    b.Property<string>("ContactPerson")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime(6)")
@@ -113,25 +121,10 @@ namespace Educational.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
-
-                    b.Property<string>("Fax")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<int>("IsActive")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -147,31 +140,27 @@ namespace Educational.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<Guid>("LevelId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("RoleDesc")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
-                    b.Property<Guid>("PartentedId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<string>("ShortName")
+                    b.Property<string>("RoleEncode")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("SortOrder")
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("RoleStatus")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppOrganizationModel", (string)null);
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("Educational.Staffs.StaffInfo", b =>
@@ -223,8 +212,8 @@ namespace Educational.Migrations
 
                     b.Property<string>("GraduationSchool")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
                         .HasComment("毕业学校");
 
                     b.Property<string>("Introduction")
@@ -255,8 +244,8 @@ namespace Educational.Migrations
 
                     b.Property<string>("PhotoUrl")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
                         .HasComment("照片");
 
                     b.Property<string>("Position")
@@ -267,8 +256,8 @@ namespace Educational.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
                         .HasComment("权限角色");
 
                     b.Property<string>("StaffAccount")
@@ -285,20 +274,20 @@ namespace Educational.Migrations
 
                     b.Property<string>("StaffName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
                         .HasComment("姓名");
 
                     b.Property<string>("StaffPassword")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
                         .HasComment("登录密码");
 
                     b.Property<string>("StaffPhone")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
                         .HasComment("电话");
 
                     b.Property<string>("StaffType")
@@ -308,6 +297,7 @@ namespace Educational.Migrations
                         .HasComment("人员类型");
 
                     b.Property<int>("Status")
+                        .HasMaxLength(20)
                         .HasColumnType("int")
                         .HasComment("状态");
 
