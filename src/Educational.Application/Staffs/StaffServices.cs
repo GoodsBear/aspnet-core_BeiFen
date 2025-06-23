@@ -1,6 +1,8 @@
 ﻿using Educational.Enmu;
+using Educational.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NPOI.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,29 +34,29 @@ namespace Educational.Staffs
                 // 获取员工数据源
                 var staffinfo = await basicRepository.GetQueryableAsync();
 
-                // 按员工姓名模糊查询（如果有传入）
+                // 按员工姓名模糊查询
                 if (!search.StaffName.IsNullOrEmpty())
                 {
                     staffinfo = staffinfo.Where(s => s.StaffName.Contains(search.StaffName));
                 }
 
-                // 按员工状态筛选（如果有传入）
+                // 按员工状态筛选
                 if (search.Status != null)
                 {
                     staffinfo = staffinfo.Where(s => s.Status == search.Status);
                 }
 
                 // 分页处理
-                var stafflist = staffinfo.PageResult(search.PageIndex, search.PageSize);
+                var stafflist = staffinfo.Page(search.PageIndex, search.PageSize);
 
                 // 映射成前端显示用的 DTO 列表
-                var resultList = ObjectMapper.Map<List<StaffInfo>, List<ShowStaffDTO>>(stafflist.Queryable.ToList());
+                var resultList = ObjectMapper.Map<List<StaffInfo>, List<ShowStaffDTO>>(stafflist.ToList());
 
                 // 封装分页数据
                 ApiPaging<List<ShowStaffDTO>> paging = new ApiPaging<List<ShowStaffDTO>>
                 {
-                    TotleCount = stafflist.RowCount,
-                    TotlePage = (int)Math.Ceiling(stafflist.RowCount * 1.0 / search.PageSize),
+                    TotleCount = stafflist.Count(),
+                    TotlePage = (int)Math.Ceiling(stafflist.Count() * 1.0 / search.PageSize),
                     Data = resultList
                 };
 
@@ -223,6 +225,27 @@ namespace Educational.Staffs
                 // 获取异常（可以考虑在此处记录日志）
                 throw; // 暂时直接抛出异常，可以扩展为日志记录或自定义错误返回
             }
+        }
+
+        /// <summary>
+        /// 导出员工列表
+        /// </summary>
+        /// <param name="search">查询条件</param>
+        /// <returns>返回导出结果</returns>
+        public async Task<ApiResult<ExportResult>> GetExportStaffList()
+        {
+            // 获取员工数据源
+            var staffinfo = await basicRepository.GetQueryableAsync();
+            // 映射成DTO
+            var staffdto=ObjectMapper.Map<List<StaffInfo>,List<ShowStaffDTO>>(staffinfo.ToList());
+            // 调用导出帮助类生成 Excel
+            var fileBytes = ExcelExporter.Export(staffdto, "员工信息", "员工信息表");
+            // 返回导出结果
+            return ApiResult<ExportResult>.Success(ResultCode.Ok, new ExportResult
+            {
+                FileName = $"员工信息_{DateTime.Now:yyyyMMddHHmmss}.xlsx",
+                FileContent = fileBytes
+            });
         }
 
         /// <summary>

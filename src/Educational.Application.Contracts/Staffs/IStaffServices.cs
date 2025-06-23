@@ -31,5 +31,8 @@ namespace Educational.Staffs
         Task<ApiResult> UpdateStaffStatus(Guid staffId, StaffStatus status);
         /// <summary>分页查询员工信息</summary>
         Task<ApiResult<ApiPaging<List<ShowStaffDTO>>>> GetStaffListAsync(SearchStaffDTO search);
+        /// <summary>导出员工信息</summary>
+        Task<ApiResult<ExportResult>> GetExportStaffList();
+
     }
 }

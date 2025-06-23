@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -19,92 +20,81 @@ namespace Educational.Staffs
         [Required]
         [MaxLength(100)]
         [Comment("姓名")]
+        [DisplayName("姓名")]
         public string StaffName { get; set; }
 
         [Required]
         [MaxLength(50)]
         [Comment("登录账号")]
+        [DisplayName("登录账号")]
         public string StaffAccount { get; set; }
 
         [Required]
-        [MaxLength(64)]  // 存 SHA256 密码足够
+        [MaxLength(64)] // 存 SHA256 密码足够
         [Comment("登录密码")]
+        [DisplayName("登录密码")]
         public string StaffPassword { get; set; }
 
         [MaxLength(20)]
         [Comment("电话")]
+        [DisplayName("电话")]
         public string StaffPhone { get; set; }
 
         [MaxLength(100)]
         [Comment("所属机构")]
+        [DisplayName("所属机构")]
         public string Organization { get; set; }
 
         [MaxLength(10)]
         [Comment("性别")]
+        [DisplayName("性别")]
         public string StaffGender { get; set; }
 
         [MaxLength(50)]
         [Comment("职位")]
+        [DisplayName("职位")]
         public string Position { get; set; }
 
-
-        /// <summary>
-        /// 权限角色
-        /// </summary>
-        [Comment("权限角色")]
         [MaxLength(50)]
+        [Comment("权限角色")]
+        [DisplayName("权限角色")]
         public string Role { get; set; }
 
-        /// <summary>
-        /// 人员类型
-        /// </summary>
-        [Comment("人员类型")]
         [MaxLength(50)]
+        [Comment("人员类型")]
+        [DisplayName("人员类型")]
         public string StaffType { get; set; }
 
-        /// <summary>
-        /// 入职日期
-        /// </summary>
         [Comment("入职日期")]
+        [DisplayName("入职日期")]
         public DateTime? EntryDate { get; set; }
 
-        /// <summary>
-        /// 当前状态（可用/禁用等）
-        /// </summary>
         [Comment("状态")]
+        [DisplayName("状态")]
         public StaffStatus Status { get; set; }
 
-        /// <summary>
-        /// 学历
-        /// </summary>
         [MaxLength(50)]
         [Comment("学历")]
+        [DisplayName("学历")]
         public string Education { get; set; }
 
-        /// <summary>
-        /// 出生日期
-        /// </summary>
         [Comment("生日")]
+        [DisplayName("生日")]
         public DateTime? Birthday { get; set; }
 
-        /// <summary>
-        /// 毕业学校
-        /// </summary>
-        [Comment("毕业学校")]
         [MaxLength(50)]
+        [Comment("毕业学校")]
+        [DisplayName("毕业学校")]
         public string GraduationSchool { get; set; }
 
-        /// <summary>
-        /// 简介
-        /// </summary>
-        [Comment("简介")]
         [MaxLength(500)]
+        [Comment("简介")]
+        [DisplayName("简介")]
         public string Introduction { get; set; }
-        /// <summary>
-        /// 照片（路径或URL）
-        /// </summary>
-        [Comment("照片")]
+
         [MaxLength(100)]
+        [Comment("照片")]
+        [DisplayName("照片")]
         public string PhotoUrl { get; set; }
     }
 }
