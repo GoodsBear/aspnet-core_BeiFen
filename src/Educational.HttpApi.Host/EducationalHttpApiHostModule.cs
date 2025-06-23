@@ -24,6 +24,7 @@ using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
+using Yitter.IdGenerator;
 
 namespace Educational;
 
@@ -196,6 +197,10 @@ public class EducationalHttpApiHostModule : AbpModule
         //{
         //    app.UseMultiTenancy();
         //}
+
+        //Ñ©»¨Id
+        YitIdHelper.SetIdGenerator(new IdGeneratorOptions(1));
+
         app.UseUnitOfWork();
         app.UseDynamicClaims();
         app.UseAuthorization();

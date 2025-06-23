@@ -2,7 +2,6 @@
 using Educational.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NPOI.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +22,10 @@ namespace Educational.Staffs
         {
             this.basicRepository = basicRepository;
         }
-
         /// <summary>分页查询员工信息</summary>
         /// <param name="search">查询条件</param>
         /// <returns>分页结果，包含员工信息</returns>
+        [HttpGet]
         public async Task<ApiResult<ApiPaging<List<ShowStaffDTO>>>> GetStaffListAsync([FromQuery]SearchStaffDTO search)
         {
             try
@@ -74,6 +73,7 @@ namespace Educational.Staffs
         /// </summary>
         /// <param name="addorUpdStaffDTO">前端传入的员工数据 DTO</param>
         /// <returns>返回封装的 ApiResult 包含新增员工信息</returns>
+        [HttpPost]
         public async Task<ApiResult<ShowStaffDTO>> AddStaff(AddorUpdStaffDTO addorUpdStaffDTO)
         {
             try
@@ -109,6 +109,7 @@ namespace Educational.Staffs
         /// </summary>
         /// <param name="addorUpdStaffDTO">前端传入的员工数据 DTO</param>
         /// <returns>返回封装的 ApiResult 包含编辑后的员工信息</returns>
+        [HttpPut]
         public async Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, AddorUpdStaffDTO addorUpdStaffDTO)
         {
             try
@@ -139,6 +140,7 @@ namespace Educational.Staffs
         /// </summary>
         /// <param name="staffId">员工 ID</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
+        [HttpDelete]
         public async Task<ApiResult> DeleteStaff(Guid staffId)
         {
             try
@@ -169,6 +171,7 @@ namespace Educational.Staffs
         /// <param name="staffId">员工 ID</param>
         /// <param name="status">要修改成的员工状态</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
+        [HttpPut]
         public async Task<ApiResult> UpdateStaffStatus(Guid staffId, StaffStatus status)
         {
             try
@@ -202,6 +205,7 @@ namespace Educational.Staffs
         /// <param name="staffId">员工 ID</param>
         /// <param name="newPassword">新密码</param>
         /// <returns>返回封装的 ApiResult，状态码表示操作结果</returns>
+        [HttpPut]
         public async Task<ApiResult> UpdateStaffPassword(Guid staffId, string newPassword)
         {
             try
@@ -232,6 +236,7 @@ namespace Educational.Staffs
         /// </summary>
         /// <param name="search">查询条件</param>
         /// <returns>返回导出结果</returns>
+        [HttpGet]
         public async Task<ApiResult<ExportResult>> GetExportStaffList()
         {
             // 获取员工数据源
@@ -253,6 +258,7 @@ namespace Educational.Staffs
         /// </summary>
         /// <param name="loginDTO">登录请求 DTO，包含账户和密码</param>
         /// <returns>返回登录结果</returns>
+        [HttpPost]
         public async Task<ApiResult<StaffInfo>> Login([FromQuery] LoginDTO loginDTO)
         {
             try
@@ -290,6 +296,7 @@ namespace Educational.Staffs
         /// </summary>
         /// <param name="input">原始密码</param>
         /// <returns>SHA256 加密后的密码</returns>
+        
         private string Sha256Hash(string input)
         {
             using (var sha256 = SHA256.Create())
