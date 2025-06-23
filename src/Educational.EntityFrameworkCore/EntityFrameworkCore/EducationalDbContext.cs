@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Educational.Classgrade;
+using Educational.Students;
+using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 
 namespace Educational.EntityFrameworkCore;
@@ -36,8 +39,15 @@ public class EducationalDbContext :
     {
 
     }
-
-    protected override void OnModelCreating(ModelBuilder builder)
+    //学生
+	public DbSet<Student> Student { get; set; }
+    //班级
+	public DbSet<Class> Class { get; set; }
+    //年级
+	public DbSet<Grade> Grade { get; set; }
+    //家长
+	public DbSet<Parent> Parent { get; set; }
+	protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
@@ -49,11 +59,29 @@ public class EducationalDbContext :
 
         /* Configure your own tables/entities inside here */
 
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(EducationalConsts.DbTablePrefix + "YourEntities", EducationalConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
+        builder.Entity<Student>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "Student", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.Name).IsRequired().HasMaxLength(50);
+        });
+        builder.Entity<Class>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "Class", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.ClassName).IsRequired().HasMaxLength(50);
+        });
+        builder.Entity<Grade>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "Grade", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.GradeName).IsRequired().HasMaxLength(50);
+        });
+        builder.Entity<Parent>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "Parent", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.PardentName).IsRequired().HasMaxLength(50);
+        });
     }
 }
