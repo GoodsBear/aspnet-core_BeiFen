@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace Educational.Dto.Positions
         /// </summary>Add commentMore actions
         [Required(ErrorMessage = "职位名称不能为空")]
         [StringLength(128)]
+        [DisplayName("职位名称")]
         public string PositionName { get; set; } = string.Empty;
     }
 }

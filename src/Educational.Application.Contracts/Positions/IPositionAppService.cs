@@ -16,5 +16,7 @@ namespace Educational.Positions
         Task<ApiResult<PositionsDto>> UpdatePosition(Guid id, CreateUpdatePositionDto createPositionDto);
         Task<ApiResult<ApiPaging<List<PositionsDto>>>> GetPositionList([FromQuery] PositionSearchDto searchDto);
         Task<ApiResult> BatchDelete(List<Guid> ids);
+        Task<ApiResult<ExportResult>> GetExportPositionList();
+
     }
 }

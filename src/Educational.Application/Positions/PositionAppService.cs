@@ -1,4 +1,6 @@
 ﻿using Educational.Dto.Positions;
+using Educational.Staffs;
+using Educational.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -108,14 +110,34 @@ namespace Educational.Positions
             }
         }
         /// <summary>
+        /// 导出职位列表
+        /// </summary>
+        /// <param name="search">查询条件</param>
+        /// <returns>返回导出结果</returns>
+        public async Task<ApiResult<ExportResult>> GetExportPositionList()
+        {
+            // 获取员工数据源
+            var position = await positionRep.GetQueryableAsync();
+            // 映射成DTO
+            var positiondto = ObjectMapper.Map<List<Position>, List<ExportPositionDto>>(position.ToList());
+            // 调用导出帮助类生成 Excel
+            var fileBytes = ExcelExporter.Export(positiondto, "职位信息", "职位信息表");
+            // 返回导出结果
+            return ApiResult<ExportResult>.Success(ResultCode.Ok, new ExportResult
+            {
+                FileName = $"职位信息_{DateTime.Now:yyyyMMddHHmmss}.xlsx",
+                FileContent = fileBytes
+            });
+        }
+        /// <summary>
         /// 批量删除
         /// </summary>
         /// <param name="ids">批删数组</param>
-        /// <returns>返回受影响行数</returns>
-
         public async Task<ApiResult> BatchDelete(List<Guid> ids)
         {
             try
+        /// <returns>返回受影响行数</returns>
+
             {
                 foreach (var item in ids)
                 {

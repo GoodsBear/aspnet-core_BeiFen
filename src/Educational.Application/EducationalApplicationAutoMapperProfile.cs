@@ -21,6 +21,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         // 职位映射
         CreateMap<Position, PositionsDto>().ReverseMap();
         CreateMap<CreateUpdatePositionDto, Position>().ReverseMap();
+        CreateMap<Position, ExportPositionDto>().ReverseMap();
         // 公告映射
         CreateMap<Announcement, AnnouncementDto>().ReverseMap();
         CreateMap<CreateUpdateAnnouncement, Announcement>().ReverseMap();
