@@ -15,5 +15,7 @@ namespace Educational.Announcements
         Task<ApiResult<AnnouncementDto>> CreatePosition(CreateUpdateAnnouncement createAnnouncement);
         Task<ApiResult<AnnouncementDto>> UpdatePosition(Guid id, CreateUpdateAnnouncement createAnnouncement);
         Task<ApiResult<ApiPaging<List<AnnouncementDto>>>> GetPositionList([FromQuery] AnnouncementSearchDto searchDto);
+        Task<ApiResult> DeletePosition(Guid id);
+        Task<ApiResult> BatchDelete(List<Guid> ids);
     }
 }

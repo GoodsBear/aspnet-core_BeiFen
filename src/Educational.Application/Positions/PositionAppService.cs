@@ -107,6 +107,35 @@ namespace Educational.Positions
                 throw;
             }
         }
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="ids">批删数组</param>
+        /// <returns>返回受影响行数</returns>
+
+        public async Task<ApiResult> BatchDelete(List<Guid> ids)
+        {
+            try
+            {
+                foreach (var item in ids)
+                {
+                    var position = await positionRep.GetAsync(item);
+                    if (position == null)
+                    {
+                        return ApiResult.Fail(ResultCode.Fail, "职位不存在！");
+                    }
+                    await positionRep.DeleteAsync(position);
+
+                }
+                return ApiResult.Success(ResultCode.Ok);
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("职位批量删除出错！" + ex.Message);
+                throw;
+            }
+        }
     }
 }
 

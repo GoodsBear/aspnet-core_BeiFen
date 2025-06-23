@@ -102,5 +102,58 @@ namespace Educational.Announcements
                 throw;
             }
         }
+        /// <summary>
+        /// 删除公告
+        /// </summary>
+        /// <param name="id">根据id查询值</param>
+        /// <returns>返回受影响行数</returns>
+    
+        public async Task<ApiResult> DeletePosition(Guid id)
+        {
+            try
+            {
+                var announcement = await announcementRep.GetAsync(id);
+                if (announcement == null)
+                {
+                    return ApiResult.Fail(ResultCode.Fail, "职位不存在！");
+                }
+                await announcementRep.DeleteAsync(announcement);
+                return ApiResult.Success(ResultCode.Ok);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("公告删除出错！" + ex.Message);
+                throw;
+            }
+        }
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="ids">批删数组</param>
+        /// <returns>返回受影响行数</returns>
+
+        public async Task<ApiResult> BatchDelete(List<Guid> ids)
+        {
+            try
+            {
+                foreach (var item in ids)
+                {
+                    var announcement = await announcementRep.GetAsync(item);
+                    if (announcement == null)
+                    {
+                        return ApiResult.Fail(ResultCode.Fail, "公告不存在！");
+                    }
+                    await announcementRep.DeleteAsync(announcement);
+                   
+                }
+                return ApiResult.Success(ResultCode.Ok);
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("公告批量删除出错！" + ex.Message);
+                throw;
+            }
+        }
     }
 }
