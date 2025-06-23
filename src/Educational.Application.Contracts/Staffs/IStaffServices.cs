@@ -12,7 +12,6 @@ namespace Educational.Staffs
 {
     public interface IStaffServices:IApplicationService
     {
-        Task<ApiResult> AddStaff(StaffInfo staffInfo);
         /// <summary>添加员工</summary>
         Task<ApiResult<ShowStaffDTO>> AddStaff(AddorUpdStaffDTO addorUpdStaffDTO);
 
