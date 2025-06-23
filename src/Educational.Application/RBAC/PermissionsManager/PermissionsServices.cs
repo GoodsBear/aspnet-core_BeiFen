@@ -79,6 +79,40 @@ namespace Educational.RBAC.PermissionsManager
         }
 
         [HttpGet]
+        public async Task<ApiResult<List<PermissionsTreeDto>>> GetPermissionsTree()
+        {
+            try
+            {
+                var allPermissions = await repository.GetListAsync();
+                var rootPermissions = allPermissions
+                    .Where(x => x.ParentId == Guid.Parse("00000000-0000-0000-0000-000000000000"))
+                    .ToList();
+
+                var treeList = rootPermissions.Select(root => new PermissionsTreeDto
+                {
+                    value = root.Id,
+                    label = root.PermissionName,
+                    children = allPermissions
+                        .Where(x => x.ParentId == root.Id)
+                        .Select(child => new PermissionsTreeDto
+                        {
+                            value = child.Id,
+                            label = child.PermissionName,
+                            children = null // 二级菜单不递归
+                        })
+                        .ToList()
+                }).ToList();
+
+                return ApiResult<List<PermissionsTreeDto>>.Success(ResultCode.Ok, treeList);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("获取权限树形结构出错: " + ex.Message);
+                throw;
+            }
+        }
+
+        [HttpGet]
         public async Task<ApiResult<ApiPaging<List<PermissionsDto>>>> PagePermissions([FromQuery]SearchPermissionsDto searchPermissionsDto)
         {
             try

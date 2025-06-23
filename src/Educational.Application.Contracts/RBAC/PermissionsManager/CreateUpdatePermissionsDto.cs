@@ -11,5 +11,7 @@ namespace Educational.RBAC.PermissionsManager
         public string PermissionName { get; set; } //权限名称
 
         public string PermissionsDesc { get; set; } //权限描述
+
+        public Guid ParentId { get; set; } //父级ID，默认为0表示顶级权限
     }
 }

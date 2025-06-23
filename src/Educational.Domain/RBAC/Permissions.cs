@@ -22,5 +22,11 @@ namespace Educational.RBAC
         /// </summary>
         [StringLength(255, ErrorMessage = "权限描述长度不能超过255个字符")] // 描述字段通常允许较长的文本
         public string PermissionsDesc { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 父级Id
+        /// </summary>
+        [Required(ErrorMessage = "父级ID不能为空。")]
+        public Guid ParentId { get; set; } // 父级ID，默认为0表示顶级权限
     }
 }
