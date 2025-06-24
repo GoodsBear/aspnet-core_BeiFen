@@ -1,3 +1,6 @@
+﻿using Educational.Classgrade;
+using Educational.Courses;
+using Educational.Students;
 using Educational.Organization;
 using Educational.Announcements;
 using Educational.Positions;
@@ -43,6 +46,15 @@ public class EducationalDbContext :
     {
 
     }
+    //学生
+	public DbSet<Student> Student { get; set; }
+    //班级
+	public DbSet<Class> Class { get; set; }
+    //年级
+	public DbSet<Grade> Grade { get; set; }
+    //家长
+	public DbSet<Parent> Parent { get; set; }
+	public DbSet<Course> Course { get; set; }
 
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
     public DbSet<OrganizationModel> OrganizationModels { get; set; }//组织信息表
@@ -102,11 +114,35 @@ public class EducationalDbContext :
         });
         /* Configure your own tables/entities inside here */
 
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(EducationalConsts.DbTablePrefix + "YourEntities", EducationalConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
-    }
+        builder.Entity<Student>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "Student", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.Name).IsRequired().HasMaxLength(50);
+        });
+        builder.Entity<Class>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "Class", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.ClassName).IsRequired().HasMaxLength(50);
+        });
+        builder.Entity<Grade>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "Grade", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.GradeName).IsRequired().HasMaxLength(50);
+        });
+		builder.Entity<Parent>(b =>
+		{
+			b.ToTable(EducationalConsts.DbTablePrefix + "Parent", EducationalConsts.DbSchema);
+			b.ConfigureByConvention(); //auto configure for the base class props
+			b.Property(x => x.PardentName).IsRequired().HasMaxLength(50);
+		});
+		builder.Entity<Course>(b =>
+		{
+			b.ToTable(EducationalConsts.DbTablePrefix + "Course", EducationalConsts.DbSchema);
+			b.ConfigureByConvention(); //auto configure for the base class props
+			b.Property(x => x.CourseName).IsRequired().HasMaxLength(50);
+		});
+	}
 }

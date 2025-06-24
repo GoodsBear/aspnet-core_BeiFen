@@ -1,4 +1,5 @@
 using AutoMapper;
+using Educational.Courses;
 using AutoMapper;
 using Educational.Organization;
 using System.Collections.Generic;
@@ -33,6 +34,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organizationaaa. */
+        CreateMap<Course, CourseDto>(MemberList.Source)
+            .ForMember(dest=>dest.CourseName,pot=>pot.MapFrom(src=>src.CourseName)).ReverseMap();
         // 职位映射
         CreateMap<Position, PositionsDto>().ReverseMap();
         CreateMap<CreateUpdatePositionDto, Position>().ReverseMap();

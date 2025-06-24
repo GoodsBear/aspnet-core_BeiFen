@@ -80,6 +80,7 @@ namespace Educational.Staffs
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex, "员工信息获取失败");
                 throw; // 暂时抛出，可拓展成统一异常处理
             }
         }
