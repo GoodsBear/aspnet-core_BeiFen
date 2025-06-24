@@ -110,7 +110,6 @@ namespace Educational.Organization
                 return ApiResult<OrganizationDto>.Fail(ResultCode.Fail, $"获取组织机构失败: {ex.Message}");
             }
         }
-
         /// <summary>
         /// 分页查询组织机构列表
         /// </summary>
@@ -162,63 +161,6 @@ namespace Educational.Organization
                 throw;
             }
         } 
-        /// <summary>
-        /// 更新组织机构
-        /// </summary>
-        /// <param name="id">组织机构ID</param>
-        /// <param name="input">更新信息</param>
-        /// <returns>更新结果</returns>
-        public async Task<ApiResult<OrganizationDto>> UpdateAsync(Guid id, OrganizationDto input)
-		/// <summary>
-		/// 分页查询组织机构列表
-		/// </summary>
-		/// <param name="search">查询条件</param>
-		/// <returns>分页结果</returns>
-		public async Task<ApiResult<ApiPaging<List<LevelDto>>>> GetListAsync([FromQuery] Seach search)
-		{
-			try
-			{
-				// 构建查询
-				var organizations = await _organizationRepository.GetQueryableAsync();
-				var levels = await _organizationLevelRepository.GetQueryableAsync();
-				var linq = from org in organizations
-						   join level in levels
-						   on org.LevelId equals level.Id
-						   select new LevelDto
-						   {
-							   Id = org.Id,
-							   LevelName = level.Name,
-							   Name = org.Name,
-							   LevelId = org.LevelId,
-							   PartentedId = org.PartentedId,
-							   ShortName = org.ShortName,
-							   ContactPerson = org.ContactPerson,
-							   Phone = org.Phone,
-							   Fax = org.Fax,
-							   Email = org.Email,
-							   SortOrder = org.SortOrder,
-							   IsActive = org.IsActive,
-							   Description = org.Description,
-							   DeleterId = org.DeleterId,
-							   DeletionTime = org.DeletionTime
-						   };
-				// 使用ABP自带分页方法 
-				var page = linq.PageResult(search.PageIndex, search.PageSize);
-				// 映射
-				//var organizationDto = ObjectMapper.Map<List<>,List<LevelDto>>(page);
-				var result = new ApiPaging<List<LevelDto>>
-				{
-					TotleCount = page.RowCount,
-					TotlePage = (int)Math.Ceiling(page.RowCount * 1.0 / search.PageSize),
-					Data = linq.ToList()
-				};
-				return ApiResult<ApiPaging<List<LevelDto>>>.Success(ResultCode.Ok, result);
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
 		/// <summary>
 		/// 更新组织机构
 		/// </summary>
