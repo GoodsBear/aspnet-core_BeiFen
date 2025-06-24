@@ -14,6 +14,7 @@ using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
+using Educational.StaffTypes;
 
 namespace Educational.EntityFrameworkCore;
 
@@ -56,13 +57,14 @@ public class EducationalDbContext :
     //课程
     public DbSet<Course> Course { get; set; }
 
-    public DbSet<StaffInfo> staffInfos { get; set; }
-    public DbSet<OrganizationModel> OrganizationModels { get; set; }
-    public DbSet<OrganizationLevel> OrganizationLevels { get; set; }
-    public DbSet<Position> positions { get; set; }
-    public DbSet<Announcement> announcements { get; set; }
-    public DbSet<Role> Role { get; set; } //角色表
-    public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限表
+    public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
+    public DbSet<OrganizationModel> OrganizationModels { get; set; }//组织信息表
+    public DbSet<OrganizationLevel> OrganizationLevels { get; set; }//组织级别表
+    public DbSet<Position> positions { get; set; }//职位信息表
+    public DbSet<Announcement> announcements { get; set; }//公告信息表
+    public DbSet<Role> Role { get; set; } //角色信息表
+    public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限信息表
+    public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -98,6 +100,16 @@ public class EducationalDbContext :
         builder.Entity<OrganizationLevel>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "OrganizationLevel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
+
+        /// <summary>
+        /// 人员类型信息表
+        /// </summary>
+        builder.Entity<StaffTypeInfo>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "StaffTypeInfo", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });

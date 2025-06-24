@@ -48,11 +48,15 @@ namespace Educational.Organization
         /// </summary>
         /// <param name="parentId"></param>
         /// <returns></returns>
-
+       
          Task<List<OrganizationTreeDto>> GetTreeAsync(Guid? parentId = null);
         /// <summary>
         /// 组织机构级别下拉表
         /// </summary> 
          Task<ApiResult<List<XialaLevelDto>>> GetLevelAsync();
+        /// <summary>
+        /// 组织机构级别添加
+        /// </summary> 
+        //wu
     }
 }

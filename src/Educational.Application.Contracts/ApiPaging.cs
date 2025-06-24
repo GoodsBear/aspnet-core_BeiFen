@@ -24,4 +24,3 @@ namespace Educational
         public int PageSize { get; set; }
     }
 }
-

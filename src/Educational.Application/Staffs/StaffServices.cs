@@ -1,4 +1,7 @@
 ﻿using Educational.Enmu;
+using Educational.Positions;
+using Educational.RBAC;
+using Educational.StaffTypes;
 using Educational.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,10 +20,16 @@ namespace Educational.Staffs
     public class StaffServices : ApplicationService, IStaffServices
     {
         private readonly IRepository<StaffInfo,Guid> basicRepository;
+        private readonly IRepository<Position, Guid> positionRep;
+        private readonly IRepository<Role, Guid> roleRep;
+        private readonly IRepository<StaffTypeInfo, Guid> typeRep;
 
-        public StaffServices(IRepository<StaffInfo, Guid> basicRepository)
+        public StaffServices(IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep)
         {
             this.basicRepository = basicRepository;
+            this.positionRep = positionRep;
+            this.roleRep = roleRep;
+            this.typeRep = typeRep;
         }
         /// <summary>分页查询员工信息</summary>
         /// <param name="search">查询条件</param>
@@ -51,6 +60,13 @@ namespace Educational.Staffs
                 // 映射成前端显示用的 DTO 列表
                 var resultList = ObjectMapper.Map<List<StaffInfo>, List<ShowStaffDTO>>(stafflist.ToList());
 
+                foreach (var item in resultList)
+                {
+                    item.Position = (await positionRep.GetAsync(item.PositionId)).PositionName;
+                    item.Role = (await roleRep.GetAsync(item.RoleId)).RoleName;
+                    item.StaffType = (await typeRep.GetAsync(item.StaffTypeId)).StaffTypeName;
+                }
+
                 // 封装分页数据
                 ApiPaging<List<ShowStaffDTO>> paging = new ApiPaging<List<ShowStaffDTO>>
                 {
@@ -64,6 +80,7 @@ namespace Educational.Staffs
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex, "员工信息获取失败");
                 throw; // 暂时抛出，可拓展成统一异常处理
             }
         }
