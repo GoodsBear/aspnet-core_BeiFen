@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Educational.Data;
 using Serilog;
 using Volo.Abp;
 using Volo.Abp.Data;
