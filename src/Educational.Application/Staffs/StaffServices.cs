@@ -1,4 +1,6 @@
 ﻿using Educational.Enmu;
+using Educational.Positions;
+using Educational.RBAC;
 using Educational.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,10 +19,14 @@ namespace Educational.Staffs
     public class StaffServices : ApplicationService, IStaffServices
     {
         private readonly IRepository<StaffInfo,Guid> basicRepository;
+        private readonly IRepository<Position, Guid> positionRep;
+        private readonly IRepository<Role, Guid> roleRep;
 
-        public StaffServices(IRepository<StaffInfo, Guid> basicRepository)
+        public StaffServices(IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep)
         {
             this.basicRepository = basicRepository;
+            this.positionRep = positionRep;
+            this.roleRep = roleRep;
         }
         /// <summary>分页查询员工信息</summary>
         /// <param name="search">查询条件</param>
@@ -50,6 +56,12 @@ namespace Educational.Staffs
 
                 // 映射成前端显示用的 DTO 列表
                 var resultList = ObjectMapper.Map<List<StaffInfo>, List<ShowStaffDTO>>(stafflist.ToList());
+
+                foreach (var item in resultList)
+                {
+                    item.Position = (await positionRep.GetAsync(item.PositionId)).PositionName;
+                    item.Role = (await roleRep.GetAsync(item.RoleId)).RoleName;
+                }
 
                 // 封装分页数据
                 ApiPaging<List<ShowStaffDTO>> paging = new ApiPaging<List<ShowStaffDTO>>

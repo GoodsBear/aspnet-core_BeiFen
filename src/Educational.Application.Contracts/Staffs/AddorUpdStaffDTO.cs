@@ -56,17 +56,18 @@ namespace Educational.Staffs
         /// </summary>
         [Required]
         [Comment("职位")]
-        public string Position { get; set; }
-
+        public Guid PositionId { get; set; }
         /// <summary>
         /// 权限角色
-        /// </summary>
+        /// </summary>'
+        [Required]
         [Comment("权限角色")]
-        public string Role { get; set; }
+        public Guid RoleId { get; set; }
 
         /// <summary>
         /// 人员类型
         /// </summary>
+        [Required]
         [Comment("人员类型")]
         public string StaffType { get; set; }
 
