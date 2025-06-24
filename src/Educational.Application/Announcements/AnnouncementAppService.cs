@@ -49,6 +49,11 @@ namespace Educational.Announcements
                 throw;
             }
         }
+        /// <summary>
+        /// 获取公告列表
+        /// </summary>
+        /// <param name="searchDto"></param>
+        /// <returns></returns>
 
         public async Task<ApiResult<ApiPaging<List<AnnouncementDto>>>> GetPositionList([FromQuery] AnnouncementSearchDto searchDto)
         {
