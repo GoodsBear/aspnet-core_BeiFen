@@ -15,7 +15,7 @@ namespace Educational.Classgrade
 		/// <summary>
 		/// 年级名称
 		/// </summary>
-		public Guid GradeName { get; set; }
+		public string GradeName { get; set; }
 		/// <summary>
 		/// 入学年份
 		/// </summary>
