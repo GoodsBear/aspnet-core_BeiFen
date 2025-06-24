@@ -50,7 +50,7 @@ public class EducationalDbContext :
     }
    
 	public DbSet<Student> Student { get; set; } //学生
-	public DbSet<Class> Class { get; set; }  //班级
+	public DbSet<ClassInfo> Class { get; set; }  //班级
     public DbSet<Grade> Grade { get; set; }   //年级
     public DbSet<Parent> Parent { get; set; }//家长
     public DbSet<Course> Course { get; set; } //课程信息表
