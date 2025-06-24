@@ -17,7 +17,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
     <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="9.2.0" />
   <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
-	</ItemGroup>
     <PackageReference Include="Yitter.IdGenerator" Version="1.0.14" />
   </ItemGroup>
 
