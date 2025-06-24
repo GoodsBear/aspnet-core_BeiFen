@@ -1,20 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using Educational.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Educational.EntityFrameworkCore;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
@@ -23,6 +24,7 @@ using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
+using Yitter.IdGenerator;
 
 namespace Educational;
 
@@ -195,6 +197,10 @@ public class EducationalHttpApiHostModule : AbpModule
         //{
         //    app.UseMultiTenancy();
         //}
+
+        //Ñ©»¨Id
+        YitIdHelper.SetIdGenerator(new IdGeneratorOptions(1));
+
         app.UseUnitOfWork();
         app.UseDynamicClaims();
         app.UseAuthorization();
