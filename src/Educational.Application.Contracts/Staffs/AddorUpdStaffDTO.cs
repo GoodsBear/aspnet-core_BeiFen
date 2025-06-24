@@ -69,7 +69,7 @@ namespace Educational.Staffs
         /// </summary>
         [Required]
         [Comment("人员类型")]
-        public string StaffType { get; set; }
+        public Guid StaffTypeId { get; set; }
 
         /// <summary>
         /// 入职日期

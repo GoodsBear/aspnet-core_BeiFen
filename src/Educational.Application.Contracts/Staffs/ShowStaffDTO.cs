@@ -32,6 +32,8 @@ namespace Educational.Staffs
         [DisplayName("权限角色")]
         public string Role { get; set; }
 
+        [DisplayName("人员类型编号")]
+        public Guid StaffTypeId { get; set; }
         [DisplayName("人员类型")]
         public string StaffType { get; set; }
 

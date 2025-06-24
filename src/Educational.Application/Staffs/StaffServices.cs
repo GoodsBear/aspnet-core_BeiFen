@@ -1,6 +1,7 @@
 ﻿using Educational.Enmu;
 using Educational.Positions;
 using Educational.RBAC;
+using Educational.StaffTypes;
 using Educational.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -21,12 +22,14 @@ namespace Educational.Staffs
         private readonly IRepository<StaffInfo,Guid> basicRepository;
         private readonly IRepository<Position, Guid> positionRep;
         private readonly IRepository<Role, Guid> roleRep;
+        private readonly IRepository<StaffTypeInfo, Guid> typeRep;
 
-        public StaffServices(IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep)
+        public StaffServices(IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep)
         {
             this.basicRepository = basicRepository;
             this.positionRep = positionRep;
             this.roleRep = roleRep;
+            this.typeRep = typeRep;
         }
         /// <summary>分页查询员工信息</summary>
         /// <param name="search">查询条件</param>
@@ -61,6 +64,7 @@ namespace Educational.Staffs
                 {
                     item.Position = (await positionRep.GetAsync(item.PositionId)).PositionName;
                     item.Role = (await roleRep.GetAsync(item.RoleId)).RoleName;
+                    item.StaffType = (await typeRep.GetAsync(item.StaffTypeId)).StaffTypeName;
                 }
 
                 // 封装分页数据

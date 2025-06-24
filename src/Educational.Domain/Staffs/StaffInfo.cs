@@ -63,7 +63,7 @@ namespace Educational.Staffs
         [MaxLength(50)]
         [Comment("人员类型")]
         [DisplayName("人员类型")]
-        public string StaffType { get; set; }
+        public Guid StaffTypeId { get; set; }
 
         [Comment("入职日期")]
         [DisplayName("入职日期")]
