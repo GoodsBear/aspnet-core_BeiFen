@@ -143,7 +143,12 @@ public class EducationalHttpApiHostModule : AbpModule
             },
             options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Educational API", Version = "v1" });
+                options.SwaggerDoc("∑‰Œ—", new OpenApiInfo { Title = "∑‰Œ—", Version = "∑‰Œ—" });
+                options.SwaggerDoc("v2", new OpenApiInfo { Title = "CourseServices", Version = "v2" });
+                options.SwaggerDoc("v3", new OpenApiInfo { Title = "Export", Version = "v3" });
+                options.SwaggerDoc("v4", new OpenApiInfo { Title = "Educational API", Version = "v4" });
+                options.SwaggerDoc("v5", new OpenApiInfo { Title = "Educational API", Version = "v5" });
+
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
             });
@@ -208,7 +213,7 @@ public class EducationalHttpApiHostModule : AbpModule
         app.UseSwagger();
         app.UseAbpSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Educational API");
+            c.SwaggerEndpoint("/swagger/∑‰Œ—/swagger.json", "∑‰Œ—");
 
             var configuration = context.ServiceProvider.GetRequiredService<IConfiguration>();
             c.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);
