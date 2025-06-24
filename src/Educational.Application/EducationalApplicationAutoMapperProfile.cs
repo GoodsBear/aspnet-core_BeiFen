@@ -5,13 +5,16 @@ using Educational.Organization;
 using System.Collections.Generic;
 using System.Linq;
 using Educational.Announcements;
+using Educational.Datadictionary;
 using Educational.Dto.Announcements;
 using Educational.Dto.Positions;
+using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
 using Educational.Staffs;
+using Educational.StaffTypes;
 
 namespace Educational;
 
@@ -31,6 +34,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
         CreateMap<ShowStaffDTO, StaffInfo>().ReverseMap();
+
+        CreateMap<StaffTypeInfo, ShowStaffTypeDTO>().ReverseMap();
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organizationaaa. */
@@ -50,6 +55,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
 
         CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
         CreateMap<Permissions, PermissionsDto>().ReverseMap();
+
+        CreateMap<DictTypeDto, DictType>().ReverseMap();
 
     }
 }
