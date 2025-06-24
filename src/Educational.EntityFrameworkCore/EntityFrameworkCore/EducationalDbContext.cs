@@ -46,15 +46,15 @@ public class EducationalDbContext :
     {
 
     }
-    //学生
-	public DbSet<Student> Student { get; set; }
-    //班级
-	public DbSet<Class> Class { get; set; }
-    //年级
-	public DbSet<Grade> Grade { get; set; }
-    //家长
-	public DbSet<Parent> Parent { get; set; }
-	public DbSet<Course> Course { get; set; }
+   
+	public DbSet<Student> Student { get; set; } //学生
+  
+	public DbSet<Class> Class { get; set; }  //班级
+                                          
+    public DbSet<Grade> Grade { get; set; }   //年级
+                                              
+    public DbSet<Parent> Parent { get; set; }//家长
+    public DbSet<Course> Course { get; set; } //课程信息表
 
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
     public DbSet<OrganizationModel> OrganizationModels { get; set; }//组织信息表
@@ -65,6 +65,7 @@ public class EducationalDbContext :
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限信息表
     public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
 
+    public DbSet<Educational.SubjectModel.SubjectModel> SubjectModel { get; set; }//科目表
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
