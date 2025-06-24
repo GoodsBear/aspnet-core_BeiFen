@@ -1,8 +1,9 @@
-using Educational.Organization;
 using Educational.Announcements;
+using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.Staffs;
+using Educational.Subject;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -50,6 +51,8 @@ public class EducationalDbContext :
     public DbSet<Announcement> announcements { get; set; }
     public DbSet<Role> Role { get; set; } //角色表
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限表
+    
+    public DbSet<SubjectModel> SubjectModel { get; set; } //角色表
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -88,13 +91,15 @@ public class EducationalDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });
-        /* Configure your own tables/entities inside here */
 
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(EducationalConsts.DbTablePrefix + "YourEntities", EducationalConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
+        /// <summary>
+        ///  科目管理表
+        /// </summary>   
+        builder.Entity<SubjectModel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "SubjectModels", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
     }
 }
