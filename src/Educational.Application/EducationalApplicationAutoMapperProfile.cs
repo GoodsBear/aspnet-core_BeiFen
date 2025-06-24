@@ -18,6 +18,9 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
+
+        CreateMap<CreateUpdateOrganizationLevel, OrganizationLevel>();
+        CreateMap<OrganizationLevel, OrganizationLevelDto>();
         // 添加从 CreateUpdateOrganizationDto 到 OrganizationModel 的映射
         CreateMap<CreateUpdateOrganizationDto, OrganizationModel>();
         CreateMap<OrganizationModel, OrganizationDto>();
@@ -43,8 +46,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
 
         CreateMap<CreateUpdateRoleDto, Role>().ReverseMap();
         CreateMap<Role, RoleDto>().ReverseMap();
-
-
+         
         CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
         CreateMap<Permissions, PermissionsDto>().ReverseMap();
 
