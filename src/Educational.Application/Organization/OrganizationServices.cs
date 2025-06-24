@@ -110,7 +110,6 @@ namespace Educational.Organization
                 return ApiResult<OrganizationDto>.Fail(ResultCode.Fail, $"获取组织机构失败: {ex.Message}");
             }
         }
-
         /// <summary>
         /// 分页查询组织机构列表
         /// </summary>
