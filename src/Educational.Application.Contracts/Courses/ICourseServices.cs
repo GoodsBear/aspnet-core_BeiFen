@@ -14,7 +14,7 @@ namespace Educational.Courses
 		Task<ApiResult> AddCourse(CourseDto coursedto);
 
 		//课程分页
-		Task<ApiResult<ApiPagiing<List<CourseDto>>>> GetListCourse(SearchCourseDto seach);
+		Task<ApiResult<ApiPaging<List<CourseDto>>>> GetListCourse(SearchCourseDto seach);
 
 	}
 }
