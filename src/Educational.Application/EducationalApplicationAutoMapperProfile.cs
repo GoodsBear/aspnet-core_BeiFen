@@ -11,6 +11,7 @@ using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
 using Educational.Staffs;
+using Educational.StaffTypes;
 
 namespace Educational;
 
@@ -30,6 +31,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
         CreateMap<ShowStaffDTO, StaffInfo>().ReverseMap();
+
+        CreateMap<StaffTypeInfo, ShowStaffTypeDTO>().ReverseMap();
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organizationaaa. */
