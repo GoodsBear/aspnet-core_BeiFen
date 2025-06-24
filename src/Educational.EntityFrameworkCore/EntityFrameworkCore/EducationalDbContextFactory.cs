@@ -27,7 +27,6 @@ public class EducationalDbContextFactory : IDesignTimeDbContextFactory<Education
         var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false);
-
         return builder.Build();
     }
 }

@@ -16,6 +16,10 @@ namespace Educational.StaffTypes
         {
             this.repository = repository;
         }
+        /// <summary>
+        /// 获取人员类型
+        /// </summary>
+        /// <returns></returns>
         public async Task<ApiResult<List<ShowStaffTypeDTO>>> GetStaffType()
         {
             var stafftypeinfo=await repository.GetListAsync();
