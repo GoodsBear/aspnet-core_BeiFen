@@ -158,6 +158,7 @@ namespace Educational.Organization
             }
             catch (Exception ex)
             {
+                logger.LogError("获取组织机构列表出错: " + ex.Message);
                 throw;
             }
         } 

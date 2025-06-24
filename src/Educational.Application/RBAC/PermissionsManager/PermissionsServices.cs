@@ -22,7 +22,11 @@ namespace Educational.RBAC.PermissionsManager
             this.repository = repository;
             this.logger = logger;
         }
-
+        /// <summary>
+        /// 添加权限
+        /// </summary>
+        /// <param name="createUpdatePermissions"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ApiResult<PermissionsDto>> AddPermissions(CreateUpdatePermissionsDto createUpdatePermissions)
         {
@@ -62,7 +66,11 @@ namespace Educational.RBAC.PermissionsManager
                 throw;
             }
         }
-
+        /// <summary>
+        /// 删除权限
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
         [HttpDelete]
         public async Task<ApiResult> DelPermissions(Guid guid)
         {
@@ -77,7 +85,10 @@ namespace Educational.RBAC.PermissionsManager
                 throw;
             }
         }
-
+        /// <summary>
+        /// 获取权限树形结构
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ApiResult<List<PermissionsTreeDto>>> GetPermissionsTree()
         {
@@ -111,7 +122,11 @@ namespace Educational.RBAC.PermissionsManager
                 throw;
             }
         }
-
+        /// <summary>
+        /// 分页查询权限
+        /// </summary>
+        /// <param name="searchPermissionsDto"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ApiResult<ApiPaging<List<PermissionsDto>>>> PagePermissions([FromQuery]SearchPermissionsDto searchPermissionsDto)
         {
@@ -140,7 +155,12 @@ namespace Educational.RBAC.PermissionsManager
                 throw;
             }
         }
-
+        /// <summary>
+        /// 修改权限
+        /// </summary>
+        /// <param name="createUpdatePermissionsDto"></param>
+        /// <param name="guid"></param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<ApiResult<PermissionsDto>> UpdatePermissions(CreateUpdatePermissionsDto createUpdatePermissionsDto, Guid guid)
         {
