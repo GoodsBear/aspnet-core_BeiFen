@@ -27,7 +27,7 @@ namespace Educational.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("Educational.Classgrade.Class", b =>
+            modelBuilder.Entity("Educational.Classgrade.ClassInfo", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");

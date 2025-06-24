@@ -4,6 +4,7 @@ using Educational.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    partial class EducationalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250624062738_课程表")]
+    partial class 课程表
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,7 +181,7 @@ namespace Educational.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppClassInfo", (string)null);
+                    b.ToTable("AppClass", (string)null);
                 });
 
             modelBuilder.Entity("Educational.Classgrade.Grade", b =>
@@ -250,9 +253,10 @@ namespace Educational.Migrations
             modelBuilder.Entity("Educational.Courses.Course", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("CampusId")
+                    b.Property<Guid>("CampusId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("ClassQrCode")
@@ -303,7 +307,7 @@ namespace Educational.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
-                    b.Property<Guid?>("GratorId")
+                    b.Property<Guid?>("GradeId")
                         .HasColumnType("char(36)");
 
                     b.Property<bool>("IsAfterPay")
@@ -360,14 +364,14 @@ namespace Educational.Migrations
                     b.Property<DateTime?>("StopSaleDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid?>("SubjectId")
+                    b.Property<Guid>("SubjectId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("TeacherRemark")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid?>("TopicId")
+                    b.Property<Guid>("TopicId")
                         .HasColumnType("char(36)");
 
                     b.Property<decimal>("TotalPrice")
@@ -722,64 +726,6 @@ namespace Educational.Migrations
                     b.ToTable("Role");
                 });
 
-            modelBuilder.Entity("Educational.StaffTypes.StaffTypeInfo", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("varchar(40)")
-                        .HasColumnName("ConcurrencyStamp");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("CreatorId");
-
-                    b.Property<Guid?>("DeleterId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("DeleterId");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("DeletionTime");
-
-                    b.Property<string>("ExtraProperties")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("ExtraProperties");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("LastModificationTime");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("LastModifierId");
-
-                    b.Property<string>("StaffTypeName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasComment("人员类型");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AppStaffTypeInfo", (string)null);
-                });
-
             modelBuilder.Entity("Educational.Staffs.StaffInfo", b =>
                 {
                     b.Property<Guid>("Id")
@@ -865,14 +811,16 @@ namespace Educational.Migrations
                         .HasColumnType("varchar(100)")
                         .HasComment("照片");
 
-                    b.Property<Guid>("PositionId")
+                    b.Property<string>("Position")
+                        .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("varchar(50)")
                         .HasComment("职位");
 
-                    b.Property<Guid>("RoleId")
+                    b.Property<string>("Role")
+                        .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("varchar(50)")
                         .HasComment("权限角色");
 
                     b.Property<string>("StaffAccount")
@@ -905,9 +853,10 @@ namespace Educational.Migrations
                         .HasColumnType("varchar(20)")
                         .HasComment("电话");
 
-                    b.Property<Guid>("StaffTypeId")
+                    b.Property<string>("StaffType")
+                        .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("varchar(50)")
                         .HasComment("人员类型");
 
                     b.Property<int>("Status")
@@ -982,8 +931,7 @@ namespace Educational.Migrations
 
                     b.Property<string>("PardentName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -1001,7 +949,7 @@ namespace Educational.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppParent", (string)null);
+                    b.ToTable("Parent");
                 });
 
             modelBuilder.Entity("Educational.Students.Student", b =>
