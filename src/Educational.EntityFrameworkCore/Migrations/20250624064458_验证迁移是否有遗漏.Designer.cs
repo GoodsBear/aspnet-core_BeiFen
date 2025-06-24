@@ -4,6 +4,7 @@ using Educational.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    partial class EducationalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250624064458_验证迁移是否有遗漏")]
+    partial class 验证迁移是否有遗漏
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,7 +181,7 @@ namespace Educational.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppClassInfo", (string)null);
+                    b.ToTable("AppClass", (string)null);
                 });
 
             modelBuilder.Entity("Educational.Classgrade.Grade", b =>
@@ -303,7 +306,7 @@ namespace Educational.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
-                    b.Property<Guid?>("GratorId")
+                    b.Property<Guid?>("GradeId")
                         .HasColumnType("char(36)");
 
                     b.Property<bool>("IsAfterPay")

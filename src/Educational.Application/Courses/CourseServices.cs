@@ -54,7 +54,7 @@ namespace Educational.Courses
 			}
 			if (seach.GradeId!=null)
 			{
-				course= course.Where(x=>x.GradeId==seach.GradeId);
+				course= course.Where(x=>x.GratorId==seach.GradeId);
 			}
 			if (seach.CampusId != null)
 			{
@@ -90,17 +90,11 @@ namespace Educational.Courses
 		public async Task<ApiResult> UpdateCourseStatus(List<Guid> guids, bool status)
 		{
 			Guid[] ids= guids.ToArray();
-			foreach(Guid id in ids)
+			foreach(var id in ids)
 			{
-				var course = await _courseRepository.GetAsync(x=>x.Id==id);
-				if (status)
-				{
-					course.Status = false;
-				}
-				else
-				{
-					course.Status = true;
-				}
+				var course = await _courseRepository.FirstOrDefaultAsync(x=>x.Id==id);
+				course.Status = status;
+                await _courseRepository.UpdateAsync(course);
 			}
 			return ApiResult.Success(ResultCode.Ok);
 		}

@@ -4,6 +4,7 @@ using Educational.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    partial class EducationalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250624062827_新增表")]
+    partial class 新增表
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,7 +181,7 @@ namespace Educational.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppClassInfo", (string)null);
+                    b.ToTable("AppClass", (string)null);
                 });
 
             modelBuilder.Entity("Educational.Classgrade.Grade", b =>
@@ -252,7 +255,7 @@ namespace Educational.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("CampusId")
+                    b.Property<Guid>("CampusId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("ClassQrCode")
@@ -303,7 +306,7 @@ namespace Educational.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
-                    b.Property<Guid?>("GratorId")
+                    b.Property<Guid?>("GradeId")
                         .HasColumnType("char(36)");
 
                     b.Property<bool>("IsAfterPay")
@@ -360,14 +363,14 @@ namespace Educational.Migrations
                     b.Property<DateTime?>("StopSaleDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid?>("SubjectId")
+                    b.Property<Guid>("SubjectId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("TeacherRemark")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid?>("TopicId")
+                    b.Property<Guid>("TopicId")
                         .HasColumnType("char(36)");
 
                     b.Property<decimal>("TotalPrice")
