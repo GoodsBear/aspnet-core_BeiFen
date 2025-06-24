@@ -69,8 +69,14 @@ namespace Educational.Courses
 		/// 上课时长
 		/// </summary>
         public int LessonDuration { get; set; }
-		//适用年级
+		/// <summary>
+		/// 适用年级
+		/// </summary>
 		public Guid GradeId { get; set; }	
+		/// <summary>
+		/// 状态
+		/// </summary>
+        public bool Status { get; set; }
 
 
 		///在线购课报名设置

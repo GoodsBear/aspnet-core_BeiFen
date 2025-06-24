@@ -54,7 +54,6 @@ public class EducationalDbContext :
     //家长
 	public DbSet<Parent> Parent { get; set; }
 	public DbSet<Course> Course { get; set; }
-	protected override void OnModelCreating(ModelBuilder builder)
 
     public DbSet<StaffInfo> staffInfos { get; set; }
     public DbSet<OrganizationModel> OrganizationModels { get; set; }

@@ -79,5 +79,30 @@ namespace Educational.Courses
 			};
 			return ApiResult<ApiPaging<List<CourseDto>>>.Success(ResultCode.Ok, paging);
 		}
+
+		/// <summary>
+		/// 批量修改课程状态
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		/// <exception cref="NotImplementedException"></exception>
+		public async Task<ApiResult> UpdateCourseStatus(List<Guid> guids, bool status)
+		{
+			Guid[] ids= guids.ToArray();
+			foreach(Guid id in ids)
+			{
+				var course = await _courseRepository.GetAsync(x=>x.Id==id);
+				if (status)
+				{
+					course.Status = false;
+				}
+				else
+				{
+					course.Status = true;
+				}
+			}
+			return ApiResult.Success(ResultCode.Ok);
+		}
 	}
 }

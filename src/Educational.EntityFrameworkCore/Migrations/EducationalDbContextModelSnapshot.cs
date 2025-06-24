@@ -397,7 +397,7 @@ namespace Educational.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppParent", (string)null);
-                });
+                }));
 
             modelBuilder.Entity("Educational.Students.Student", b =>
                 {
@@ -492,8 +492,6 @@ namespace Educational.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppStudent", (string)null);
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 

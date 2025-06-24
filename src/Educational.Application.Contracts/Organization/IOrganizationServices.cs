@@ -25,7 +25,7 @@ namespace Educational.Organization
         /// </summary>
         /// <param name="seach">当前页面，每页数量</param>
         /// <returns></returns>
-        Task<ApiResult<ApiPaging<LevelDto>>> GetListAsync([FromQuery] Seach search);
+        Task<ApiResult<ApiPaging<List<LevelDto>>>> GetListAsync([FromQuery] Seach search);
         /// <summary>
         /// 添加字段
         /// </summary>
