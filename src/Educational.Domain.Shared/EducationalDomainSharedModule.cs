@@ -28,6 +28,15 @@ public class EducationalDomainSharedModule : AbpModule
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        // 配置Redis客户端
+        var redisConfiguration = context.Services.GetConfiguration().GetSection("Redis");
+        var redisConnection = redisConfiguration["Connection"];
+
+        // 注册CSRedis客户端
+        context.Services.AddSingleton<CSRedisClient>(new CSRedisClient(redisConnection));
+
+        // 注册你的Redis帮助类
+        context.Services.AddTransient(typeof(RedisHelp<>));
 
         Configure<AbpVirtualFileSystemOptions>(options =>
         {
