@@ -1,8 +1,10 @@
-using Educational.Organization;
 using Educational.Announcements;
+using Educational.Datadictionary;
+using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.Staffs;
+using Educational.StaffTypes;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -11,7 +13,6 @@ using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Educational.StaffTypes;
 
 namespace Educational.EntityFrameworkCore;
 
@@ -52,6 +53,8 @@ public class EducationalDbContext :
     public DbSet<Role> Role { get; set; } //角色信息表
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限信息表
     public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
+    public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
+    public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -100,6 +103,36 @@ public class EducationalDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });
+
+        /// <summary>
+        /// 数据字典类型表
+        /// </summary>
+        builder.Entity<DictType>(b =>
+        {
+            b.ToTable("dict_type");
+            b.Property(x => x.Code).IsRequired().HasMaxLength(64);
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            b.Property(x => x.Description).HasMaxLength(255);
+            b.Property(x => x.IsEnabled).HasDefaultValue(true);
+        });
+
+        /// <summary>
+        /// 数据字典数据表
+        /// </summary>
+        builder.Entity<DictItem>(b =>
+        {
+            b.ToTable("dict_item");
+            b.Property(x => x.Code).IsRequired().HasMaxLength(64);
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            b.Property(x => x.SortOrder).HasDefaultValue(0);
+            b.Property(x => x.IsEnabled).HasDefaultValue(true);
+
+            b.HasOne(x => x.DictType)
+             .WithMany()
+             .HasForeignKey(x => x.DictTypeId)
+             .OnDelete(DeleteBehavior.Cascade);
+        });
+
         /* Configure your own tables/entities inside here */
 
         //builder.Entity<YourEntity>(b =>

@@ -1,11 +1,9 @@
 using AutoMapper;
-using AutoMapper;
-using Educational.Organization;
-using System.Collections.Generic;
-using System.Linq;
 using Educational.Announcements;
+using Educational.Datadictionary;
 using Educational.Dto.Announcements;
 using Educational.Dto.Positions;
+using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
@@ -50,6 +48,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
 
         CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
         CreateMap<Permissions, PermissionsDto>().ReverseMap();
+
+        CreateMap<DictTypeDto, DictType>().ReverseMap();
 
     }
 }
