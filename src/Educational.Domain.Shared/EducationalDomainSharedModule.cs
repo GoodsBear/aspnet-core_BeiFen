@@ -1,4 +1,7 @@
-﻿using Educational.Localization;
+﻿using CSRedis;
+using Educational.Localization;
+using Educational.Tools;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Localization;
@@ -25,6 +28,7 @@ public class EducationalDomainSharedModule : AbpModule
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+
         Configure<AbpVirtualFileSystemOptions>(options =>
         {
             options.FileSets.AddEmbedded<EducationalDomainSharedModule>();

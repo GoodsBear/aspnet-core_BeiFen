@@ -136,7 +136,7 @@ namespace Educational.Migrations
                                         b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");    、
+                        .HasColumnType("varchar(255)"); 
                                             b.Property<bool>("IsEnabled")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
