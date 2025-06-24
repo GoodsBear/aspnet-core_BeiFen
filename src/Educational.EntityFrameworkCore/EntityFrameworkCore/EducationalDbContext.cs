@@ -1,6 +1,7 @@
-﻿using Educational.Announcements;
+using Educational.Organization;
+using Educational.Announcements;
 using Educational.Positions;
-﻿using Educational.RBAC;
+using Educational.RBAC;
 using Educational.Staffs;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -43,6 +44,8 @@ public class EducationalDbContext :
     }
 
     public DbSet<StaffInfo> staffInfos { get; set; }
+    public DbSet<OrganizationModel> OrganizationModels { get; set; }
+    public DbSet<OrganizationLevel> OrganizationLevels { get; set; }
     public DbSet<Position> positions { get; set; }
     public DbSet<Announcement> announcements { get; set; }
     public DbSet<Role> Role { get; set; } //角色表
@@ -57,7 +60,7 @@ public class EducationalDbContext :
         builder.ConfigureSettingManagement();
         builder.ConfigureBackgroundJobs();
         builder.ConfigureAuditLogging();
-
+        
         builder.Entity<StaffInfo>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "StaffInfo", EducationalConsts.DbSchema);
@@ -65,6 +68,26 @@ public class EducationalDbContext :
             //...
         });
 
+
+        /// <summary>
+        /// 组织机构表
+        /// </summary>
+        builder.Entity<OrganizationModel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "OrganizationModel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
+
+        /// <summary>
+        /// 组织机构级别表
+        /// </summary>
+        builder.Entity<OrganizationLevel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "OrganizationLevel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
         /* Configure your own tables/entities inside here */
 
         //builder.Entity<YourEntity>(b =>

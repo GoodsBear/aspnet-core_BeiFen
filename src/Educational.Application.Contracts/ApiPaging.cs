@@ -1,4 +1,6 @@
-﻿using System;
+using Educational.Organization;
+using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace Educational
 {
+    /// <summary>
+    /// 分页
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ApiPaging<T>
     {
         public int TotleCount { get; set; }
@@ -18,3 +24,4 @@ namespace Educational
         public int PageSize { get; set; }
     }
 }
+

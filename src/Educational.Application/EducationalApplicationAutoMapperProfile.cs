@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Educational.Organization;
+using System.Collections.Generic;
+using System.Linq;
 using Educational.Announcements;
 using Educational.Dto.Announcements;
 using Educational.Dto.Positions;
@@ -14,6 +17,14 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
+        // 添加从 CreateUpdateOrganizationDto 到 OrganizationModel 的映射
+        CreateMap<CreateUpdateOrganizationDto, OrganizationModel>();
+        CreateMap<OrganizationModel, OrganizationDto>();
+        CreateMap<OrganizationModel, OrganizationTreeDto>().ReverseMap();
+        CreateMap<OrganizationLevel, XialaLevelDto>().ReverseMap();
+
+        CreateMap<XialaLevelDto, OrganizationLevel>().ReverseMap();
+        //   CreateMap<OrganizationLevel, XialaLevelDto>() .ForMember(dest => dest.LevelNameDto, opt => opt.MapFrom(src => src.Name));
         CreateMap<AddorUpdStaffDTO, StaffInfo>()
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
@@ -38,3 +49,4 @@ public class EducationalApplicationAutoMapperProfile : Profile
 
     }
 }
+
