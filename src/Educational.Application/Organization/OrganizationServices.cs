@@ -116,7 +116,7 @@ namespace Educational.Organization
         /// </summary>
         /// <param name="search">查询条件</param>
         /// <returns>分页结果</returns>
-        public async Task<ApiResult<ApiPaging<LevelDto>>> GetListAsync([FromQuery]Seach search)
+        public async Task<ApiResult<ApiPaging<List<LevelDto>>>> GetListAsync([FromQuery]Seach search)
         {
             try
             {
@@ -148,13 +148,13 @@ namespace Educational.Organization
                 var page = linq.PageResult(search.PageIndex, search.PageSize);
                 // 映射
                 //var organizationDto = ObjectMapper.Map<List<>,List<LevelDto>>(page);
-                var result = new ApiPaging<LevelDto>
+                var result = new ApiPaging<List<LevelDto>>
                 {
                     TotleCount = page.RowCount,
                     TotlePage = (int)Math.Ceiling(page.RowCount * 1.0 / search.PageSize),
                     Data = linq.ToList()
                 };
-                return ApiResult<ApiPaging<LevelDto>>.Success(ResultCode.Ok, result);
+                return ApiResult<ApiPaging<List<LevelDto>>>.Success(ResultCode.Ok, result);
             }
             catch (Exception ex)
             {

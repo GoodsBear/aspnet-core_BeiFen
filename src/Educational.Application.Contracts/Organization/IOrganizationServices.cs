@@ -25,7 +25,7 @@ namespace Educational.Organization
         /// </summary>
         /// <param name="seach">当前页面，每页数量</param>
         /// <returns></returns>
-        Task<ApiResult<ApiPaging<LevelDto>>> GetListAsync([FromQuery] Seach search);
+        Task<ApiResult<ApiPaging<List<LevelDto>>>> GetListAsync([FromQuery] Seach search);
         /// <summary>
         /// 添加字段
         /// </summary>
@@ -48,11 +48,15 @@ namespace Educational.Organization
         /// </summary>
         /// <param name="parentId"></param>
         /// <returns></returns>
-
+       
          Task<List<OrganizationTreeDto>> GetTreeAsync(Guid? parentId = null);
         /// <summary>
         /// 组织机构级别下拉表
         /// </summary> 
          Task<ApiResult<List<XialaLevelDto>>> GetLevelAsync();
+        /// <summary>
+        /// 组织机构级别添加
+        /// </summary> 
+        //wu
     }
 }
