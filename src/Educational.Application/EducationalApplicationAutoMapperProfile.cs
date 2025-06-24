@@ -13,6 +13,8 @@ using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
 using Educational.Staffs;
 using Educational.StaffTypes;
+using Educational.Classgrade;
+using Educational.Dto.Grades;
 
 namespace Educational;
 
@@ -46,11 +48,13 @@ public class EducationalApplicationAutoMapperProfile : Profile
         // 公告映射
         CreateMap<Announcement, AnnouncementDto>().ReverseMap();
         CreateMap<CreateUpdateAnnouncement, Announcement>().ReverseMap();
-
+        // 年级映射
+        CreateMap<Grade, GradeDto>().ReverseMap();
+        CreateMap<CreateUpdateGradeDto, Grade>().ReverseMap();
+        // 角色映射
         CreateMap<CreateUpdateRoleDto, Role>().ReverseMap();
         CreateMap<Role, RoleDto>().ReverseMap();
-
-
+        // 权限映射
         CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
         CreateMap<Permissions, PermissionsDto>().ReverseMap();
 
