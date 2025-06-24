@@ -85,7 +85,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 是否上架
 		/// </summary>
-		public bool IsOnlineSale { get; set; }
+		public bool IsOnlineSale { get; set; } = false;
 		/// <summary>
 		/// 课程封面图
 		/// </summary>

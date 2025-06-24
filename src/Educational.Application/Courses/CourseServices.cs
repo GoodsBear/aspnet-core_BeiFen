@@ -87,16 +87,29 @@ namespace Educational.Courses
 		/// <param name="status"></param>
 		/// <returns></returns>
 		/// <exception cref="NotImplementedException"></exception>
-		public async Task<ApiResult> UpdateCourseStatus(List<Guid> guids, bool status)
+		public async Task<ApiResult> UpdateCourseStatus(List<Guid> guids, bool status ,int type)
 		{
 			Guid[] ids= guids.ToArray();
 			foreach(var id in ids)
 			{
 				var course = await _courseRepository.FirstOrDefaultAsync(x=>x.Id==id);
-				course.Status = status;
-                await _courseRepository.UpdateAsync(course);
+				if (type>0)
+				{
+					//修改课程状态
+					course.Status = status;
+				}
+				else
+				{
+					//修改课程是否上架
+					course.IsOnlineSale = status;
+				}
+				await _courseRepository.UpdateAsync(course);
 			}
 			return ApiResult.Success(ResultCode.Ok);
 		}
+
+
+
+		
 	}
 }
