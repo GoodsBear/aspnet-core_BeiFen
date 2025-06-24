@@ -227,8 +227,7 @@ namespace Educational.Organization
         public async Task<ApiResult<List<XialaLevelDto>>> GetLevelAsync()
         { 
             try
-            {
-
+            { 
                 // 正确获取可查询接口
                 var queryable = await  _organizationLevelRepository.GetListAsync();
                 // 正确映射集合类型

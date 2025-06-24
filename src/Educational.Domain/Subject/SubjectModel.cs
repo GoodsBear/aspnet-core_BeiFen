@@ -9,9 +9,10 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.Subject
 {
-      /// <summary>
-      /// 科目管理实体类
-      /// </summary>
+    /// <summary>
+    /// 科目管理实体类
+    /// </summary>
+    [Table("appsubjectmodel")]
     public class SubjectModel : FullAuditedAggregateRoot<Guid>
     {
 
@@ -32,7 +33,6 @@ namespace Educational.Subject
         /// 科目详细说明
         /// </summary>
         [MaxLength(200)]
-        public string? SubjectDescription { get; set; }
-
+        public string? SubjectDescription { get; set; } 
     }
 }

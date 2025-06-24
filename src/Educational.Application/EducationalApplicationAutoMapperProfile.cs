@@ -1,16 +1,18 @@
 using AutoMapper;
 using AutoMapper;
-using Educational.Organization;
-using System.Collections.Generic;
-using System.Linq;
+using AutoMapper.Internal.Mappers;
 using Educational.Announcements;
 using Educational.Dto.Announcements;
 using Educational.Dto.Positions;
+using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
 using Educational.Staffs;
+using Educational.Subject;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Educational;
 
@@ -49,7 +51,10 @@ public class EducationalApplicationAutoMapperProfile : Profile
          
         CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
         CreateMap<Permissions, PermissionsDto>().ReverseMap();
-
+        //科目管理 
+        CreateMap<UpdateSubjectDto, SubjectModel>().ReverseMap();
+        CreateMap<SubjectModel, SubjectDto>().ReverseMap();
+        CreateMap<SubjectModel, XialaSubjectDto>().ReverseMap();
     }
 }
 

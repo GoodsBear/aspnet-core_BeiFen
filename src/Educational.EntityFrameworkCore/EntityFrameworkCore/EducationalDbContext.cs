@@ -91,13 +91,12 @@ public class EducationalDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });
-
         /// <summary>
         ///  科目管理表
         /// </summary>   
         builder.Entity<SubjectModel>(b =>
         {
-            b.ToTable(EducationalConsts.DbTablePrefix + "SubjectModels", EducationalConsts.DbSchema);
+            b.ToTable(EducationalConsts.DbTablePrefix + "SubjectModel", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });
