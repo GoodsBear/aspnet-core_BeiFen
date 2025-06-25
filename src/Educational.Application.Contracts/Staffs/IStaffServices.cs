@@ -29,10 +29,10 @@ namespace Educational.Staffs
         Task<ApiResult> UpdateStaffPassword(Guid staffId, string newPassword);
 
         /// <summary>删除员工</summary>
-        Task<ApiResult> DeleteStaff(Guid staffId);
+        Task<ApiResult> DeleteStaff(Guid[] Ids);
 
         /// <summary>修改员工状态</summary>
-        Task<ApiResult> UpdateStaffStatus(Guid staffId, StaffStatus status);
+        Task<ApiResult> UpdateStaffStatus(Guid[] Ids, StaffStatus status);
 
         /// <summary>导出员工信息</summary>
         Task<ApiResult<ExportResult>> GetExportStaffList();

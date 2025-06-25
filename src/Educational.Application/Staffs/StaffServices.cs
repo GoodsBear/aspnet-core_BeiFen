@@ -216,24 +216,33 @@ namespace Educational.Staffs
         /// <param name="staffId">员工 ID</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
         [HttpDelete]
-        public async Task<ApiResult> DeleteStaff(Guid staffId)
+        public async Task<ApiResult> DeleteStaff([FromQuery]Guid[] Ids)
         {
-            try
-            {
-                // 根据员工ID查出员工信息
-                var staffinfo = await basicRepository.FindAsync(staffId);
-                if (staffinfo == null)
+                try
                 {
-                    return ApiResult.Fail(ResultCode.Fail, "员工不存在");
+                    // 1. 参数验证
+                    if (Ids == null || Ids.Length == 0)
+                    {
+                        return ApiResult.Fail(ResultCode.Fail, "请选择要删除的员工");
+                    }
+
+                    // 2. 批量查询员工信息
+                    var staffList = await basicRepository.GetListAsync(u => Ids.Contains(u.Id));
+
+                    // 3. 验证是否全部找到
+                    if (staffList.Count != Ids.Length)
+                    {
+                        var foundIds = staffList.Select(s => s.Id).ToArray();
+                        var missingIds = Ids.Except(foundIds).ToArray();
+                        return ApiResult.Fail(ResultCode.Fail, $"以下员工不存在：{string.Join(",", missingIds)}");
+                    }
+
+                    // 4. 批量删除
+                    await basicRepository.DeleteManyAsync(staffList);
+
+                    return ApiResult.Success(ResultCode.Ok);
                 }
-
-                // 从数据库中删除
-                await basicRepository.DeleteAsync(staffinfo);
-
-                // 返回操作成功
-                return ApiResult.Success(ResultCode.Ok);
-            }
-            catch (Exception)
+                catch (Exception)
             {
                 // 获取异常（可以考虑在此处记录日志）
                 throw; // 暂时直接抛出异常，可以扩展为日志记录或自定义错误返回
@@ -247,22 +256,33 @@ namespace Educational.Staffs
         /// <param name="status">要修改成的员工状态</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
         [HttpPut]
-        public async Task<ApiResult> UpdateStaffStatus(Guid staffId, StaffStatus status)
+        public async Task<ApiResult> UpdateStaffStatus(Guid[] Ids, StaffStatus status)
         {
             try
             {
-                // 根据员工ID查出员工信息
-                var staffinfo = await basicRepository.FindAsync(staffId);
-                if (staffinfo == null)
+                // 1. 参数验证
+                if (Ids == null || Ids.Length == 0)
                 {
-                    return ApiResult.Fail(ResultCode.Fail, "员工不存在");
+                    return ApiResult.Fail(ResultCode.Fail, "请选择要修改的员工");
                 }
 
-                // 修改员工状态
-                staffinfo.Status = status;
+                // 2. 批量查询员工信息
+                var staffList = await basicRepository.GetListAsync(u => Ids.Contains(u.Id));
 
-                // 更新到数据库
-                await basicRepository.UpdateAsync(staffinfo);
+                // 3. 验证是否全部找到
+                if (staffList.Count != Ids.Length)
+                {
+                    var foundIds = staffList.Select(s => s.Id).ToArray();
+                    var missingIds = Ids.Except(foundIds).ToArray();
+                    return ApiResult.Fail(ResultCode.Fail, $"以下员工不存在：{string.Join(",", missingIds)}");
+                }
+
+                // 4. 批量更新状态
+                foreach (var staff in staffList)
+                {
+                    staff.Status = status;
+                    await basicRepository.UpdateAsync(staff);
+                }
 
                 // 返回操作成功
                 return ApiResult.Success(ResultCode.Ok);
