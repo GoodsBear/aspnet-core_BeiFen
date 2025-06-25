@@ -1,3 +1,6 @@
+﻿using CSRedis;
+using Educational.StaffTypes;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.Abp.SettingManagement;
@@ -9,6 +12,7 @@ namespace Educational;
     typeof(EducationalDomainModule),
     typeof(EducationalApplicationContractsModule),
     typeof(AbpSettingManagementApplicationModule),
+    typeof(EducationalDomainSharedModule)
     typeof(AbpSwashbuckleModule)
     )]
 [DependsOn(typeof(AbpSwashbuckleModule))]

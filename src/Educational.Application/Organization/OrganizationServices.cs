@@ -162,6 +162,7 @@ namespace Educational.Organization
                 throw;
             }
         } 
+        
 		/// <summary>
 		/// 更新组织机构
 		/// </summary>

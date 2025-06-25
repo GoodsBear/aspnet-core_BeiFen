@@ -16,7 +16,7 @@ namespace Educational.Staffs
         Task<ApiResult<ShowStaffDTO>> AddStaff(AddorUpdStaffDTO addorUpdStaffDTO);
 
         /// <summary>员工登录</summary>
-        Task<ApiResult<StaffInfo>> Login(LoginDTO loginDTO);
+        Task<ApiResult<LoginReturnDTO>> Login(LoginDTO loginDTO);
 
         /// <summary>编辑员工</summary>
         Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, AddorUpdStaffDTO addorUpdStaffDTO);

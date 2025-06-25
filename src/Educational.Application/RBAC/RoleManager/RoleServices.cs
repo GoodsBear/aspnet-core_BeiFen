@@ -24,7 +24,7 @@ namespace Educational.RBAC.RoleManager
             this.logger = logger;
         }
         /// <summary>
-        ///  添加角色
+        /// 添加角色
         /// </summary>
         /// <param name="createUpdateRole"></param>
         /// <returns></returns>
@@ -90,7 +90,7 @@ namespace Educational.RBAC.RoleManager
             }
         }
         /// <summary>
-        /// 分页查询角色
+        /// 角色列表
         /// </summary>
         /// <param name="searchRoleDto"></param>
         /// <returns></returns>

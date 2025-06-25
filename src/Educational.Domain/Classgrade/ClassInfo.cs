@@ -11,7 +11,7 @@ namespace Educational.Classgrade
 	/// <summary>
 	/// 班级
 	/// </summary>
-	public class Class:FullAuditedAggregateRoot<Guid>
+	public class ClassInfo:FullAuditedAggregateRoot<Guid>
 	{
 		/// <summary>
 		/// 班级名称

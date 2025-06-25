@@ -1,15 +1,17 @@
 using Educational.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Text;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc;
@@ -20,7 +22,6 @@ using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.Modularity;
-using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
@@ -54,17 +55,39 @@ public class EducationalHttpApiHostModule : AbpModule
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        // ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 
+        ConfigureAuthentication(context, configuration);
         ConfigureAuthentication(context);
         ConfigureBundles();
         ConfigureUrls(configuration);
         ConfigureConventionalControllers();
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);
-        ConfigureSwaggerServices(context, configuration);
+        ConfigureSwaggerServices(context);
     }
+
+    private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
+    {
+        // ï¿½ï¿½ï¿½ï¿½JWT Bearerï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½
+        context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>{
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = configuration["Jwt:Issuer"], // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Ò»ï¿½ï¿½
+                ValidateAudience = true,
+                ValidAudience = configuration["Jwt:Audience"], // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Ò»ï¿½ï¿½
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(configuration["Jwt:SecurityKey"])) // ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+            };
+        });
+    }
+
+
+
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)
     {
@@ -133,24 +156,19 @@ public class EducationalHttpApiHostModule : AbpModule
         });
     }
 
-    private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
+    private void ConfigureSwaggerServices(ServiceConfigurationContext context)
     {
-        context.Services.AddAbpSwaggerGenWithOAuth(
-            configuration["AuthServer:Authority"]!,
-            new Dictionary<string, string>
-            {
-                {"Educational", "Educational API"}
-            },
+        context.Services.AddSwaggerGen(
             options =>
             {
-                options.SwaggerDoc("¹«¸æ", new OpenApiInfo { Title = "¹«¸æ¹ÜÀí", Version = "v1" });
-                options.SwaggerDoc("¿Î³Ì", new OpenApiInfo { Title = "¿Î³Ì¹ÜÀí", Version = "v1" });
-                options.SwaggerDoc("×éÖ¯»ú¹¹", new OpenApiInfo { Title = "×éÖ¯»ú¹¹¹ÜÀí", Version = "v1" });
-                options.SwaggerDoc("Ö°Î»", new OpenApiInfo { Title = "Ö°Î»¹ÜÀí", Version = "v1" });
-                options.SwaggerDoc("È¨ÏÞ", new OpenApiInfo { Title = "È¨ÏÞ¹ÜÀí", Version = "v1" });
-                options.SwaggerDoc("½ÇÉ«", new OpenApiInfo { Title = "½ÇÉ«¹ÜÀí", Version = "v1" });
-                options.SwaggerDoc("³ÉÔ±", new OpenApiInfo { Title = "³ÉÔ±¹ÜÀí", Version = "v1" });
-                options.SwaggerDoc("³ÉÔ±·ÖÅä½ÇÉ«", new OpenApiInfo { Title = "³ÉÔ±·ÖÅä½ÇÉ«¹ÜÀí", Version = "v1" });
+                options.SwaggerDoc("ï¿½ï¿½ï¿½ï¿½", new OpenApiInfo { Title = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Version = "v1" });
+                options.SwaggerDoc("ï¿½Î³ï¿½", new OpenApiInfo { Title = "ï¿½Î³Ì¹ï¿½ï¿½ï¿½", Version = "v1" });
+                options.SwaggerDoc("ï¿½ï¿½Ö¯ï¿½ï¿½ï¿½ï¿½", new OpenApiInfo { Title = "ï¿½ï¿½Ö¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Version = "v1" });
+                options.SwaggerDoc("Ö°Î»", new OpenApiInfo { Title = "Ö°Î»ï¿½ï¿½ï¿½ï¿½", Version = "v1" });
+                options.SwaggerDoc("È¨ï¿½ï¿½", new OpenApiInfo { Title = "È¨ï¿½Þ¹ï¿½ï¿½ï¿½", Version = "v1" });
+                options.SwaggerDoc("ï¿½ï¿½É«", new OpenApiInfo { Title = "ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½", Version = "v1" });
+                options.SwaggerDoc("ï¿½ï¿½Ô±", new OpenApiInfo { Title = "ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½", Version = "v1" });
+                options.SwaggerDoc("ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½É«", new OpenApiInfo { Title = "ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½", Version = "v1" });
 
                 options.DocInclusionPredicate((doc, desc) =>
                 {
@@ -163,7 +181,42 @@ public class EducationalHttpApiHostModule : AbpModule
 
                 options.HideAbpEndpoints();
                 options.CustomSchemaIds(type => type.FullName);
-            });
+
+                // ï¿½æ»»Ô­ï¿½ï¿½ï¿½ï¿½OAuthï¿½ï¿½ï¿½ï¿½ÎªBearerï¿½ï¿½ï¿½ï¿½
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½JWT Tokenï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½'Bearer 'Ç°×ºï¿½ï¿½",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
+                });
+            }
+        );
+        
+         context.Services.AddAbpSwaggerGenWithOAuth(
+            configuration["AuthServer:Authority"]!,
+            new Dictionary<string, string>
+            {
+                {"Educational", "Educational API"}
+            },
+        )
     }
 
     private void ConfigureCors(ServiceConfigurationContext context, IConfiguration configuration)
@@ -215,7 +268,7 @@ public class EducationalHttpApiHostModule : AbpModule
         //    app.UseMultiTenancy();
         //}
 
-        //Ñ©»¨Id
+        //Ñ©ï¿½ï¿½Id
         YitIdHelper.SetIdGenerator(new IdGeneratorOptions(1));
 
         app.UseUnitOfWork();
@@ -225,14 +278,14 @@ public class EducationalHttpApiHostModule : AbpModule
         app.UseSwagger();
         app.UseAbpSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("/swagger/¹«¸æ/swagger.json", "¹«¸æ¹ÜÀí v1");
-            c.SwaggerEndpoint("/swagger/¿Î³Ì/swagger.json", "¿Î³Ì¹ÜÀí v1");
-            c.SwaggerEndpoint("/swagger/×éÖ¯»ú¹¹/swagger.json", "×éÖ¯»ú¹¹¹ÜÀí v1");
-            c.SwaggerEndpoint("/swagger/Ö°Î»/swagger.json", "Ö°Î»¹ÜÀí v1");
-            c.SwaggerEndpoint("/swagger/È¨ÏÞ/swagger.json", "È¨ÏÞ¹ÜÀí v1");
-            c.SwaggerEndpoint("/swagger/½ÇÉ«/swagger.json", "½ÇÉ«¹ÜÀí v1");
-            c.SwaggerEndpoint("/swagger/³ÉÔ±/swagger.json", "³ÉÔ±¹ÜÀí v1");
-            c.SwaggerEndpoint("/swagger/³ÉÔ±·ÖÅä½ÇÉ«/swagger.json", "³ÉÔ±·ÖÅä½ÇÉ«¹ÜÀí v1");
+            c.SwaggerEndpoint("/swagger/ï¿½ï¿½ï¿½ï¿½/swagger.json", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ v1");
+            c.SwaggerEndpoint("/swagger/ï¿½Î³ï¿½/swagger.json", "ï¿½Î³Ì¹ï¿½ï¿½ï¿½ v1");
+            c.SwaggerEndpoint("/swagger/ï¿½ï¿½Ö¯ï¿½ï¿½ï¿½ï¿½/swagger.json", "ï¿½ï¿½Ö¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ v1");
+            c.SwaggerEndpoint("/swagger/Ö°Î»/swagger.json", "Ö°Î»ï¿½ï¿½ï¿½ï¿½ v1");
+            c.SwaggerEndpoint("/swagger/È¨ï¿½ï¿½/swagger.json", "È¨ï¿½Þ¹ï¿½ï¿½ï¿½ v1");
+            c.SwaggerEndpoint("/swagger/ï¿½ï¿½É«/swagger.json", "ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ v1");
+            c.SwaggerEndpoint("/swagger/ï¿½ï¿½Ô±/swagger.json", "ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ v1");
+            c.SwaggerEndpoint("/swagger/ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½É«/swagger.json", "ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ v1");
 
             var configuration = context.ServiceProvider.GetRequiredService<IConfiguration>();
             c.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);
