@@ -72,19 +72,23 @@ public class EducationalHttpApiHostModule : AbpModule
 
     private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
     {
-        // ����JWT Bearer��֤����
-        context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>{
-            options.TokenValidationParameters = new TokenValidationParameters
+        // 配置JWT Bearer认证
+        context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
-                ValidateIssuer = true,
-                ValidIssuer = configuration["Jwt:Issuer"], // ����������ʱһ��
-                ValidateAudience = true,
-                ValidAudience = configuration["Jwt:Audience"], // ����������ʱһ��
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(configuration["Jwt:SecurityKey"])) // ��Կ����һ��
-            };
-        });
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,                     // 验证签发方
+                    ValidIssuer = configuration["Jwt:Issuer"], // 合法签发方(取自配置)
+
+                    ValidateAudience = true,                   // 验证接收方
+                    ValidAudience = configuration["Jwt:Audience"], // 合法接收方(取自配置)
+
+                    ValidateIssuerSigningKey = true,           // 验证签名密钥
+                    IssuerSigningKey = new SymmetricSecurityKey( // 签名密钥(取自配置)
+                        Encoding.UTF8.GetBytes(configuration["Jwt:SecurityKey"]))
+                };
+            });
     }
 
 
@@ -182,15 +186,15 @@ public class EducationalHttpApiHostModule : AbpModule
                 options.HideAbpEndpoints();
                 options.CustomSchemaIds(type => type.FullName);
 
-                // �滻ԭ����OAuth����ΪBearer����
+                // JWT Bearer认证配置
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = "ֱ������JWT Token������Ҫ��'Bearer 'ǰ׺��",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT"
+                    Description = "JWT认证（直接输入Token，无需加'Bearer '前缀）", // 简化的中文描述
+                    Name = "Authorization",        // HTTP头部字段名
+                    In = ParameterLocation.Header, // Token位置（请求头）
+                    Type = SecuritySchemeType.Http,// 认证类型
+                    Scheme = "bearer",            // 认证方案
+                    BearerFormat = "JWT"          // Token格式
                 });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
