@@ -12,7 +12,7 @@ namespace Educational;
     typeof(EducationalDomainModule),
     typeof(EducationalApplicationContractsModule),
     typeof(AbpSettingManagementApplicationModule),
-    typeof(EducationalDomainSharedModule)
+    typeof(EducationalDomainSharedModule),
     typeof(AbpSwashbuckleModule)
     )]
 [DependsOn(typeof(AbpSwashbuckleModule))]

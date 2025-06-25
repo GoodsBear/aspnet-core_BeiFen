@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -161,13 +162,13 @@ public class EducationalHttpApiHostModule : AbpModule
         context.Services.AddSwaggerGen(
             options =>
             {
-                options.SwaggerDoc("����", new OpenApiInfo { Title = "�������", Version = "v1" });
-                options.SwaggerDoc("�γ�", new OpenApiInfo { Title = "�γ̹���", Version = "v1" });
-                options.SwaggerDoc("��֯����", new OpenApiInfo { Title = "��֯��������", Version = "v1" });
-                options.SwaggerDoc("ְλ", new OpenApiInfo { Title = "ְλ����", Version = "v1" });
-                options.SwaggerDoc("Ȩ��", new OpenApiInfo { Title = "Ȩ�޹���", Version = "v1" });
-                options.SwaggerDoc("��ɫ", new OpenApiInfo { Title = "��ɫ����", Version = "v1" });
-                options.SwaggerDoc("��Ա", new OpenApiInfo { Title = "��Ա����", Version = "v1" });
+                options.SwaggerDoc("公告", new OpenApiInfo { Title = "公告管理", Version = "v1" });
+                options.SwaggerDoc("课程", new OpenApiInfo { Title = "课程管理", Version = "v1" });
+                options.SwaggerDoc("组织机构", new OpenApiInfo { Title = "组织机构管理", Version = "v1" });
+                options.SwaggerDoc("职位", new OpenApiInfo { Title = "职位管理", Version = "v1" });
+                options.SwaggerDoc("权限", new OpenApiInfo { Title = "权限管理", Version = "v1" });
+                options.SwaggerDoc("角色", new OpenApiInfo { Title = "角色管理", Version = "v1" });
+                options.SwaggerDoc("成员", new OpenApiInfo { Title = "成员管理", Version = "v1" });
 
                 options.DocInclusionPredicate((doc, desc) =>
                 {
@@ -208,18 +209,11 @@ public class EducationalHttpApiHostModule : AbpModule
                 });
             }
         );
-        
-         context.Services.AddAbpSwaggerGenWithOAuth(
-            configuration["AuthServer:Authority"]!,
-            new Dictionary<string, string>
-            {
-                {"Educational", "Educational API"}
-            },
-        )
     }
 
     private void ConfigureCors(ServiceConfigurationContext context, IConfiguration configuration)
     {
+
         context.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(builder =>
@@ -277,13 +271,13 @@ public class EducationalHttpApiHostModule : AbpModule
         app.UseSwagger();
         app.UseAbpSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("/swagger/����/swagger.json", "������� v1");
-            c.SwaggerEndpoint("/swagger/�γ�/swagger.json", "�γ̹��� v1");
-            c.SwaggerEndpoint("/swagger/��֯����/swagger.json", "��֯�������� v1");
-            c.SwaggerEndpoint("/swagger/ְλ/swagger.json", "ְλ���� v1");
-            c.SwaggerEndpoint("/swagger/Ȩ��/swagger.json", "Ȩ�޹��� v1");
-            c.SwaggerEndpoint("/swagger/��ɫ/swagger.json", "��ɫ���� v1");
-            c.SwaggerEndpoint("/swagger/��Ա/swagger.json", "��Ա���� v1");
+            c.SwaggerEndpoint("/swagger/公告/swagger.json", "公告管理 v1");
+            c.SwaggerEndpoint("/swagger/课程/swagger.json", "课程管理 v1");
+            c.SwaggerEndpoint("/swagger/组织机构/swagger.json", "组织机构管理 v1");
+            c.SwaggerEndpoint("/swagger/职位/swagger.json", "职位管理 v1");
+            c.SwaggerEndpoint("/swagger/权限/swagger.json", "权限管理 v1");
+            c.SwaggerEndpoint("/swagger/角色/swagger.json", "角色管理 v1");
+            c.SwaggerEndpoint("/swagger/成员/swagger.json", "成员管理 v1");
 
             var configuration = context.ServiceProvider.GetRequiredService<IConfiguration>();
             c.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);
