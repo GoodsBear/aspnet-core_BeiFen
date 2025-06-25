@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Volo.Abp.Swashbuckle" Version="9.2.0" />
     <ProjectReference Include="..\Educational.Domain\Educational.Domain.csproj" />
     <ProjectReference Include="..\Educational.Application.Contracts\Educational.Application.Contracts.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />

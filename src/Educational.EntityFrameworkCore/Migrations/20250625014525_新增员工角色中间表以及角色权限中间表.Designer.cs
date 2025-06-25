@@ -4,6 +4,7 @@ using Educational.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    partial class EducationalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250625014525_新增员工角色中间表以及角色权限中间表")]
+    partial class 新增员工角色中间表以及角色权限中间表
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,7 +181,7 @@ namespace Educational.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppClassInfo", (string)null);
+                    b.ToTable("AppClass", (string)null);
                 });
 
             modelBuilder.Entity("Educational.Classgrade.Grade", b =>
@@ -209,7 +212,6 @@ namespace Educational.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
-
                     b.Property<DateTime?>("EnrollYear")
                         .HasColumnType("datetime(6)");
 
@@ -229,8 +231,6 @@ namespace Educational.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
-
-
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
@@ -239,7 +239,6 @@ namespace Educational.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
-                    
                     b.Property<string>("Remark")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -257,7 +256,7 @@ namespace Educational.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid?>("CampusId")
+                    b.Property<Guid>("CampusId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("ClassQrCode")
@@ -299,7 +298,6 @@ namespace Educational.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
-
                     b.Property<string>("DetailImageList")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -321,7 +319,6 @@ namespace Educational.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
-
                     b.Property<bool>("IsOnlineSale")
                         .HasColumnType("tinyint(1)");
 
@@ -338,7 +335,6 @@ namespace Educational.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
-
 
                     b.Property<decimal>("LessonCut")
                         .HasColumnType("decimal(65,30)");
@@ -368,14 +364,14 @@ namespace Educational.Migrations
                     b.Property<DateTime?>("StopSaleDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid?>("SubjectId")
+                    b.Property<Guid>("SubjectId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("TeacherRemark")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid?>("TopicId")
+                    b.Property<Guid>("TopicId")
                         .HasColumnType("char(36)");
 
                     b.Property<decimal>("TotalPrice")
@@ -1837,17 +1833,6 @@ namespace Educational.Migrations
                         .IsUnique();
 
                     b.ToTable("AbpSettingDefinitions", (string)null);
-                });
-
-            modelBuilder.Entity("Educational.Datadictionary.DictItem", b =>
-                {
-                    b.HasOne("Educational.Datadictionary.DictType", "DictType")
-                        .WithMany()
-                        .HasForeignKey("DictTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DictType");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>
