@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -251,7 +252,7 @@ namespace Educational.Organization
         /// <param name="parentId"></param>
         /// <returns></returns>
 
-        public async Task<List<OrganizationTreeDto>> GetTreeAsync(Guid? parentId = null)
+        public async Task<List<OrganizationTreeDto>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")]Guid parentId)
         {
             var allOrganizations = await _organizationRepository.GetListAsync();
 

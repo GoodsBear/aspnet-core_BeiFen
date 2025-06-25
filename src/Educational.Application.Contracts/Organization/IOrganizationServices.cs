@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
@@ -49,7 +50,7 @@ namespace Educational.Organization
         /// <param name="parentId"></param>
         /// <returns></returns>
        
-         Task<List<OrganizationTreeDto>> GetTreeAsync(Guid? parentId = null);
+         Task<List<OrganizationTreeDto>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId);
         /// <summary>
         /// 组织机构级别下拉表
         /// </summary> 
