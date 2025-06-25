@@ -1,10 +1,12 @@
 ﻿using Educational.Enmu;
+using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.StaffTypes;
 using Educational.Tools;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -30,14 +32,16 @@ namespace Educational.Staffs
         private readonly IRepository<Position, Guid> positionRep;
         private readonly IRepository<Role, Guid> roleRep;
         private readonly IRepository<StaffTypeInfo, Guid> typeRep;
+        private readonly IRepository<OrganizationModel, Guid> organizationRepository;
 
-        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep)
+        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep,IRepository<OrganizationModel, Guid> organizationRepository)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
             this.positionRep = positionRep;
             this.roleRep = roleRep;
             this.typeRep = typeRep;
+            this.organizationRepository = organizationRepository;
         }
         /// <summary>分页查询员工信息</summary>
         /// <param name="search">查询条件</param>
@@ -91,6 +95,51 @@ namespace Educational.Staffs
             {
                 Logger.LogError(ex, "员工信息获取失败");
                 throw; // 暂时抛出，可拓展成统一异常处理
+            }
+        }
+
+        /// <summary>
+        /// 批量设置用户所属机构
+        /// </summary>
+        /// <param name="userIds">要设置的用户ID集合</param>
+        /// <param name="organizationIds">要设置的机构ID集合</param>
+        /// <returns>操作结果</returns>
+        public async Task<ApiResult> UpdateStaffOranization([FromQuery]Guid[] Ids, Guid[] organizationIds)
+        {
+            try
+            {
+                // 1. 验证输入参数
+                if (Ids == null || Ids.Length == 0)
+                    return ApiResult.Fail(ResultCode.Fail, "请选择要设置的用户");
+
+                if (organizationIds == null || organizationIds.Length == 0)
+                    return ApiResult.Fail(ResultCode.Fail, "请选择要设置的机构");
+
+                // 2. 获取所有机构名称
+                var orgNames = await (await organizationRepository.GetQueryableAsync())
+                    .Where(s => organizationIds.Contains(s.Id))
+                    .Select(s => s.Name) 
+                    .ToListAsync();
+
+                foreach (var item in Ids)
+                {
+                    var staffinfo = await basicRepository.FirstOrDefaultAsync(u => u.Id == item);
+                    if (staffinfo.Organization != null)
+                    {
+                        // 清空原有机构信息
+                        staffinfo.Organization = string.Empty;
+                        // 设置新的机构信息
+                        staffinfo.Organization = string.Join(",", orgNames);
+                        await basicRepository.UpdateAsync(staffinfo);
+                    }
+                    staffinfo.Organization = string.Join(",", orgNames);
+                    await basicRepository.UpdateAsync(staffinfo);
+                }
+                return ApiResult.Success(ResultCode.Ok);
+            }
+            catch (Exception ex)
+            {
+                return ApiResult.Fail(ResultCode.Fail, "批量设置机构失败");
             }
         }
 
