@@ -48,17 +48,13 @@ public class EducationalDbContext :
     {
 
     }
-    //学生
-	public DbSet<Student> Student { get; set; }
-    //班级
-	public DbSet<ClassInfo> Class { get; set; }
-    //年级
-	public DbSet<Grade> Grade { get; set; }
-    //家长
-	public DbSet<Parent> Parent { get; set; }
-    //课程
-    public DbSet<Course> Course { get; set; }
-
+	public DbSet<Student> Student { get; set; }  //学生
+	public DbSet<ClassInfo> Class { get; set; }//班级
+    public DbSet<Grade> Grade { get; set; }//年级
+    public DbSet<Parent> Parent { get; set; }//家长
+    public DbSet<Course> Course { get; set; }//课程
+    public DbSet<StafRole> StaffRole { get; set; }// 员工角色表
+    public DbSet<RolePermission> RolePermissions { get; set; }  // 角色权限表
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
     public DbSet<OrganizationModel> OrganizationModels { get; set; }//组织信息表
     public DbSet<OrganizationLevel> OrganizationLevels { get; set; }//组织级别表
