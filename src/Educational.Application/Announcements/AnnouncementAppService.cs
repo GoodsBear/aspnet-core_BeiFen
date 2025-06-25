@@ -15,6 +15,7 @@ using Volo.Abp.ObjectMapping;
 
 namespace Educational.Announcements
 {
+    [ApiExplorerSettings(GroupName ="公告")]
     public class AnnouncementAppService : ApplicationService, IAnnouncementAppService
     {
         ILogger<AnnouncementAppService> logger;

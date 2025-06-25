@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.Abp.SettingManagement;
+using Volo.Abp.Swashbuckle;
 
 namespace Educational;
 
@@ -12,8 +13,7 @@ namespace Educational;
     typeof(EducationalApplicationContractsModule),
     typeof(AbpSettingManagementApplicationModule),
     typeof(EducationalDomainSharedModule)
-    )]
-public class EducationalApplicationModule : AbpModule
+[DependsOn(typeof(AbpSwashbuckleModule))]
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

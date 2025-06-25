@@ -17,6 +17,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Educational.Staffs
 {
+    [ApiExplorerSettings(GroupName = "成员")]
     public class StaffServices : ApplicationService, IStaffServices
     {
         private readonly IRepository<StaffInfo,Guid> basicRepository;

@@ -55,6 +55,12 @@ public class EducationalDbContext :
     public DbSet<Course> Course { get; set; }//课程
     public DbSet<StafRole> StaffRole { get; set; }// 员工角色表
     public DbSet<RolePermission> RolePermissions { get; set; }  // 角色权限表
+   
+	public DbSet<Student> Student { get; set; } //学生
+	public DbSet<Class> Class { get; set; }  //班级
+    public DbSet<Grade> Grade { get; set; }   //年级
+    public DbSet<Parent> Parent { get; set; }//家长
+    public DbSet<Course> Course { get; set; } //课程信息表
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
     public DbSet<OrganizationModel> OrganizationModels { get; set; }//组织信息表
     public DbSet<OrganizationLevel> OrganizationLevels { get; set; }//组织级别表
@@ -66,6 +72,9 @@ public class EducationalDbContext :
     public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
     public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
 
+    public DbSet<Educational.SubjectModel.SubjectModel> SubjectModel { get; set; }//科目表
+    public DbSet<Educational.Materials.Material> Material { get; set; }//物料表
+    public DbSet<Educational.Materials.MaterialRecords> MaterialRecords { get; set; }//物料出入库记录表
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
