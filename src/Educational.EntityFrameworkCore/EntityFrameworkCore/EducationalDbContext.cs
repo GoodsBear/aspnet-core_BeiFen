@@ -1,4 +1,4 @@
-﻿using Educational.Classgrade;
+using Educational.Classgrade;
 using Educational.Courses;
 using Educational.Students;
 using Educational.Organization;
@@ -9,6 +9,7 @@ using Educational.Positions;
 using Educational.RBAC;
 using Educational.Staffs;
 using Educational.StaffTypes;
+using Educational.Subject;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -48,16 +49,22 @@ public class EducationalDbContext :
     {
 
     }
-    //学生
-	public DbSet<Student> Student { get; set; }
-    //班级
-	public DbSet<ClassInfo> Class { get; set; }
-    //年级
-	public DbSet<Grade> Grade { get; set; }
-    //家长
-	public DbSet<Parent> Parent { get; set; }
-    //课程
-    public DbSet<Course> Course { get; set; }
+
+    //public DbSet<OrganizationModel> OrganizationModels { get; set; }
+    //public DbSet<OrganizationLevel> OrganizationLevels { get; set; }
+    //public DbSet<Position> positions { get; set; }
+    //public DbSet<Announcement> announcements { get; set; }
+    //public DbSet<Role> Role { get; set; } //角色表
+    //public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限表
+
+    //public DbSet<> SubjectModel { get; set; } //角色表
+
+
+    public DbSet<Student> Student { get; set; } //学生
+	public DbSet<Class> Class { get; set; }  //班级
+    public DbSet<Grade> Grade { get; set; }   //年级
+    public DbSet<Parent> Parent { get; set; }//家长
+    public DbSet<Course> Course { get; set; } //课程信息表
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
     public DbSet<StaffRole> StaffRole { get; set; } //员工角色中间表
     public DbSet<RolePermission>RolePermision { get; set; } //角色权限中间表
@@ -111,6 +118,16 @@ public class EducationalDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });
+        /// <summary>
+        ///  科目管理表
+        /// </summary>   
+        builder.Entity<Educational.SubjectModel.SubjectModel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "SubjectModel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
+    
 
         /// <summary>
         /// 人员类型信息表
