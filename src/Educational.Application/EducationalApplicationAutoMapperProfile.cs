@@ -36,7 +36,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
         CreateMap<ShowStaffDTO, StaffInfo>().ReverseMap();
-
+        CreateMap<StaffInfo, LoginReturnDTO>().ReverseMap();
         CreateMap<StaffTypeInfo, ShowStaffTypeDTO>().ReverseMap();
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
