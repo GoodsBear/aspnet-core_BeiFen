@@ -49,19 +49,8 @@ public class EducationalDbContext :
     {
 
     }
-
-    //public DbSet<OrganizationModel> OrganizationModels { get; set; }
-    //public DbSet<OrganizationLevel> OrganizationLevels { get; set; }
-    //public DbSet<Position> positions { get; set; }
-    //public DbSet<Announcement> announcements { get; set; }
-    //public DbSet<Role> Role { get; set; } //角色表
-    //public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限表
-
-    //public DbSet<> SubjectModel { get; set; } //角色表
-
-
     public DbSet<Student> Student { get; set; } //学生
-	public DbSet<Class> Class { get; set; }  //班级
+	public DbSet<ClassInfo> ClassInfo { get; set; }  //班级
     public DbSet<Grade> Grade { get; set; }   //年级
     public DbSet<Parent> Parent { get; set; }//家长
     public DbSet<Course> Course { get; set; } //课程信息表
@@ -77,7 +66,6 @@ public class EducationalDbContext :
     public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
     public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
     public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
-
     public DbSet<Educational.SubjectModel.SubjectModel> SubjectModel { get; set; }//科目表
     public DbSet<Educational.Materials.Material> Material { get; set; }//物料表
     public DbSet<Educational.Materials.MaterialRecords> MaterialRecords { get; set; }//物料出入库记录表
