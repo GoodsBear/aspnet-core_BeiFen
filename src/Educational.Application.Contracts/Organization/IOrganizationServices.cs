@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using AutoMapper.Internal.Mappers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -57,7 +60,7 @@ namespace Educational.Organization
          Task<ApiResult<List<XialaLevelDto>>> GetLevelAsync();
         /// <summary>
         /// 组织机构级别添加
-        /// </summary> 
-        //wu
+        /// </summary>  
+      Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto);
     }
-}
+} 

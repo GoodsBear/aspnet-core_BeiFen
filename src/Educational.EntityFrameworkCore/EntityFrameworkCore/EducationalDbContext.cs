@@ -1,4 +1,4 @@
-﻿using Educational.Classgrade;
+using Educational.Classgrade;
 using Educational.Courses;
 using Educational.Students;
 using Educational.Organization;
@@ -8,6 +8,7 @@ using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.Staffs;
+using Educational.Subject;
 using Educational.StaffTypes;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -107,6 +108,16 @@ public class EducationalDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });
+        /// <summary>
+        ///  科目管理表
+        /// </summary>   
+        builder.Entity<Educational.SubjectModel.SubjectModel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "SubjectModel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
+    
 
         /// <summary>
         /// 人员类型信息表

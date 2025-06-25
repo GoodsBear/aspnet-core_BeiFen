@@ -2130,6 +2130,70 @@ namespace Educational.Migrations
                     b.ToTable("AppStaffInfo", (string)null);
                 });
 
+            //modelBuilder.Entity("Educational.Subject.SubjectModel", b =>
+            //    {
+            //        b.Property<Guid>("Id")
+            //            .HasColumnType("char(36)");
+
+            //        b.Property<string>("ConcurrencyStamp")
+            //            .IsConcurrencyToken()
+            //            .IsRequired()
+            //            .HasMaxLength(40)
+            //            .HasColumnType("varchar(40)")
+            //            .HasColumnName("ConcurrencyStamp");
+
+            //        b.Property<DateTime>("CreationTime")
+            //            .HasColumnType("datetime(6)")
+            //            .HasColumnName("CreationTime");
+
+            //        b.Property<Guid?>("CreatorId")
+            //            .HasColumnType("char(36)")
+            //            .HasColumnName("CreatorId");
+
+            //        b.Property<Guid?>("DeleterId")
+            //            .HasColumnType("char(36)")
+            //            .HasColumnName("DeleterId");
+
+            //        b.Property<DateTime?>("DeletionTime")
+            //            .HasColumnType("datetime(6)")
+            //            .HasColumnName("DeletionTime");
+
+            //        b.Property<string>("ExtraProperties")
+            //            .IsRequired()
+            //            .HasColumnType("longtext")
+            //            .HasColumnName("ExtraProperties");
+
+            //        b.Property<bool>("IsDeleted")
+            //            .ValueGeneratedOnAdd()
+            //            .HasColumnType("tinyint(1)")
+            //            .HasDefaultValue(false)
+            //            .HasColumnName("IsDeleted");
+
+            //        b.Property<DateTime?>("LastModificationTime")
+            //            .HasColumnType("datetime(6)")
+            //            .HasColumnName("LastModificationTime");
+
+            //        b.Property<Guid?>("LastModifierId")
+            //            .HasColumnType("char(36)")
+            //            .HasColumnName("LastModifierId");
+
+            //        b.Property<int>("SortWeight")
+            //            .HasColumnType("int")
+            //            .HasColumnName("sort_weight");
+
+            //        b.Property<string>("SubjectDescription")
+            //            .HasMaxLength(200)
+            //            .HasColumnType("varchar(200)");
+
+            //        b.Property<string>("SubjectName")
+            //            .IsRequired()
+            //            .HasMaxLength(20)
+            //            .HasColumnType("varchar(20)");
+
+            //        b.HasKey("Id");
+
+            //        b.ToTable("AppSubjectModel", (string)null);
+            //});
             modelBuilder.Entity("Educational.Staffs.StaffRole", b =>
                 {
                     b.Property<Guid>("Id")
