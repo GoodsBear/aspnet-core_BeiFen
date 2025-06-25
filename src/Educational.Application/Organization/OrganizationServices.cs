@@ -11,6 +11,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Educational.Organization
 {
+    [ApiExplorerSettings(GroupName ="组织机构")]
     public class OrganizationServices : ApplicationService, IOrganizationServices
     {
         private readonly IRepository<OrganizationModel, Guid> _organizationRepository;
@@ -110,7 +111,6 @@ namespace Educational.Organization
                 return ApiResult<OrganizationDto>.Fail(ResultCode.Fail, $"获取组织机构失败: {ex.Message}");
             }
         }
-
         /// <summary>
         /// 分页查询组织机构列表
         /// </summary>
@@ -158,16 +158,17 @@ namespace Educational.Organization
             }
             catch (Exception ex)
             {
+                logger.LogError("获取组织机构列表出错: " + ex.Message);
                 throw;
             }
         } 
-        /// <summary>
-        /// 更新组织机构
-        /// </summary>
-        /// <param name="id">组织机构ID</param>
-        /// <param name="input">更新信息</param>
-        /// <returns>更新结果</returns>
-        public async Task<ApiResult<OrganizationDto>> UpdateAsync(Guid id, OrganizationDto input)
+		/// <summary>
+		/// 更新组织机构
+		/// </summary>
+		/// <param name="id">组织机构ID</param>
+		/// <param name="input">更新信息</param>
+		/// <returns>更新结果</returns>
+		public async Task<ApiResult<OrganizationDto>> UpdateAsync(Guid id, OrganizationDto input)
         {
             try
             {

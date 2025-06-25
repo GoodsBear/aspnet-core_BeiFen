@@ -12,6 +12,7 @@ using Yitter.IdGenerator;
 
 namespace Educational.RBAC.RoleManager
 {
+    [ApiExplorerSettings(GroupName = "角色")]
     public class RoleServices : ApplicationService, IRoleServices
     {
         private readonly IRepository<Role, Guid> repository;
@@ -22,6 +23,11 @@ namespace Educational.RBAC.RoleManager
             this.repository = repository;
             this.logger = logger;
         }
+        /// <summary>
+        ///  添加角色
+        /// </summary>
+        /// <param name="createUpdateRole"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ApiResult<RoleDto>> AddRole(CreateUpdateRoleDto createUpdateRole)
         {
@@ -64,6 +70,11 @@ namespace Educational.RBAC.RoleManager
                 throw;
             }
         }
+        /// <summary>
+        /// 删除角色
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
         [HttpDelete]
         public async Task<ApiResult> DelRole(Guid guid)
         {
@@ -78,6 +89,11 @@ namespace Educational.RBAC.RoleManager
                 throw;
             }
         }
+        /// <summary>
+        /// 分页查询角色
+        /// </summary>
+        /// <param name="searchRoleDto"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ApiResult<ApiPaging<List<RoleDto>>>> PageRole([FromQuery]SearchRoleDto searchRoleDto)
         {
@@ -105,6 +121,12 @@ namespace Educational.RBAC.RoleManager
                 throw;
             }
         }
+        /// <summary>
+        /// 修改角色
+        /// </summary>
+        /// <param name="createUpdateRoleDto"></param>
+        /// <param name="guid"></param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<ApiResult<RoleDto>> UpdateRole(CreateUpdateRoleDto createUpdateRoleDto,Guid guid)
         {

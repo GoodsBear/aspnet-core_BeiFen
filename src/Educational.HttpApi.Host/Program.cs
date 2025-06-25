@@ -33,9 +33,27 @@ public class Program
                 .UseAutofac()
                 .UseSerilog();
             await builder.AddApplicationAsync<EducationalHttpApiHostModule>();
+
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("CorsPolicy", builder =>
+            //    {
+            //        builder.WithOrigins("http://localhost:3000")
+            //            .AllowAnyMethod()
+            //            .AllowAnyHeader()
+            //            .AllowCredentials();
+            //    });
+            //});
+
             var app = builder.Build();
+
+            //app.UseCors();
+
             await app.InitializeApplicationAsync();
             await app.RunAsync();
+
+
+
             return 0;
         }
         catch (Exception ex)
