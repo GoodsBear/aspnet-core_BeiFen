@@ -15,6 +15,7 @@ using Educational.Staffs;
 using Educational.Subject;
 using System.Collections.Generic;
 using System.Linq;
+using Educational.StafRoles;
 using Educational.StaffTypes;
 using Educational.Classgrade;
 using Educational.Dto.Grades;
@@ -70,6 +71,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
         // 权限映射
         CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
         CreateMap<Permissions, PermissionsDto>().ReverseMap();
+        // 员工角色映射
+        CreateMap<StaffRole, StaffRoleDto>().ReverseMap();
 
         CreateMap<DictTypeDto, DictType>().ReverseMap();
 
