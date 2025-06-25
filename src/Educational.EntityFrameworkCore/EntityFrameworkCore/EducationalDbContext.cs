@@ -53,6 +53,8 @@ public class EducationalDbContext :
     public DbSet<Parent> Parent { get; set; }//家长
     public DbSet<Course> Course { get; set; } //课程信息表
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
+    public DbSet<StaffRole> StaffRole { get; set; } //员工角色中间表
+    public DbSet<RolePermission>RolePermision { get; set; } //角色权限中间表
     public DbSet<OrganizationModel> OrganizationModels { get; set; }//组织信息表
     public DbSet<OrganizationLevel> OrganizationLevels { get; set; }//组织级别表
     public DbSet<Position> positions { get; set; }//职位信息表
