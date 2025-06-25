@@ -11,6 +11,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Educational.Organization
 {
+    [ApiExplorerSettings(GroupName ="组织机构")]
     public class OrganizationServices : ApplicationService, IOrganizationServices
     {
         private readonly IRepository<OrganizationModel, Guid> _organizationRepository;

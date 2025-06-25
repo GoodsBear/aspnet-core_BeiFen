@@ -15,6 +15,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Educational.Positions
 {
+    [ApiExplorerSettings(GroupName ="职位")]
     public class PositionAppService : ApplicationService, IPositionAppService
     {
         IRepository<Position, Guid> positionRep; 
