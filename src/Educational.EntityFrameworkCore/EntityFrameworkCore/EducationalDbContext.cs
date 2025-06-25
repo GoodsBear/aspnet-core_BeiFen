@@ -49,18 +49,17 @@ public class EducationalDbContext :
 
     }
 
-    public DbSet<StaffInfo> staffInfos { get; set; }
-    public DbSet<OrganizationModel> OrganizationModels { get; set; }
-    public DbSet<OrganizationLevel> OrganizationLevels { get; set; }
-    public DbSet<Position> positions { get; set; }
-    public DbSet<Announcement> announcements { get; set; }
-    public DbSet<Role> Role { get; set; } //角色表
-    public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限表
-    
-    public DbSet<SubjectModel> SubjectModel { get; set; } //角色表
+    //public DbSet<OrganizationModel> OrganizationModels { get; set; }
+    //public DbSet<OrganizationLevel> OrganizationLevels { get; set; }
+    //public DbSet<Position> positions { get; set; }
+    //public DbSet<Announcement> announcements { get; set; }
+    //public DbSet<Role> Role { get; set; } //角色表
+    //public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限表
 
-   
-	public DbSet<Student> Student { get; set; } //学生
+    //public DbSet<> SubjectModel { get; set; } //角色表
+
+
+    public DbSet<Student> Student { get; set; } //学生
 	public DbSet<Class> Class { get; set; }  //班级
     public DbSet<Grade> Grade { get; set; }   //年级
     public DbSet<Parent> Parent { get; set; }//家长
@@ -118,7 +117,7 @@ public class EducationalDbContext :
         /// <summary>
         ///  科目管理表
         /// </summary>   
-        builder.Entity<SubjectModel>(b =>
+        builder.Entity<Educational.SubjectModel.SubjectModel>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "SubjectModel", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props

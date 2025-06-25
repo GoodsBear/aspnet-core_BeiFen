@@ -55,9 +55,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
         CreateMap<Permissions, PermissionsDto>().ReverseMap();
         //科目管理 
-        CreateMap<UpdateSubjectDto, SubjectModel>().ReverseMap();
-        CreateMap<SubjectModel, SubjectDto>().ReverseMap();
-        CreateMap<SubjectModel, XialaSubjectDto>().ReverseMap();
+        CreateMap<UpdateSubjectDto, Educational.Subject.SubjectModel>().ReverseMap();
+        CreateMap<Educational.Subject.SubjectModel, SubjectDto>().ReverseMap();
+        CreateMap<Educational.Subject.SubjectModel, XialaSubjectDto>().ReverseMap();
     }
-}
-
+} 
