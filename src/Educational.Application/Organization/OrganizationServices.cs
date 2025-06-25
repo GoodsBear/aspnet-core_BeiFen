@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -162,6 +163,7 @@ namespace Educational.Organization
                 throw;
             }
         } 
+        
 		/// <summary>
 		/// 更新组织机构
 		/// </summary>
@@ -247,8 +249,9 @@ namespace Educational.Organization
         /// 树形组织机构表
         /// </summary>
         /// <param name="parentId"></param>
-        /// <returns></returns> 
-        public async Task<List<OrganizationTreeDto>> GetTreeAsync(Guid? parentId = null)
+        /// <returns></returns>
+
+        public async Task<List<OrganizationTreeDto>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")]Guid parentId)
         {
             if (parentId == null)
             { 

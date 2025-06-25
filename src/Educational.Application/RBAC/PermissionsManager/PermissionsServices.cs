@@ -25,7 +25,7 @@ namespace Educational.RBAC.PermissionsManager
             this.logger = logger;
         }
         /// <summary>
-        /// 添加权限
+        ///  添加权限
         /// </summary>
         /// <param name="createUpdatePermissions"></param>
         /// <returns></returns>
@@ -69,10 +69,11 @@ namespace Educational.RBAC.PermissionsManager
             }
         }
         /// <summary>
-        /// 删除权限
+        ///  删除权限
         /// </summary>
         /// <param name="guid"></param>
         /// <returns></returns>
+
         [HttpDelete]
         public async Task<ApiResult> DelPermissions(Guid guid)
         {
@@ -88,7 +89,7 @@ namespace Educational.RBAC.PermissionsManager
             }
         }
         /// <summary>
-        /// 获取权限树形结构
+        ///  获取权限树形结构
         /// </summary>
         /// <returns></returns>
         [HttpGet]

@@ -1,14 +1,21 @@
 ﻿using Educational.Enmu;
+using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.StaffTypes;
 using Educational.Tools;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,22 +27,27 @@ namespace Educational.Staffs
     [ApiExplorerSettings(GroupName = "成员")]
     public class StaffServices : ApplicationService, IStaffServices
     {
+        private readonly IConfiguration configuration;
         private readonly IRepository<StaffInfo,Guid> basicRepository;
         private readonly IRepository<Position, Guid> positionRep;
         private readonly IRepository<Role, Guid> roleRep;
         private readonly IRepository<StaffTypeInfo, Guid> typeRep;
+        private readonly IRepository<OrganizationModel, Guid> organizationRepository;
 
-        public StaffServices(IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep)
+        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep,IRepository<OrganizationModel, Guid> organizationRepository)
         {
+            this.configuration = configuration;
             this.basicRepository = basicRepository;
             this.positionRep = positionRep;
             this.roleRep = roleRep;
             this.typeRep = typeRep;
+            this.organizationRepository = organizationRepository;
         }
         /// <summary>分页查询员工信息</summary>
         /// <param name="search">查询条件</param>
         /// <returns>分页结果，包含员工信息</returns>
         [HttpGet]
+        [Authorize]
         public async Task<ApiResult<ApiPaging<List<ShowStaffDTO>>>> GetStaffListAsync([FromQuery]SearchStaffDTO search)
         {
             try
@@ -83,6 +95,51 @@ namespace Educational.Staffs
             {
                 Logger.LogError(ex, "员工信息获取失败");
                 throw; // 暂时抛出，可拓展成统一异常处理
+            }
+        }
+
+        /// <summary>
+        /// 批量设置用户所属机构
+        /// </summary>
+        /// <param name="userIds">要设置的用户ID集合</param>
+        /// <param name="organizationIds">要设置的机构ID集合</param>
+        /// <returns>操作结果</returns>
+        public async Task<ApiResult> UpdateStaffOranization([FromQuery]Guid[] Ids, Guid[] organizationIds)
+        {
+            try
+            {
+                // 1. 验证输入参数
+                if (Ids == null || Ids.Length == 0)
+                    return ApiResult.Fail(ResultCode.Fail, "请选择要设置的用户");
+
+                if (organizationIds == null || organizationIds.Length == 0)
+                    return ApiResult.Fail(ResultCode.Fail, "请选择要设置的机构");
+
+                // 2. 获取所有机构名称
+                var orgNames = await (await organizationRepository.GetQueryableAsync())
+                    .Where(s => organizationIds.Contains(s.Id))
+                    .Select(s => s.Name) 
+                    .ToListAsync();
+
+                foreach (var item in Ids)
+                {
+                    var staffinfo = await basicRepository.FirstOrDefaultAsync(u => u.Id == item);
+                    if (staffinfo.Organization != null)
+                    {
+                        // 清空原有机构信息
+                        staffinfo.Organization = string.Empty;
+                        // 设置新的机构信息
+                        staffinfo.Organization = string.Join(",", orgNames);
+                        await basicRepository.UpdateAsync(staffinfo);
+                    }
+                    staffinfo.Organization = string.Join(",", orgNames);
+                    await basicRepository.UpdateAsync(staffinfo);
+                }
+                return ApiResult.Success(ResultCode.Ok);
+            }
+            catch (Exception ex)
+            {
+                return ApiResult.Fail(ResultCode.Fail, "批量设置机构失败");
             }
         }
 
@@ -277,7 +334,7 @@ namespace Educational.Staffs
         /// <param name="loginDTO">登录请求 DTO，包含账户和密码</param>
         /// <returns>返回登录结果</returns>
         [HttpPost]
-        public async Task<ApiResult<StaffInfo>> Login([FromQuery] LoginDTO loginDTO)
+        public async Task<ApiResult<LoginReturnDTO>> Login([FromQuery] LoginDTO loginDTO)
         {
             try
             {
@@ -287,7 +344,7 @@ namespace Educational.Staffs
                 // 如果用户不存在，返回失败
                 if (staff == null)
                 {
-                    return ApiResult<StaffInfo>.Fail(ResultCode.Fail, "用户不存在");
+                    return ApiResult<LoginReturnDTO>.Fail(ResultCode.Fail, "用户不存在");
                 }
 
                 // 使用 SHA256 加密输入的密码并与数据库中的密码进行比对
@@ -295,11 +352,14 @@ namespace Educational.Staffs
 
                 if (staff.StaffPassword != hashedPassword)
                 {
-                    return ApiResult<StaffInfo>.Fail(ResultCode.Fail, "密码错误");
+                    return ApiResult<LoginReturnDTO>.Fail(ResultCode.Fail, "密码错误");
                 }
 
+                var returndto=ObjectMapper.Map<StaffInfo, LoginReturnDTO>(staff);
+                returndto.Token = GenerateJwtToken(staff);
+
                 // 登录成功，返回用户信息
-                return ApiResult<StaffInfo>.Success(ResultCode.Ok, staff);
+                return ApiResult<LoginReturnDTO>.Success(ResultCode.Ok, returndto);
             }
             catch (Exception ex)
             {
@@ -310,11 +370,52 @@ namespace Educational.Staffs
         }
 
         /// <summary>
+        /// 生成JWT令牌=
+        /// </summary>
+        /// <param name="staff">员工实体</param>
+        /// <returns>JWT令牌字符串</returns>
+        private string GenerateJwtToken(StaffInfo staff)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:SecurityKey"]);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+            // 添加声明
+            new Claim("Id", staff.Id.ToString()),
+            new Claim("StaffName", staff.StaffName ?? string.Empty),
+            new Claim("StaffAccount", staff.StaffAccount ?? string.Empty),
+            new Claim("StaffPhone", staff.StaffPhone ?? string.Empty),
+            new Claim("StaffGender", staff.StaffGender ?? string.Empty),
+            new Claim("StaffTypeId", staff.StaffTypeId.ToString()),
+            new Claim("PositionId", staff.PositionId.ToString()),
+            new Claim("RoleId", staff.RoleId.ToString()),
+            new Claim("Organization", staff.Organization ?? string.Empty),
+            new Claim("StaffStatus", staff.Status.ToString()),
+            new Claim("PhotoUrl", staff.PhotoUrl ?? string.Empty),
+            new Claim("Birthday", staff.Birthday?.ToString("yyyy-MM-dd") ?? string.Empty),
+
+        }),
+                Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(configuration["Jwt:ExpirationInMinutes"])),
+                Issuer = configuration["Jwt:Issuer"],
+                Audience = configuration["Jwt:Audience"],
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        /// <summary>
         /// 使用 SHA256 加密密码
         /// </summary>
         /// <param name="input">原始密码</param>
         /// <returns>SHA256 加密后的密码</returns>
-        
+
         private string Sha256Hash(string input)
         {
             using (var sha256 = SHA256.Create())
