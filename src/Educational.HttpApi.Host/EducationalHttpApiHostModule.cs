@@ -139,17 +139,28 @@ public class EducationalHttpApiHostModule : AbpModule
             configuration["AuthServer:Authority"]!,
             new Dictionary<string, string>
             {
-                    {"Educational", "Educational API"}
+                {"Educational", "Educational API"}
             },
             options =>
             {
-                options.SwaggerDoc("蜂窝", new OpenApiInfo { Title = "蜂窝", Version = "蜂窝" });
-                options.SwaggerDoc("v2", new OpenApiInfo { Title = "CourseServices", Version = "v2" });
-                options.SwaggerDoc("v3", new OpenApiInfo { Title = "Export", Version = "v3" });
-                options.SwaggerDoc("v4", new OpenApiInfo { Title = "Educational API", Version = "v4" });
-                options.SwaggerDoc("v5", new OpenApiInfo { Title = "Educational API", Version = "v5" });
+                options.SwaggerDoc("公告", new OpenApiInfo { Title = "公告管理", Version = "v1" });
+                options.SwaggerDoc("课程", new OpenApiInfo { Title = "课程管理", Version = "v1" });
+                options.SwaggerDoc("组织机构", new OpenApiInfo { Title = "组织机构管理", Version = "v1" });
+                options.SwaggerDoc("职位", new OpenApiInfo { Title = "职位管理", Version = "v1" });
+                options.SwaggerDoc("权限", new OpenApiInfo { Title = "权限管理", Version = "v1" });
+                options.SwaggerDoc("角色", new OpenApiInfo { Title = "角色管理", Version = "v1" });
+                options.SwaggerDoc("成员", new OpenApiInfo { Title = "成员管理", Version = "v1" });
 
-                options.DocInclusionPredicate((docName, description) => true);
+                options.DocInclusionPredicate((doc, desc) =>
+                {
+                    if (!desc.GroupName.IsNullOrWhiteSpace())
+                    {
+                        return doc == desc.GroupName;
+                    }
+                    return true;
+                });
+
+                options.HideAbpEndpoints();
                 options.CustomSchemaIds(type => type.FullName);
             });
     }
@@ -213,7 +224,13 @@ public class EducationalHttpApiHostModule : AbpModule
         app.UseSwagger();
         app.UseAbpSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("/swagger/蜂窝/swagger.json", "蜂窝");
+            c.SwaggerEndpoint("/swagger/公告/swagger.json", "公告管理 v1");
+            c.SwaggerEndpoint("/swagger/课程/swagger.json", "课程管理 v1");
+            c.SwaggerEndpoint("/swagger/组织机构/swagger.json", "组织机构管理 v1");
+            c.SwaggerEndpoint("/swagger/职位/swagger.json", "职位管理 v1");
+            c.SwaggerEndpoint("/swagger/权限/swagger.json", "权限管理 v1");
+            c.SwaggerEndpoint("/swagger/角色/swagger.json", "角色管理 v1");
+            c.SwaggerEndpoint("/swagger/成员/swagger.json", "成员管理 v1");
 
             var configuration = context.ServiceProvider.GetRequiredService<IConfiguration>();
             c.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);

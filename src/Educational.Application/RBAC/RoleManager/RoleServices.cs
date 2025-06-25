@@ -12,6 +12,7 @@ using Yitter.IdGenerator;
 
 namespace Educational.RBAC.RoleManager
 {
+    [ApiExplorerSettings(GroupName = "角色")]
     public class RoleServices : ApplicationService, IRoleServices
     {
         private readonly IRepository<Role, Guid> repository;

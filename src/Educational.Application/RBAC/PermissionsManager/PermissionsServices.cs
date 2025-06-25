@@ -13,7 +13,7 @@ using Yitter.IdGenerator;
 
 namespace Educational.RBAC.PermissionsManager
 {
-    
+    [ApiExplorerSettings(GroupName = "权限")]
     public class PermissionsServices : ApplicationService, IPermissionsServices
     {
         private readonly IRepository<Permissions, Guid> repository;

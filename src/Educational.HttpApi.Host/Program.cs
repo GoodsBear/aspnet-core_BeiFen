@@ -34,20 +34,20 @@ public class Program
                 .UseSerilog();
             await builder.AddApplicationAsync<EducationalHttpApiHostModule>();
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy", builder =>
-                {
-                    builder.WithOrigins("http://localhost:3000")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
-                });
-            });
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("CorsPolicy", builder =>
+            //    {
+            //        builder.WithOrigins("http://localhost:3000")
+            //            .AllowAnyMethod()
+            //            .AllowAnyHeader()
+            //            .AllowCredentials();
+            //    });
+            //});
 
             var app = builder.Build();
 
-            app.UseCors();
+            //app.UseCors();
 
             await app.InitializeApplicationAsync();
             await app.RunAsync();

@@ -11,6 +11,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Educational.Courses
 {
+	[ApiExplorerSettings(GroupName ="课程")]
 	public class CourseServices : ApplicationService, ICourseServices
 	{
 		IRepository<Course, Guid> _courseRepository;
