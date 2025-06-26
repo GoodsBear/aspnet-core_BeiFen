@@ -210,6 +210,140 @@ namespace Educational.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
+                    modelBuilder.Entity("Educational.Datadictionary.DictItem", b =>
+                        {
+                            b.Property<long>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("bigint");
+
+                            MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                            b.Property<string>("Code")
+                                .IsRequired()
+                                .HasMaxLength(64)
+                                .HasColumnType("varchar(64)");
+
+                            b.Property<DateTime>("CreationTime")
+                                .HasColumnType("datetime(6)")
+                                .HasColumnName("CreationTime");
+
+                            b.Property<Guid?>("CreatorId")
+                                .HasColumnType("char(36)")
+                                .HasColumnName("CreatorId");
+
+                            b.Property<Guid?>("DeleterId")
+                                .HasColumnType("char(36)")
+                                .HasColumnName("DeleterId");
+
+                            b.Property<DateTime?>("DeletionTime")
+                                .HasColumnType("datetime(6)")
+                                .HasColumnName("DeletionTime");
+
+                            b.Property<DateTime?>("EnrollYear")
+                                .HasColumnType("datetime(6)");
+
+                            b.Property<string>("ExtraProperties")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("ExtraProperties");
+
+                            b.Property<string>("GradeName")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("char(50)");
+                            b.Property<long>("DictTypeId")
+                                .HasColumnType("bigint");
+
+                            b.Property<bool>("IsDeleted")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("tinyint(1)")
+                                .HasDefaultValue(false)
+                                .HasColumnName("IsDeleted");
+
+                            b.Property<bool>("IsEnabled")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("tinyint(1)")
+                                .HasDefaultValue(true);
+
+                            b.Property<DateTime?>("LastModificationTime")
+                                .HasColumnType("datetime(6)")
+                                .HasColumnName("LastModificationTime");
+
+                            b.Property<Guid?>("LastModifierId")
+                                .HasColumnType("char(36)")
+                                .HasColumnName("LastModifierId");
+
+                            b.Property<string>("Remark")
+                                .IsRequired()
+                                .HasColumnType("longtext");
+
+                            b.Property<int>("Sort")
+                                .HasColumnType("int");
+
+                            b.HasKey("Id");
+
+                            b.ToTable("AppGrade", (string)null);
+                        });
+
+                    modelBuilder.Entity("Educational.Courses.Course", b =>
+                        {
+                            b.Property<Guid>("Id")
+                                .HasColumnType("char(36)");
+
+                            b.Property<Guid?>("CampusId")
+                                .HasColumnType("char(36)");
+
+                            b.Property<string>("ClassQrCode")
+                                .IsRequired()
+                                .HasColumnType("longtext");
+
+                            b.Property<string>("ConcurrencyStamp")
+                                .IsConcurrencyToken()
+                                .IsRequired()
+                                .HasMaxLength(40)
+                                .HasColumnType("varchar(40)")
+                                .HasColumnName("ConcurrencyStamp");
+
+                            b.Property<string>("CourseName")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("varchar(50)");
+
+                            b.Property<int>("CourseTypeId")
+                                .HasColumnType("int");
+
+                            b.Property<string>("CoverImage")
+                                .IsRequired()
+                                .HasColumnType("longtext");
+                            b.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(128)
+                                .HasColumnType("varchar(128)");
+
+                            b.Property<int>("SortOrder")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int")
+                                .HasDefaultValue(0);
+
+                            b.HasKey("Id");
+
+                            b.HasIndex("DictTypeId");
+
+                            b.ToTable("dict_item", (string)null);
+                        });
+
+                    modelBuilder.Entity("Educational.Datadictionary.DictType", b =>
+                        {
+                            b.Property<long>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("bigint");
+
+                            MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                            b.Property<string>("Code")
+                                .IsRequired()
+                                .HasMaxLength(64)
+                                .HasColumnType("varchar(64)");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime(6)")
@@ -2320,6 +2454,246 @@ namespace Educational.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                    modelBuilder.Entity("Volo.Abp.AuditLogging.EntityPropertyChange", b =>
+                        {
+                            b.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("char(36)");
+
+                            b.Property<Guid>("EntityChangeId")
+                                .HasColumnType("char(36)");
+
+                            b.Property<string>("NewValue")
+                                .HasMaxLength(512)
+                                .HasColumnType("varchar(512)")
+                                .HasColumnName("NewValue");
+
+                            b.Property<string>("OriginalValue")
+                                .HasMaxLength(512)
+                                .HasColumnType("varchar(512)")
+                                .HasColumnName("OriginalValue");
+
+                            b.Property<string>("PropertyName")
+                                .IsRequired()
+                                .HasMaxLength(128)
+                                .HasColumnType("varchar(128)")
+                                .HasColumnName("PropertyName");
+
+                            b.Property<string>("PropertyTypeFullName")
+                                .IsRequired()
+                                .HasMaxLength(64)
+                                .HasColumnType("varchar(64)")
+                                .HasColumnName("PropertyTypeFullName");
+
+                            b.Property<Guid?>("TenantId")
+                                .HasColumnType("char(36)")
+                                .HasColumnName("TenantId");
+
+                            b.HasKey("Id");
+
+                            b.HasIndex("EntityChangeId");
+
+                            b.ToTable("AbpEntityPropertyChanges", (string)null);
+                        });
+
+                    modelBuilder.Entity("Volo.Abp.BackgroundJobs.BackgroundJobRecord", b =>
+                        {
+                            b.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("char(36)");
+
+                            b.Property<string>("ApplicationName")
+                                .HasMaxLength(96)
+                                .HasColumnType("varchar(96)");
+
+                            b.Property<string>("ConcurrencyStamp")
+                                .IsConcurrencyToken()
+                                .IsRequired()
+                                .HasMaxLength(40)
+                                .HasColumnType("varchar(40)")
+                                .HasColumnName("ConcurrencyStamp");
+
+                            b.Property<DateTime>("CreationTime")
+                                .HasColumnType("datetime(6)")
+                                .HasColumnName("CreationTime");
+
+                            b.Property<string>("ExtraProperties")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("ExtraProperties");
+
+                            b.Property<bool>("IsAbandoned")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("tinyint(1)")
+                                .HasDefaultValue(false);
+
+                            b.Property<string>("JobArgs")
+                                .IsRequired()
+                                .HasMaxLength(1048576)
+                                .HasColumnType("longtext");
+
+                            b.Property<string>("JobName")
+                                .IsRequired()
+                                .HasMaxLength(128)
+                                .HasColumnType("varchar(128)");
+
+                            b.Property<DateTime?>("LastTryTime")
+                                .HasColumnType("datetime(6)");
+
+                            b.Property<DateTime>("NextTryTime")
+                                .HasColumnType("datetime(6)");
+
+                            b.Property<byte>("Priority")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("tinyint unsigned")
+                                .HasDefaultValue((byte)15);
+
+                            b.Property<short>("TryCount")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("smallint")
+                                .HasDefaultValue((short)0);
+
+                            b.HasKey("Id");
+
+                            b.HasIndex("IsAbandoned", "NextTryTime");
+
+                            b.ToTable("AbpBackgroundJobs", (string)null);
+                        });
+
+                    modelBuilder.Entity("Volo.Abp.SettingManagement.Setting", b =>
+                        {
+                            b.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("char(36)");
+
+                            b.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(128)
+                                .HasColumnType("varchar(128)");
+
+                            b.Property<string>("ProviderKey")
+                                .HasMaxLength(64)
+                                .HasColumnType("varchar(64)");
+
+                            b.Property<string>("ProviderName")
+                                .HasMaxLength(64)
+                                .HasColumnType("varchar(64)");
+
+                            b.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(2048)
+                                .HasColumnType("varchar(2048)");
+
+                            b.HasKey("Id");
+
+                            b.HasIndex("Name", "ProviderName", "ProviderKey")
+                                .IsUnique();
+
+                            b.ToTable("AbpSettings", (string)null);
+                        });
+
+                    modelBuilder.Entity("Volo.Abp.SettingManagement.SettingDefinitionRecord", b =>
+                        {
+                            b.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("char(36)");
+
+                            b.Property<string>("DefaultValue")
+                                .HasMaxLength(2048)
+                                .HasColumnType("varchar(2048)");
+
+                            b.Property<string>("Description")
+                                .HasMaxLength(512)
+                                .HasColumnType("varchar(512)");
+
+                            b.Property<string>("DisplayName")
+                                .IsRequired()
+                                .HasMaxLength(256)
+                                .HasColumnType("varchar(256)");
+
+                            b.Property<string>("ExtraProperties")
+                                .HasColumnType("longtext")
+                                .HasColumnName("ExtraProperties");
+
+                            b.Property<bool>("IsEncrypted")
+                                .HasColumnType("tinyint(1)");
+
+                            b.Property<bool>("IsInherited")
+                                .HasColumnType("tinyint(1)");
+
+                            b.Property<bool>("IsVisibleToClients")
+                                .HasColumnType("tinyint(1)");
+
+                            b.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(128)
+                                .HasColumnType("varchar(128)");
+
+                            b.Property<string>("Providers")
+                                .HasMaxLength(1024)
+                                .HasColumnType("varchar(1024)");
+
+                            b.HasKey("Id");
+
+                            b.HasIndex("Name")
+                                .IsUnique();
+
+                            b.ToTable("AbpSettingDefinitions", (string)null);
+                        });
+
+                    modelBuilder.Entity("Educational.Datadictionary.DictItem", b =>
+                        {
+                            b.HasOne("Educational.Datadictionary.DictType", "DictType")
+                                .WithMany()
+                                .HasForeignKey("DictTypeId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+
+                            b.Navigation("DictType");
+                        });
+
+                    modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>
+                        {
+                            b.HasOne("Volo.Abp.AuditLogging.AuditLog", null)
+                                .WithMany("Actions")
+                                .HasForeignKey("AuditLogId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+                        });
+
+                    modelBuilder.Entity("Volo.Abp.AuditLogging.EntityChange", b =>
+                        {
+                            b.HasOne("Volo.Abp.AuditLogging.AuditLog", null)
+                                .WithMany("EntityChanges")
+                                .HasForeignKey("AuditLogId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+                        });
+
+                    modelBuilder.Entity("Volo.Abp.AuditLogging.EntityPropertyChange", b =>
+                        {
+                            b.HasOne("Volo.Abp.AuditLogging.EntityChange", null)
+                                .WithMany("PropertyChanges")
+                                .HasForeignKey("EntityChangeId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+                        });
+
+                    modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLog", b =>
+                        {
+                            b.Navigation("Actions");
+
+                            b.Navigation("EntityChanges");
+                        });
+
+                    modelBuilder.Entity("Volo.Abp.AuditLogging.EntityChange", b =>
+                        {
+                            b.Navigation("PropertyChanges");
+                        });
+                    b.Property<DateTime?>("Birthday")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("CampusId")
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("EntityChangeId")

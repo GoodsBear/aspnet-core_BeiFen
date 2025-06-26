@@ -47,7 +47,7 @@ namespace Educational.Staffs
         /// <param name="search">查询条件</param>
         /// <returns>分页结果，包含员工信息</returns>
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<ApiResult<ApiPaging<List<ShowStaffDTO>>>> GetStaffListAsync([FromQuery]SearchStaffDTO search)
         {
             try
