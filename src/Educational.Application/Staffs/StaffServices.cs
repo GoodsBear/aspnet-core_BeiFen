@@ -1,10 +1,12 @@
 ﻿using Educational.Enmu;
+using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.StaffTypes;
 using Educational.Tools;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -30,14 +32,16 @@ namespace Educational.Staffs
         private readonly IRepository<Position, Guid> positionRep;
         private readonly IRepository<Role, Guid> roleRep;
         private readonly IRepository<StaffTypeInfo, Guid> typeRep;
+        private readonly IRepository<OrganizationModel, Guid> organizationRepository;
 
-        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep)
+        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep,IRepository<OrganizationModel, Guid> organizationRepository)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
             this.positionRep = positionRep;
             this.roleRep = roleRep;
             this.typeRep = typeRep;
+            this.organizationRepository = organizationRepository;
         }
         /// <summary>分页查询员工信息</summary>
         /// <param name="search">查询条件</param>
@@ -91,6 +95,51 @@ namespace Educational.Staffs
             {
                 Logger.LogError(ex, "员工信息获取失败");
                 throw; // 暂时抛出，可拓展成统一异常处理
+            }
+        }
+
+        /// <summary>
+        /// 批量设置用户所属机构
+        /// </summary>
+        /// <param name="userIds">要设置的用户ID集合</param>
+        /// <param name="organizationIds">要设置的机构ID集合</param>
+        /// <returns>操作结果</returns>
+        public async Task<ApiResult> UpdateStaffOranization([FromQuery]Guid[] Ids, Guid[] organizationIds)
+        {
+            try
+            {
+                // 1. 验证输入参数
+                if (Ids == null || Ids.Length == 0)
+                    return ApiResult.Fail(ResultCode.Fail, "请选择要设置的用户");
+
+                if (organizationIds == null || organizationIds.Length == 0)
+                    return ApiResult.Fail(ResultCode.Fail, "请选择要设置的机构");
+
+                // 2. 获取所有机构名称
+                var orgNames = await (await organizationRepository.GetQueryableAsync())
+                    .Where(s => organizationIds.Contains(s.Id))
+                    .Select(s => s.Name) 
+                    .ToListAsync();
+
+                foreach (var item in Ids)
+                {
+                    var staffinfo = await basicRepository.FirstOrDefaultAsync(u => u.Id == item);
+                    if (staffinfo.Organization != null)
+                    {
+                        // 清空原有机构信息
+                        staffinfo.Organization = string.Empty;
+                        // 设置新的机构信息
+                        staffinfo.Organization = string.Join(",", orgNames);
+                        await basicRepository.UpdateAsync(staffinfo);
+                    }
+                    staffinfo.Organization = string.Join(",", orgNames);
+                    await basicRepository.UpdateAsync(staffinfo);
+                }
+                return ApiResult.Success(ResultCode.Ok);
+            }
+            catch (Exception ex)
+            {
+                return ApiResult.Fail(ResultCode.Fail, "批量设置机构失败");
             }
         }
 
@@ -167,24 +216,33 @@ namespace Educational.Staffs
         /// <param name="staffId">员工 ID</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
         [HttpDelete]
-        public async Task<ApiResult> DeleteStaff(Guid staffId)
+        public async Task<ApiResult> DeleteStaff([FromQuery]Guid[] Ids)
         {
-            try
-            {
-                // 根据员工ID查出员工信息
-                var staffinfo = await basicRepository.FindAsync(staffId);
-                if (staffinfo == null)
+                try
                 {
-                    return ApiResult.Fail(ResultCode.Fail, "员工不存在");
+                    // 1. 参数验证
+                    if (Ids == null || Ids.Length == 0)
+                    {
+                        return ApiResult.Fail(ResultCode.Fail, "请选择要删除的员工");
+                    }
+
+                    // 2. 批量查询员工信息
+                    var staffList = await basicRepository.GetListAsync(u => Ids.Contains(u.Id));
+
+                    // 3. 验证是否全部找到
+                    if (staffList.Count != Ids.Length)
+                    {
+                        var foundIds = staffList.Select(s => s.Id).ToArray();
+                        var missingIds = Ids.Except(foundIds).ToArray();
+                        return ApiResult.Fail(ResultCode.Fail, $"以下员工不存在：{string.Join(",", missingIds)}");
+                    }
+
+                    // 4. 批量删除
+                    await basicRepository.DeleteManyAsync(staffList);
+
+                    return ApiResult.Success(ResultCode.Ok);
                 }
-
-                // 从数据库中删除
-                await basicRepository.DeleteAsync(staffinfo);
-
-                // 返回操作成功
-                return ApiResult.Success(ResultCode.Ok);
-            }
-            catch (Exception)
+                catch (Exception)
             {
                 // 获取异常（可以考虑在此处记录日志）
                 throw; // 暂时直接抛出异常，可以扩展为日志记录或自定义错误返回
@@ -198,22 +256,33 @@ namespace Educational.Staffs
         /// <param name="status">要修改成的员工状态</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
         [HttpPut]
-        public async Task<ApiResult> UpdateStaffStatus(Guid staffId, StaffStatus status)
+        public async Task<ApiResult> UpdateStaffStatus(Guid[] Ids, StaffStatus status)
         {
             try
             {
-                // 根据员工ID查出员工信息
-                var staffinfo = await basicRepository.FindAsync(staffId);
-                if (staffinfo == null)
+                // 1. 参数验证
+                if (Ids == null || Ids.Length == 0)
                 {
-                    return ApiResult.Fail(ResultCode.Fail, "员工不存在");
+                    return ApiResult.Fail(ResultCode.Fail, "请选择要修改的员工");
                 }
 
-                // 修改员工状态
-                staffinfo.Status = status;
+                // 2. 批量查询员工信息
+                var staffList = await basicRepository.GetListAsync(u => Ids.Contains(u.Id));
 
-                // 更新到数据库
-                await basicRepository.UpdateAsync(staffinfo);
+                // 3. 验证是否全部找到
+                if (staffList.Count != Ids.Length)
+                {
+                    var foundIds = staffList.Select(s => s.Id).ToArray();
+                    var missingIds = Ids.Except(foundIds).ToArray();
+                    return ApiResult.Fail(ResultCode.Fail, $"以下员工不存在：{string.Join(",", missingIds)}");
+                }
+
+                // 4. 批量更新状态
+                foreach (var staff in staffList)
+                {
+                    staff.Status = status;
+                    await basicRepository.UpdateAsync(staff);
+                }
 
                 // 返回操作成功
                 return ApiResult.Success(ResultCode.Ok);

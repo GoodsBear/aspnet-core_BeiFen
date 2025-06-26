@@ -2,6 +2,9 @@ using AutoMapper;
 using Educational.Courses;
 using AutoMapper;
 using AutoMapper.Internal.Mappers;
+using Educational.Organization;
+using System.Collections.Generic;
+using System.Linq;
 using Educational.Announcements;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
@@ -12,9 +15,11 @@ using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
 using Educational.Staffs;
+using Educational.StafRoles;
 using Educational.StaffTypes;
 using Educational.Classgrade;
 using Educational.Dto.Grades;
+using Educational.RolePerssions;
 using Educational.Subject;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +68,12 @@ public class EducationalApplicationAutoMapperProfile : Profile
         // 权限映射
         CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
         CreateMap<Permissions, PermissionsDto>().ReverseMap();
-
+        // 角色权限映射
+        CreateMap<RolePermission, RolePermissionDto>().ReverseMap();
+        // 员工角色映射
+        CreateMap<StaffRole, StaffRoleDto>().ReverseMap();
+        CreateMap<StaffRole,RoleStaffDto>().ReverseMap();
+        // 字典类型映射
         CreateMap<DictTypeDto, DictType>().ReverseMap();
 
          
