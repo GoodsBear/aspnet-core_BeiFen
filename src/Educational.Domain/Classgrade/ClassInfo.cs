@@ -1,6 +1,7 @@
 ﻿using Educational.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,35 +17,51 @@ namespace Educational.Classgrade
 		/// <summary>
 		/// 班级名称
 		/// </summary>
-        public string ClassName { get; set;}
+		[Required(ErrorMessage = "班级名称不能为空")]
+        [StringLength(50, ErrorMessage = "班级名称不能超过50个字符")]
+		public string ClassName { get; set;}
 		/// <summary>
 		/// 分校
 		/// </summary>
-        public Guid CampusId { get; set;}
+		[Required(ErrorMessage = "分校不能为空")]
+		[StringLength(50, ErrorMessage = "分校不能超过50个字符")]
+		public Guid CampusId { get; set;}
 		/// <summary>
 		/// 年级
 		/// </summary>
-        public Guid GradeId { get; set;}
+		[Required(ErrorMessage = "年级不能为空")]
+        [StringLength(50, ErrorMessage = "年级不能超过50个字符")]
+		public Guid GradeId { get; set;}
 		/// <summary>
 		/// 班主任
 		/// </summary>
-        public Guid ClassTeacherId { get; set;}
+		[Required(ErrorMessage = "班主任不能为空")]
+        [StringLength(50, ErrorMessage = "班主任不能超过50个字符")]
+		public Guid ClassTeacherId { get; set;}
 		/// <summary>
 		/// 预招人数
 		/// </summary>
-        public int PreNum { get; set;}
+		[Required(ErrorMessage = "预招人数不能为空")]
+        [Range(0, 10000, ErrorMessage = "预招人数不能小于0或大于10000")]
+		public int PreNum { get; set;}
 		/// <summary>
 		/// 预排课次数
 		/// </summary>
-        public int PreCourseNum { get; set;}
+		[Required(ErrorMessage = "预排课次数不能为空")]
+		[Range(0, 10000, ErrorMessage = "预排课次数不能小于0或大于10000")]
+		public int PreCourseNum { get; set;}
 		/// <summary>
 		/// 默认课程
 		/// </summary>
-        public Guid DefaultCourseId { get; set;}
+		[Required(ErrorMessage = "默认课程不能为空")]
+		[StringLength(50, ErrorMessage = "默认课程不能超过50个字符")]
+		public Guid DefaultCourseId { get; set;}
 		/// <summary>
 		/// 默认教室
 		/// </summary>
-        public Guid DefaultClassroomId { get; set;}
+		[Required(ErrorMessage = "默认教室不能为空")]
+        [StringLength(50, ErrorMessage = "默认教室不能超过50个字符")]
+		public Guid DefaultClassroomId { get; set;}
 		/// <summary>
 		/// 计划开课日期
 		/// </summary>
@@ -56,14 +73,20 @@ namespace Educational.Classgrade
 		/// <summary>
 		/// 班级群二维码
 		/// </summary>
-        public string ClassQrCode { get; set;}
+		[StringLength(500, ErrorMessage = "班级群二维码不能超过500个字符")]
+        [Required(ErrorMessage = "班级群二维码不能为空")]
+		public string ClassQrCode { get; set;}
 		/// <summary>
 		/// 排课备注
 		/// </summary>
-        public string CourseRemark { get; set;}
+		[StringLength(500, ErrorMessage = "排课备注不能超过500个字符")]
+        [Required(ErrorMessage = "排课备注不能为空")]
+		public string CourseRemark { get; set;}
 		/// <summary>
 		/// 班级状态
 		/// </summary>
+		[Required(ErrorMessage = "班级状态不能为空")]
+        [Range(0, 10000, ErrorMessage = "班级状态不能小于0或大于10000")]
 		public LessonStateEnum ClassStatus { get; set; } = LessonStateEnum.未开课;
 	}
 }

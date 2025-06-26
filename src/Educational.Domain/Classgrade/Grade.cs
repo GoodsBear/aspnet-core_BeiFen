@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace Educational.Classgrade
 		/// <summary>
 		/// 年级名称
 		/// </summary>
+		[Required(ErrorMessage = "年级名称不能为空")]
+        [StringLength(50, ErrorMessage = "年级名称不能超过50个字符")]
 		public string GradeName { get; set; }
 		/// <summary>
 		/// 入学年份
@@ -23,7 +26,9 @@ namespace Educational.Classgrade
 		/// <summary>
 		/// 排序值
 		/// </summary>
-        public int Sort { get; set; }
+		[Range(0, 10000, ErrorMessage = "排序值不能小于0或大于10000")]
+        [Required(ErrorMessage = "排序值不能为空")]
+		public int Sort { get; set; }
 		/// <summary>
 		/// 备注
 		/// </summary>
