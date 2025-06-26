@@ -1,15 +1,10 @@
 using AutoMapper;
 using Educational.Courses;
-using AutoMapper;
-using AutoMapper.Internal.Mappers;
 using Educational.Organization;
-using System.Collections.Generic;
-using System.Linq;
 using Educational.Announcements;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
 using Educational.Dto.Positions;
-using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
@@ -21,8 +16,6 @@ using Educational.Classgrade;
 using Educational.Dto.Grades;
 using Educational.RolePerssions;
 using Educational.Subject;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Educational;
 

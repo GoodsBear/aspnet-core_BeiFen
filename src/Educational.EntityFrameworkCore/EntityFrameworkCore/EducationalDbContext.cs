@@ -66,7 +66,7 @@ public class EducationalDbContext :
     //public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
 
     //public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
-    public DbSet<Educational.SubjectModel.SubjectModel> SubjectModel { get; set; } //科目表
+    public DbSet<Educational.Subject.SubjectModel> SubjectModel { get; set; } //科目表
     public DbSet<Educational.Materials.Material> Material { get; set; } //物料表
     public DbSet<Educational.Materials.MaterialRecords> MaterialRecords { get; set; } //物料出入库记录表
     protected override void OnModelCreating(ModelBuilder builder) //教室表
@@ -109,7 +109,7 @@ public class EducationalDbContext :
         /// <summary>
         ///  科目管理表
         /// </summary>   
-        builder.Entity<Educational.SubjectModel.SubjectModel>(b =>
+        builder.Entity<Educational.Subject.SubjectModel>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "SubjectModel", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
