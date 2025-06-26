@@ -13,7 +13,7 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    [Migration("20250626022853_新增教室表")]
+    [Migration("20250626061856_新增教室表")]
     partial class 新增教室表
     {
         /// <inheritdoc />
