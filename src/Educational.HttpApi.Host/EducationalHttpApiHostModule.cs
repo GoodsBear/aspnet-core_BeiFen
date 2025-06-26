@@ -1,15 +1,18 @@
 using Educational.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Text;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc;
@@ -20,7 +23,6 @@ using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.Modularity;
-using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
@@ -54,17 +56,43 @@ public class EducationalHttpApiHostModule : AbpModule
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        // 配置认证
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 
+        ConfigureAuthentication(context, configuration);
         ConfigureAuthentication(context);
         ConfigureBundles();
         ConfigureUrls(configuration);
         ConfigureConventionalControllers();
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);
-        ConfigureSwaggerServices(context, configuration);
+        ConfigureSwaggerServices(context);
     }
+
+    private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
+    {
+        // 配置JWT Bearer认证
+        context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,                     // 验证签发方
+                    ValidIssuer = configuration["Jwt:Issuer"], // 合法签发方(取自配置)
+
+                    ValidateAudience = true,                   // 验证接收方
+                    ValidAudience = configuration["Jwt:Audience"], // 合法接收方(取自配置)
+
+                    ValidateIssuerSigningKey = true,           // 验证签名密钥
+                    IssuerSigningKey = new SymmetricSecurityKey( // 签名密钥(取自配置)
+                        Encoding.UTF8.GetBytes(configuration["Jwt:SecurityKey"]))
+                };
+            });
+    }
+
+
+
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)
     {
@@ -133,24 +161,20 @@ public class EducationalHttpApiHostModule : AbpModule
         });
     }
 
-    private static void ConfigureSwaggerServices(ServiceConfigurationContext context, IConfiguration configuration)
+    private void ConfigureSwaggerServices(ServiceConfigurationContext context)
     {
-        context.Services.AddAbpSwaggerGenWithOAuth(
-            configuration["AuthServer:Authority"]!,
-            new Dictionary<string, string>
-            {
-                {"Educational", "Educational API"}
-            },
+        context.Services.AddSwaggerGen(
             options =>
             {
-                options.SwaggerDoc("����", new OpenApiInfo { Title = "�������", Version = "v1" });
-                options.SwaggerDoc("�γ�", new OpenApiInfo { Title = "�γ̹���", Version = "v1" });
-                options.SwaggerDoc("��֯����", new OpenApiInfo { Title = "��֯��������", Version = "v1" });
-                options.SwaggerDoc("ְλ", new OpenApiInfo { Title = "ְλ����", Version = "v1" });
-                options.SwaggerDoc("Ȩ��", new OpenApiInfo { Title = "Ȩ�޹���", Version = "v1" });
-                options.SwaggerDoc("��ɫ", new OpenApiInfo { Title = "��ɫ����", Version = "v1" });
-                options.SwaggerDoc("��Ա", new OpenApiInfo { Title = "��Ա����", Version = "v1" });
-
+                options.SwaggerDoc("公告", new OpenApiInfo { Title = "公告管理", Version = "v1" });
+                options.SwaggerDoc("课程", new OpenApiInfo { Title = "课程管理", Version = "v1" });
+                options.SwaggerDoc("组织机构", new OpenApiInfo { Title = "组织机构管理", Version = "v1" });
+                options.SwaggerDoc("职位", new OpenApiInfo { Title = "职位管理", Version = "v1" });
+                options.SwaggerDoc("权限", new OpenApiInfo { Title = "权限管理", Version = "v1" });
+                options.SwaggerDoc("角色", new OpenApiInfo { Title = "角色管理", Version = "v1" });
+                options.SwaggerDoc("成员", new OpenApiInfo { Title = "成员管理", Version = "v1" });
+                options.SwaggerDoc("成员分配角色", new OpenApiInfo { Title = "成员分配角色管理", Version = "v1" });
+                options.SwaggerDoc("角色分配权限", new OpenApiInfo { Title = "角色分配权限管理", Version = "v1" });
                 options.DocInclusionPredicate((doc, desc) =>
                 {
                     if (!desc.GroupName.IsNullOrWhiteSpace())
@@ -162,11 +186,39 @@ public class EducationalHttpApiHostModule : AbpModule
 
                 options.HideAbpEndpoints();
                 options.CustomSchemaIds(type => type.FullName);
-            });
+
+                // JWT Bearer认证配置
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT认证（直接输入Token，无需加'Bearer '前缀）", // 简化的中文描述
+                    Name = "Authorization",        // HTTP头部字段名
+                    In = ParameterLocation.Header, // Token位置（请求头）
+                    Type = SecuritySchemeType.Http,// 认证类型
+                    Scheme = "bearer",            // 认证方案
+                    BearerFormat = "JWT"          // Token格式
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
+                });
+            }
+        );
     }
 
     private void ConfigureCors(ServiceConfigurationContext context, IConfiguration configuration)
     {
+
         context.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(builder =>
@@ -214,7 +266,7 @@ public class EducationalHttpApiHostModule : AbpModule
         //    app.UseMultiTenancy();
         //}
 
-        //ѩ��Id
+        //ѩ��Id
         YitIdHelper.SetIdGenerator(new IdGeneratorOptions(1));
 
         app.UseUnitOfWork();
@@ -224,14 +276,15 @@ public class EducationalHttpApiHostModule : AbpModule
         app.UseSwagger();
         app.UseAbpSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("/swagger/����/swagger.json", "������� v1");
-            c.SwaggerEndpoint("/swagger/�γ�/swagger.json", "�γ̹��� v1");
-            c.SwaggerEndpoint("/swagger/��֯����/swagger.json", "��֯�������� v1");
-            c.SwaggerEndpoint("/swagger/ְλ/swagger.json", "ְλ���� v1");
-            c.SwaggerEndpoint("/swagger/Ȩ��/swagger.json", "Ȩ�޹��� v1");
-            c.SwaggerEndpoint("/swagger/��ɫ/swagger.json", "��ɫ���� v1");
-            c.SwaggerEndpoint("/swagger/��Ա/swagger.json", "��Ա���� v1");
-
+            c.SwaggerEndpoint("/swagger/公告/swagger.json", "公告管理 v1");
+            c.SwaggerEndpoint("/swagger/课程/swagger.json", "课程管理 v1");
+            c.SwaggerEndpoint("/swagger/组织机构/swagger.json", "组织机构管理 v1");
+            c.SwaggerEndpoint("/swagger/职位/swagger.json", "职位管理 v1");
+            c.SwaggerEndpoint("/swagger/权限/swagger.json", "权限管理 v1");
+            c.SwaggerEndpoint("/swagger/角色/swagger.json", "角色管理 v1");
+            c.SwaggerEndpoint("/swagger/成员/swagger.json", "成员管理 v1");
+            c.SwaggerEndpoint("/swagger/成员分配角色/swagger.json", "成员分配角色管理 v1"); 
+            c.SwaggerEndpoint("/swagger/角色分配权限/swagger.json", "角色分配权限管理 v1");
             var configuration = context.ServiceProvider.GetRequiredService<IConfiguration>();
             c.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);
             c.OAuthScopes("Educational");

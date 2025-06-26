@@ -4,16 +4,15 @@ using Educational.Students;
 using Educational.Organization;
 using Educational.Announcements;
 using Educational.Datadictionary;
-using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.Staffs;
+using Educational.Subject;
 using Educational.StaffTypes;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
-using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
@@ -107,6 +106,16 @@ public class EducationalDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });
+        /// <summary>
+        ///  科目管理表
+        /// </summary>   
+        builder.Entity<Educational.SubjectModel.SubjectModel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "SubjectModel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
+    
 
         /// <summary>
         /// 人员类型信息表
