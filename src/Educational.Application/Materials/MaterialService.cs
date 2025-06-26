@@ -95,11 +95,8 @@ namespace Educational.Materials
 			try
 			{
 				var material=await _materialRepository.GetAsync(id);
-				Material mater=new Material
-				{
-					 StockSum=material.StockSum+quantity,
-				};
-				var result=await _materialRepository.UpdateAsync(mater);
+				material.StockSum=material.StockSum+quantity;
+				var result=await _materialRepository.UpdateAsync(material);
                 return ApiResult<CreateUpdateMaterialDto>.Success(ResultCode.Ok, ObjectMapper.Map<Material, CreateUpdateMaterialDto>(result));
 			}
 			catch (Exception ex)
@@ -121,11 +118,9 @@ namespace Educational.Materials
 			try
 			{
 				var material=await _materialRepository.GetAsync(id);
-                Material mater=new Material
-				{
-					 StockSum=material.StockSum-quantity,
-				};
-                var result=await _materialRepository.UpdateAsync(mater);
+				material.StockSum=material.StockSum-quantity;
+
+				var result=await _materialRepository.UpdateAsync(material);
                 return ApiResult<CreateUpdateMaterialDto>.Success(ResultCode.Ok, ObjectMapper.Map<Material, CreateUpdateMaterialDto>(result));
 			}
 			catch (Exception ex)
@@ -158,6 +153,30 @@ namespace Educational.Materials
 			catch (Exception ex)
 			{
 				logger.LogError("批量修改物料状态出错！" + ex.Message);
+				throw;
+			}
+		}
+
+		/// <summary>
+		/// 修改物料信息
+		/// </summary>
+		public async Task<ApiResult<MaterialDto>> UpdateMaterialAsync(Guid id, CreateUpdateMaterialDto input)
+		{
+			try
+			{
+				var material=await _materialRepository.GetAsync(id);
+				if (material == null)
+				{
+					return ApiResult<MaterialDto>.Fail(ResultCode.Fail, "物料不存在！");
+				}
+				var result=ObjectMapper.Map(input, material);
+				await _materialRepository.UpdateAsync(result);
+				return ApiResult<MaterialDto>.Success(ResultCode.Ok, ObjectMapper.Map<Material, MaterialDto>(result));
+
+			}
+			catch (Exception ex)
+			{
+				logger.LogError("修改物料信息出错！" + ex.Message);
 				throw;
 			}
 		}

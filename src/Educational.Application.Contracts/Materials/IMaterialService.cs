@@ -26,6 +26,8 @@ namespace Educational.Materials
 
 		// 更新状态
 		Task<ApiResult> UpdataStatus(List<Guid> ids,bool status);
+		//更新
+        Task<ApiResult<MaterialDto>> UpdateMaterialAsync(Guid id, CreateUpdateMaterialDto  input);
 	}
 }
 
