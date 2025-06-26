@@ -144,7 +144,9 @@ namespace Educational.Organization
                                Description=org.Description,
                                DeleterId=org.DeleterId,
                                DeletionTime=org.DeletionTime
-                           };  
+                           };
+                //按照权重进行排序
+                linq = linq.OrderByDescending(x=>x.SortOrder);
                 // 使用ABP自带分页方法 
                 var page = linq.PageResult(search.PageIndex, search.PageSize);
                 // 映射

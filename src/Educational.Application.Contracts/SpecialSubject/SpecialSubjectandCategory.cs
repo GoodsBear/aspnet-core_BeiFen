@@ -5,34 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.SpecialSubject
-{ 
-    /// <summary>
-    /// 专题名称
-    /// </summary>
-    public class SpecialSubjectModel : AuditedAggregateRoot<Guid>
-    {
-        //// 构造函数
-        //public SpecialSubjectModel()
-        //{
-        //    // 初始化默认值
-        //    Details = string.Empty;
-        //    AchievementDisplay = string.Empty;
-        //}
-
-        //public SpecialSubjectModel(
-        //    string name,
-        //    int categoryId,
-        //    string teacher,
-        //    string brief = "")
-        //{
-        //    Name = name;
-        //    CategoryId = categoryId;
-        //    Teacher = teacher;
-        //    Brief = brief;
-        //}
+{
+    public class SpecialSubjectandCategory: FullAuditedEntityDto<Guid>
+    { 
+        /// <summary>
+        /// 专题类别名称
+        /// </summary>
+        public string CategoryName { get; set; }
         [Required]
         [StringLength(128)]
         public string Name { get; set; } // 专题名称（如"大祥"）
@@ -55,7 +38,5 @@ namespace Educational.SpecialSubject
 
         [Column(TypeName = "text")]
         public string? AchievementDisplay { get; set; } // 教学成果展示（富文本HTML内容）
-
- 
     }
 }
