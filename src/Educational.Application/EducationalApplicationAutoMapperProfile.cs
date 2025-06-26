@@ -1,23 +1,24 @@
 using AutoMapper;
-using Educational.Courses;
 using AutoMapper;
 using AutoMapper.Internal.Mappers;
 using Educational.Announcements;
+using Educational.Classgrade;
+using Educational.Courses;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
+using Educational.Dto.Grades;
 using Educational.Dto.Positions;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
+using Educational.SpecialSubject;
 using Educational.Staffs;
+using Educational.StaffTypes;
 using Educational.Subject;
 using System.Collections.Generic;
 using System.Linq;
-using Educational.StaffTypes;
-using Educational.Classgrade;
-using Educational.Dto.Grades;
 
 namespace Educational;
 
@@ -25,6 +26,14 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
+        //专题一套
+        CreateMap<UpdateSpecialSubjectDto, SpecialSubjectModel>().ReverseMap();
+        CreateMap<SpecialSubjectModel, SpecialSubjectDto>().ReverseMap();
+        CreateMap<UpdateCategoryDto, CategoryModel>().ReverseMap();
+        CreateMap<CategoryModel, CategoryModelDto>().ReverseMap();
+        CreateMap<CategoryModel,CategoryModelDto>().ReverseMap();
+
+
 
         CreateMap<CreateUpdateOrganizationLevel, OrganizationLevel>();
         CreateMap<OrganizationLevel, OrganizationLevelDto>();
