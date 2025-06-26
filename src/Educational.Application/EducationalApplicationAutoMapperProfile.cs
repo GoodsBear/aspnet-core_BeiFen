@@ -1,24 +1,26 @@
 using AutoMapper;
-using Educational.Courses;
 using AutoMapper;
 using AutoMapper.Internal.Mappers;
 using Educational.Announcements;
+using Educational.Classgrade;
+using Educational.Courses;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
+using Educational.Dto.Grades;
+using Educational.Dto.MaterialDtos;
 using Educational.Dto.Positions;
+using Educational.Materials;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
 using Educational.Staffs;
+using Educational.StaffTypes;
+using Educational.StafRoles;
 using Educational.Subject;
 using System.Collections.Generic;
 using System.Linq;
-using Educational.StafRoles;
-using Educational.StaffTypes;
-using Educational.Classgrade;
-using Educational.Dto.Grades;
 
 namespace Educational;
 
@@ -46,6 +48,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organizationaaa. */
+        CreateMap<CreateCourseDto, Course>().ReverseMap().ForMember(dest => dest.CourseName, pot => pot.MapFrom(src => src.CourseName)).ReverseMap();
         CreateMap<Course, CourseDto>(MemberList.Source)
             .ForMember(dest=>dest.CourseName,pot=>pot.MapFrom(src=>src.CourseName)).ReverseMap();
         // 职位映射
@@ -76,5 +79,9 @@ public class EducationalApplicationAutoMapperProfile : Profile
 
         CreateMap<DictTypeDto, DictType>().ReverseMap();
 
-    }
+		//物料
+		CreateMap<Material, MaterialDto>().ReverseMap();
+		CreateMap<CreateUpdateMaterialDto,Material>().ReverseMap();
+
+	}
 } 

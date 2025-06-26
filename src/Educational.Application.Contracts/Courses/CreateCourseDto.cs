@@ -4,14 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Volo.Abp.Application.Dtos;
 
 namespace Educational.Courses
 {
-	/// <summary>
-	/// 课程Dto
-	/// </summary>
-	public class CourseDto:AuditedEntityDto<Guid>
+	public class CreateCourseDto
 	{
 		/// <summary>
 		/// 课程名称
@@ -22,25 +18,13 @@ namespace Educational.Courses
 		/// </summary>
 		public Guid CampusId { get; set; }
 		/// <summary>
-		/// 学校名称
-		/// </summary>
-		public string CampusName { get; set; }
-		/// <summary>
 		/// 科目
 		/// </summary>
 		public Guid SubjectId { get; set; }
 		/// <summary>
-		/// 科目名称
-		/// </summary>
-		public string SubjectName { get; set; }
-		/// <summary>
 		/// 专题
 		/// </summary>
 		public Guid TopicId { get; set; }
-		/// <summary>
-		/// 专题名称
-		/// </summary>
-		public string TopicName { get; set; }
 		/// <summary>
 		/// 课型
 		/// </summary>
@@ -84,7 +68,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 状态
 		/// </summary>
-        public bool Status { get; set; }
+		public bool Status { get; set; }
 
 		///在线购课报名设置
 
@@ -124,6 +108,5 @@ namespace Educational.Courses
 		/// 服务说明
 		/// </summary>
 		public string ServiceRemark { get; set; }
-
 	}
 }
