@@ -27,11 +27,11 @@ namespace Educational.Courses
 		/// </summary>
 		/// <param name="coursedto"></param>
 		/// <returns></returns>
-		public async Task<ApiResult> AddCourse(CourseDto coursedto)
+		public async Task<ApiResult> AddCourse(CreateCourseDto coursedto)
 		{
 			try
 			{
-				var course = ObjectMapper.Map<CourseDto, Course>(coursedto);
+				var course = ObjectMapper.Map<CreateCourseDto, Course>(coursedto);
 				var cour=await _courseRepository.InsertAsync(course);
 				var res=cour.Equals(course);
 				return ApiResult.Success(ResultCode.Ok);
@@ -46,7 +46,7 @@ namespace Educational.Courses
 		/// </summary>
 		/// <param name="seach"></param>
 		/// <returns></returns>
-		public async Task<ApiResult<ApiPaging<List<CreateCourseDto>>>> GetListCourse([FromQuery]SearchCourseDto seach)
+		public async Task<ApiResult<ApiPaging<List<CourseDto>>>> GetListCourse([FromQuery]SearchCourseDto seach)
 		{
 			var course=await _courseRepository.GetQueryableAsync();
 			if (!seach.CourseName.IsNullOrEmpty())
@@ -71,14 +71,14 @@ namespace Educational.Courses
 			}
 
 			var coursepage= course.Page(seach.PageIndex,seach.PageSize);
-			var courselist=ObjectMapper.Map<List<Course>, List<CreateCourseDto>>(coursepage.ToList());
-			ApiPaging<List<CreateCourseDto>> paging=new ApiPaging<List<CreateCourseDto>>
+			var courselist=ObjectMapper.Map<List<Course>, List<CourseDto>>(coursepage.ToList());
+			ApiPaging<List<CourseDto>> paging=new ApiPaging<List<CourseDto>>
 			{
 				TotleCount= course.Count(),
 				Data= courselist,
                 TotlePage= (int)Math.Ceiling(course.Count()* 1.0/seach.PageSize)
 			};
-			return ApiResult<ApiPaging<List<CreateCourseDto>>>.Success(ResultCode.Ok, paging);
+			return ApiResult<ApiPaging<List<CourseDto>>>.Success(ResultCode.Ok, paging);
 		}
 
 		/// <summary>
