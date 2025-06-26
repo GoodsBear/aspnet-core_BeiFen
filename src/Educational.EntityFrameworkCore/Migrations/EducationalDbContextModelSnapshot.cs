@@ -1490,7 +1490,6 @@ namespace Educational.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
-
                     b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime(6)");
 
@@ -1589,6 +1588,7 @@ namespace Educational.Migrations
                     b.ToTable("AppStudent", (string)null);
                 });
 
+                
             modelBuilder.Entity("Educational.SubjectModel.SubjectModel", b =>
                 {
                     b.Property<Guid>("Id")
