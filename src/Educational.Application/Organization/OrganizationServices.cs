@@ -155,7 +155,7 @@ namespace Educational.Organization
                 {
                     TotleCount = page.RowCount,
                     TotlePage = (int)Math.Ceiling(page.RowCount * 1.0 / search.PageSize),
-                    Data = linq.ToList()
+                    Data = linq.Skip((search.PageIndex-1)* search.PageSize).Take(search.PageSize).ToList()
                 };
                 return ApiResult<ApiPaging<List<LevelDto>>>.Success(ResultCode.Ok, result);
             }
@@ -164,8 +164,8 @@ namespace Educational.Organization
                 logger.LogError("获取组织机构列表出错: " + ex.Message);
                 throw;
             }
-        } 
-        
+        }  
+
 		/// <summary>
 		/// 更新组织机构
 		/// </summary>

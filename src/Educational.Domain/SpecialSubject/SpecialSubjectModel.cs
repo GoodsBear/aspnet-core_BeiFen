@@ -34,7 +34,7 @@ namespace Educational.SpecialSubject
         //    Brief = brief;
         //}
         [Required]
-        [StringLength(128)]
+        [StringLength(128)] 
         public string Name { get; set; } // 专题名称（如"大祥"）
 
         [Required]
@@ -47,13 +47,13 @@ namespace Educational.SpecialSubject
         [StringLength(64)]
         public string Teacher { get; set; } // 授课老师（如"王二鼻子"）
 
-        [Column(TypeName = "varchar(500)")]
+        [StringLength(500)]
         public string Brief { get; set; } // 简介（如"影楼一大糟"）
 
-        [Column(TypeName = "text")]
+        [StringLength(500)]
         public string? Details { get; set; } // 详细介绍（富文本HTML内容）
 
-        [Column(TypeName = "text")]
+        [StringLength(500)]
         public string? AchievementDisplay { get; set; } // 教学成果展示（富文本HTML内容）
 
  

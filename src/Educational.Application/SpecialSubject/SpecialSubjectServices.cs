@@ -80,7 +80,7 @@ namespace Educational.SpecialSubject
                 //插入数据库
                 var organizationDto = await categoryRepository.InsertAsync(organization);
                 //映射
-                var result = ObjectMapper.Map< CategoryModel, CategoryModelDto> (organizationDto);
+                var result = ObjectMapper.Map<CategoryModel, CategoryModelDto> (organizationDto);
                 //返回
                 return ApiResult<CategoryModelDto>.Success(ResultCode.Ok, result);
             }

@@ -31,7 +31,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<SpecialSubjectModel, SpecialSubjectDto>().ReverseMap();
         CreateMap<UpdateCategoryDto, CategoryModel>().ReverseMap();
         CreateMap<CategoryModel, CategoryModelDto>().ReverseMap();
-        CreateMap<CategoryModel,CategoryModelDto>().ReverseMap();
+        CreateMap<CategoryModel, CategoryModelDto>().ReverseMap();
 
 
 
