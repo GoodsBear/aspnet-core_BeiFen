@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +37,7 @@ namespace Educational.Classgrade
         /// </summary>
         [Required(ErrorMessage = "面积不能为空")]
         [Range(0, 10000, ErrorMessage = "面积不能小于0或大于10000")]
+        [Column(TypeName = "decimal(8,3)")]
         public decimal ClassRoomArea { get; set; }
         /// <summary>
         /// 备注
