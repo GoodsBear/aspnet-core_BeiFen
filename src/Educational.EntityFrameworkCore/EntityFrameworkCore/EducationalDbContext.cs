@@ -4,17 +4,14 @@ using Educational.Students;
 using Educational.Organization;
 using Educational.Announcements;
 using Educational.Datadictionary;
-using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.Staffs;
 using Educational.StaffTypes;
-using Educational.Subject;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
-using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
@@ -64,12 +61,16 @@ public class EducationalDbContext :
     public DbSet<Role> Role { get; set; } //角色信息表
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限信息表
     public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
-    public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
-    public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
+
+    //public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
+
+    //public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
     public DbSet<Educational.SubjectModel.SubjectModel> SubjectModel { get; set; }//科目表
     public DbSet<Educational.Materials.Material> Material { get; set; }//物料表
     public DbSet<Educational.Materials.MaterialRecords> MaterialRecords { get; set; }//物料出入库记录表
-    protected override void OnModelCreating(ModelBuilder builder)
+
+    public DbSet<Educational.Classgrade.ClassRoom> ClassRoom { get; set; }//物料出入库记录表
+    protected override void OnModelCreating(ModelBuilder builder) //教室表
     {
         base.OnModelCreating(builder);
 

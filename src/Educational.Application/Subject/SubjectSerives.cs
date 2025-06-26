@@ -17,6 +17,7 @@ using Volo.Abp.ObjectMapping;
 
 namespace Educational.Subject
 {
+    [ApiExplorerSettings(GroupName ="科目")]
     public class SubjectSerives : ApplicationService, ISubjectServices
     {
         private readonly IRepository<SubjectModel, Guid> _subjectRepository;

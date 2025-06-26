@@ -1,4 +1,5 @@
 ﻿using Educational.Tools;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Educational.StaffTypes
 {
+    [ApiExplorerSettings(GroupName ="成员")]
     public class StaffTypeServices : ApplicationService, IStaffTypeServices
     {
         private readonly IRepository<StaffTypeInfo> repository;

@@ -16,6 +16,7 @@ using Volo.Abp.ObjectMapping;
 
 namespace Educational.Grades
 {
+    [ApiExplorerSettings(GroupName ="年级")]
     public class GradeAppService : ApplicationService, IGradeAppService
     {
         IRepository<Grade, Guid> gradeRep;
