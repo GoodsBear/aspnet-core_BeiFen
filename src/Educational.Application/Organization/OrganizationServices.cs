@@ -258,7 +258,6 @@ namespace Educational.Organization
             }
             catch (Exception ex)
             {
-                // 添加日志记录
                 Logger.LogError(ex, "组织机构下拉框获取失败");
                 throw;
             }

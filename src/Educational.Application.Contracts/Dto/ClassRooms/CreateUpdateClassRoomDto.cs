@@ -30,8 +30,7 @@ namespace Educational.Dto.ClassRooms
         /// 面积
         /// </summary>
         [Required(ErrorMessage = "面积不能为空")]
-        [Range(0, 10000, ErrorMessage = "面积不能小于0或大于10000")]
-        public decimal ClassRoomArea { get; set; }
+        public int ClassRoomArea { get; set; }
         /// <summary>
         /// 备注
         /// </summary>

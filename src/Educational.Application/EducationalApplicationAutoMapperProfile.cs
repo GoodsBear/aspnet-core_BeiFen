@@ -78,6 +78,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<DictTypeDto, DictType>().ReverseMap();
         // 教室映射
         CreateMap<ClassRoom, ClassRoomDto>().ReverseMap();
+        CreateMap<ClassRoom, ClassRoomSelectDto>().ReverseMap();
         CreateMap<CreateUpdateClassRoomDto, ClassRoom>().ReverseMap();
         //科目管理 
         CreateMap<UpdateSubjectDto, Educational.Subject.SubjectModel>().ReverseMap();

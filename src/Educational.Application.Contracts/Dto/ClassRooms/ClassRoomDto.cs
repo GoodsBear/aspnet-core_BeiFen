@@ -25,7 +25,7 @@ namespace Educational.Dto.ClassRooms
         /// <summary>
         /// 面积
         /// </summary>
-        public decimal ClassRoomArea { get; set; }
+        public int ClassRoomArea { get; set; }
         /// <summary>
         /// 备注
         /// </summary>

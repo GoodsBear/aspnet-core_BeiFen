@@ -1,6 +1,7 @@
 ﻿using Educational.Classgrade;
 using Educational.Dto.ClassRooms;
 using Educational.Dto.Positions;
+using Educational.Organization;
 using Educational.Positions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -31,6 +32,7 @@ namespace Educational.ClassRooms
         /// </summary>
         /// <param name="ids">教室id数组</param>
         /// <returns>返回受影响行数</returns>
+        [HttpDelete]
         public async Task<ApiResult> BatchDelete(List<Guid> ids)
         {
             try
@@ -74,6 +76,25 @@ namespace Educational.ClassRooms
                 throw;
             }
         }
+        /// <summary>
+        /// 获取教室列表下拉框
+        /// </summary>
+        /// <returns>返回教室列表下拉框</returns>
+        public async Task<ApiResult<List<ClassRoomSelectDto>>> GetClassRoomAsync()
+        {
+            try
+            {
+                var queryable = await classRoomRep.GetListAsync();
+                var results = ObjectMapper.Map<List<ClassRoom>, List<ClassRoomSelectDto>>(queryable);
+                return ApiResult<List<ClassRoomSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "教室下拉框获取失败");
+                throw;
+            }
+        }
+
         /// <summary>
         /// 获取教室列表
         /// </summary>

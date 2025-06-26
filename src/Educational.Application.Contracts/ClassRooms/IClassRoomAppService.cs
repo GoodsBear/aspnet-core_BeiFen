@@ -1,5 +1,6 @@
 ﻿using Educational.Classgrade;
 using Educational.Dto.ClassRooms;
+using Educational.Organization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace Educational.ClassRooms
         Task<ApiResult<ClassRoomDto>> UpdateClassRoom(Guid id, CreateUpdateClassRoomDto createClassRoomDto);
         Task<ApiResult<ApiPaging<List<ClassRoomDto>>>> GetClassRoomList([FromQuery] ClassRoomSeachDto searchDto);
         Task<ApiResult> BatchDelete(List<Guid> ids);
+        Task<ApiResult<List<ClassRoomSelectDto>>> GetClassRoomAsync();
 
     }
 }

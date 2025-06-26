@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    [Migration("20250626071510_小数点限制")]
-    partial class 小数点限制
+    [Migration("20250626082504_修改教室表的面积类型")]
+    partial class 修改教室表的面积类型
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -201,8 +201,8 @@ namespace Educational.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<decimal>("ClassRoomArea")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<int>("ClassRoomArea")
+                        .HasColumnType("int");
 
                     b.Property<string>("ClassRoomDescription")
                         .IsRequired()

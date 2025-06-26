@@ -168,7 +168,7 @@ public class EducationalHttpApiHostModule : AbpModule
             {
                 options.SwaggerDoc("公告", new OpenApiInfo { Title = "公告管理", Version = "v1" });
                 options.SwaggerDoc("课程", new OpenApiInfo { Title = "课程管理", Version = "v1" });
-                options.SwaggerDoc("科目年级", new OpenApiInfo { Title = "科目管理", Version = "v1" });
+                options.SwaggerDoc("科目", new OpenApiInfo { Title = "科目管理", Version = "v1" });
                 options.SwaggerDoc("年级", new OpenApiInfo { Title = "年级管理", Version = "v1" });
                 options.SwaggerDoc("班级", new OpenApiInfo { Title = "班级管理", Version = "v1" });
                 options.SwaggerDoc("教室", new OpenApiInfo { Title = "教室管理", Version = "v1" });
