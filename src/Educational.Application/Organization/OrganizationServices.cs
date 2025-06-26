@@ -230,8 +230,7 @@ namespace Educational.Organization
         public async Task<ApiResult<List<XialaLevelDto>>> GetLevelAsync()
         { 
             try
-            {
-
+            { 
                 // 正确获取可查询接口
                 var queryable = await  _organizationLevelRepository.GetListAsync();
                 // 正确映射集合类型
@@ -254,6 +253,10 @@ namespace Educational.Organization
 
         public async Task<List<OrganizationTreeDto>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")]Guid parentId)
         {
+            if (parentId == null)
+            { 
+                parentId = Guid.Empty;
+            }
             var allOrganizations = await _organizationRepository.GetListAsync();
 
             var roots = allOrganizations.Where(o => o.PartentedId == parentId).OrderBy(x => x.SortOrder).ToList();
@@ -261,11 +264,7 @@ namespace Educational.Organization
 
             // 构建一个查找表，按父ID分组 
             var orgLookup = allOrganizations
-                .ToLookup(o => o.PartentedId as Guid?);
-            //.ToLookup(
-            //        kv => (Guid?)kv.Key, // 将键转换为Guid?
-            //        kv => kv.Value
-            //    ));
+                .ToLookup(o => o.PartentedId as Guid?); 
             // 递归构建子树
             foreach (var item in tree)
             {
@@ -273,7 +272,36 @@ namespace Educational.Organization
             }
 
             return tree;
-        } 
+        }
+
+        /// <summary>
+        /// 组织机构级别添加
+        /// </summary> 
+        public async Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto)
+        {
+            try
+            {
+                // 验证机构名是否已存在
+                var existingOrg = await _organizationLevelRepository.FirstOrDefaultAsync(x => x.Name == Dto.Name);
+                if (existingOrg != null)
+                {
+                    return ApiResult<OrganizationLevelDto>.Fail(ResultCode.Fail, "机构名已存在");
+                }
+                //创建机构 
+                var organization = ObjectMapper.Map<CreateUpdateOrganizationLevel, OrganizationLevel>(Dto);
+                //插入数据库
+                var organizationDto = await _organizationLevelRepository.InsertAsync(organization);
+                //映射
+                var result = ObjectMapper.Map<OrganizationLevel, OrganizationLevelDto>(organizationDto);
+                //返回
+                return ApiResult<OrganizationLevelDto>.Success(ResultCode.Ok, result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("组织机构级别add失败" + ex.Message);
+                return ApiResult<OrganizationLevelDto>.Fail(ResultCode.Fail, $"组织机构级别add失败: {ex.Message}");
+            }
+        }
         private void BuildTree(OrganizationTreeDto dto, ILookup<Guid?, OrganizationModel> lookup)
         {
             var children = lookup[dto.Id].OrderBy(x => x.SortOrder).ToList();
@@ -289,6 +317,7 @@ namespace Educational.Organization
             var dto = ObjectMapper.Map<OrganizationModel, OrganizationTreeDto>(entity);
             dto.Chlidren = new List<OrganizationTreeDto>(); // 初始化
             return dto;
-        }
+        } 
+
     }
 }

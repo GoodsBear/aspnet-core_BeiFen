@@ -1,4 +1,4 @@
-﻿using Educational.Classgrade;
+using Educational.Classgrade;
 using Educational.Courses;
 using Educational.Students;
 using Educational.Organization;
@@ -9,6 +9,7 @@ using Educational.Positions;
 using Educational.RBAC;
 using Educational.Staffs;
 using Educational.StaffTypes;
+using Educational.Subject;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -72,7 +73,6 @@ public class EducationalDbContext :
     public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
     public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
     public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
-
     public DbSet<Educational.SubjectModel.SubjectModel> SubjectModel { get; set; }//科目表
     public DbSet<Educational.Materials.Material> Material { get; set; }//物料表
     public DbSet<Educational.Materials.MaterialRecords> MaterialRecords { get; set; }//物料出入库记录表
@@ -113,6 +113,16 @@ public class EducationalDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });
+        /// <summary>
+        ///  科目管理表
+        /// </summary>   
+        builder.Entity<Educational.SubjectModel.SubjectModel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "SubjectModel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
+    
 
         /// <summary>
         /// 人员类型信息表

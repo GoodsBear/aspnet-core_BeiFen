@@ -1,9 +1,7 @@
 using AutoMapper;
 using Educational.Courses;
 using AutoMapper;
-using Educational.Organization;
-using System.Collections.Generic;
-using System.Linq;
+using AutoMapper.Internal.Mappers;
 using Educational.Announcements;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
@@ -19,6 +17,9 @@ using Educational.StaffTypes;
 using Educational.Classgrade;
 using Educational.Dto.Grades;
 using Educational.RolePerssions;
+using Educational.Subject;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Educational;
 
@@ -26,6 +27,9 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
+
+        CreateMap<CreateUpdateOrganizationLevel, OrganizationLevel>();
+        CreateMap<OrganizationLevel, OrganizationLevelDto>();
         // 添加从 CreateUpdateOrganizationDto 到 OrganizationModel 的映射
         CreateMap<CreateUpdateOrganizationDto, OrganizationModel>();
         CreateMap<OrganizationModel, OrganizationDto>();
@@ -69,6 +73,12 @@ public class EducationalApplicationAutoMapperProfile : Profile
         // 字典类型映射
         CreateMap<DictTypeDto, DictType>().ReverseMap();
 
+         
+        CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
+        CreateMap<Permissions, PermissionsDto>().ReverseMap();
+        //科目管理 
+        CreateMap<UpdateSubjectDto, Educational.Subject.SubjectModel>().ReverseMap();
+        CreateMap<Educational.Subject.SubjectModel, SubjectDto>().ReverseMap();
+        CreateMap<Educational.Subject.SubjectModel, XialaSubjectDto>().ReverseMap();
     }
-}
-
+} 
