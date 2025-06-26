@@ -36,6 +36,10 @@ namespace Educational.Staffs
 
         /// <summary>导出员工信息</summary>
         Task<ApiResult<ExportResult>> GetExportStaffList();
+        /// <summary>
+        /// 员工下拉框
+        /// </summary>
+        Task<ApiResult<List<StaffSelectDto>>> GetStaffAsync();
 
     }
 }

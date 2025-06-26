@@ -22,6 +22,7 @@ namespace Educational.Courses
 			_courseRepository = courseRepository;
 			this.organiRepository = organiRepository;
 		}
+
 		/// <summary>
 		/// 新增课程
 		/// </summary>
