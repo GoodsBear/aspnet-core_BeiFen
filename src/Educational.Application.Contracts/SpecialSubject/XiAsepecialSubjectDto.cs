@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Educational.SpecialSubject
 {
-    public class UpdateCategoryDto
+    public class XiAsepecialSubjectDto
     {
-        /// <summary>
-        /// 专题类别名称
-        /// </summary>
-        public string CategoryName { get; set; }  
+        public Guid Id { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -19,6 +19,7 @@ using Educational.StaffTypes;
 using Educational.Subject;
 using System.Collections.Generic;
 using System.Linq;
+using Volo.Abp.ObjectMapping;
 
 namespace Educational;
 
@@ -31,10 +32,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<SpecialSubjectModel, SpecialSubjectDto>().ReverseMap();
         CreateMap<UpdateCategoryDto, CategoryModel>().ReverseMap();
         CreateMap<CategoryModel, CategoryModelDto>().ReverseMap();
-        CreateMap<CategoryModel, CategoryModelDto>().ReverseMap();
-
-
-
+        CreateMap<SpecialSubjectModel, XiAsepecialSubjectDto>().ReverseMap();
+         
         CreateMap<CreateUpdateOrganizationLevel, OrganizationLevel>();
         CreateMap<OrganizationLevel, OrganizationLevelDto>();
         // 添加从 CreateUpdateOrganizationDto 到 OrganizationModel 的映射

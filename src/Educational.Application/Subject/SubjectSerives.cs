@@ -155,7 +155,6 @@ namespace Educational.Subject
         /// <summary>
         /// 修改 
         /// <summary>
-
         public async Task<ApiResult<Educational.Subject.SubjectModel>> UpdateAsync(Guid id, UpdateSubjectDto input)
         {
             try
@@ -190,8 +189,6 @@ namespace Educational.Subject
                 return ApiResult<Educational.Subject.SubjectModel>.Fail(ResultCode.Fail, $"更新科目失败: {ex.Message}");
             }
         }
-         
 
-        
     }
 }
