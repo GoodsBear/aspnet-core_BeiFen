@@ -18,6 +18,7 @@ using Educational.StafRoles;
 using Educational.StaffTypes;
 using Educational.Classgrade;
 using Educational.Dto.Grades;
+using Educational.RolePerssions;
 
 namespace Educational;
 
@@ -60,9 +61,12 @@ public class EducationalApplicationAutoMapperProfile : Profile
         // 权限映射
         CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
         CreateMap<Permissions, PermissionsDto>().ReverseMap();
+        // 角色权限映射
+        CreateMap<RolePermission, RolePermissionDto>().ReverseMap();
         // 员工角色映射
         CreateMap<StaffRole, StaffRoleDto>().ReverseMap();
-
+        CreateMap<StaffRole,RoleStaffDto>().ReverseMap();
+        // 字典类型映射
         CreateMap<DictTypeDto, DictType>().ReverseMap();
 
     }

@@ -13,5 +13,13 @@ namespace Educational.StafRoles
         /// 添加用户角色分配
         /// </summary>
         Task<ApiResult> AddStaffRole(StaffRoleDto input);
+        /// <summary>
+        /// 添加角色用户分配
+        /// </summary>
+        Task<ApiResult> AddRoleStaff(RoleStaffDto input);
+        /// <summary>
+        /// 移除角色用户
+        /// </summary>
+        Task<ApiResult> RemoveStaffFromRole(Guid roleId, List<Guid> staffIds);
     }
 }
