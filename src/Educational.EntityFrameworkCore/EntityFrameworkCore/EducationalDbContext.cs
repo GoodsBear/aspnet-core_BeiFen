@@ -54,6 +54,8 @@ public class EducationalDbContext :
 	public DbSet<ClassInfo> Class { get; set; }
     //年级
 	public DbSet<Grade> Grade { get; set; }
+    //教室
+    public DbSet<ClassRoom> ClassRoom { get; set; }
     //家长
 	public DbSet<Parent> Parent { get; set; }
     //课程
