@@ -46,18 +46,13 @@ public class EducationalDbContext :
     {
 
     }
-    //学生
-	public DbSet<Student> Student { get; set; }
-    //班级
-	public DbSet<ClassInfo> Class { get; set; }
-    //年级
-	public DbSet<Grade> Grade { get; set; }
-    //教室
-    public DbSet<ClassRoom> ClassRoom { get; set; }
-    //家长
-	public DbSet<Parent> Parent { get; set; }
-    //课程
-    public DbSet<Course> Course { get; set; }
+   
+	public DbSet<Student> Student { get; set; } //学生表
+    public DbSet<ClassInfo> Class { get; set; } //班级
+    public DbSet<Grade> Grade { get; set; } //年级
+    public DbSet<ClassRoom> ClassRoom { get; set; } //教室
+    public DbSet<Parent> Parent { get; set; }  //家长
+    public DbSet<Course> Course { get; set; }  //课程
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
     public DbSet<StaffRole> StaffRole { get; set; } //员工角色中间表
     public DbSet<RolePermission>RolePermision { get; set; } //角色权限中间表
@@ -67,16 +62,14 @@ public class EducationalDbContext :
     public DbSet<Announcement> announcements { get; set; }//公告信息表
     public DbSet<Role> Role { get; set; } //角色信息表
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限信息表
-    public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
+    public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; } //人员类型信息表
 
     //public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
 
     //public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
-    public DbSet<Educational.SubjectModel.SubjectModel> SubjectModel { get; set; }//科目表
-    public DbSet<Educational.Materials.Material> Material { get; set; }//物料表
-    public DbSet<Educational.Materials.MaterialRecords> MaterialRecords { get; set; }//物料出入库记录表
-
-    public DbSet<Educational.Classgrade.ClassRoom> ClassRoom { get; set; }//物料出入库记录表
+    public DbSet<Educational.SubjectModel.SubjectModel> SubjectModel { get; set; } //科目表
+    public DbSet<Educational.Materials.Material> Material { get; set; } //物料表
+    public DbSet<Educational.Materials.MaterialRecords> MaterialRecords { get; set; } //物料出入库记录表
     protected override void OnModelCreating(ModelBuilder builder) //教室表
     {
         base.OnModelCreating(builder);
