@@ -244,7 +244,25 @@ namespace Educational.Organization
                 Logger.LogError(ex, "组织机构级别获取失败");
                 throw;
             }
-        }  
+        }
+        /// <summary>
+        /// 获取组织机构下拉框
+        /// </summary>
+        public async Task<ApiResult<List<OrganizationSelectDto>>> GetOrganizationAsync()
+        {
+            try
+            {
+                var queryable = await _organizationRepository.GetListAsync();
+                var results = ObjectMapper.Map<List<OrganizationModel>, List<OrganizationSelectDto>>(queryable);
+                return ApiResult<List<OrganizationSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                // 添加日志记录
+                Logger.LogError(ex, "组织机构下拉框获取失败");
+                throw;
+            }
+        }
         /// <summary>
         /// 树形组织机构表
         /// </summary>
@@ -317,7 +335,8 @@ namespace Educational.Organization
             var dto = ObjectMapper.Map<OrganizationModel, OrganizationTreeDto>(entity);
             dto.Chlidren = new List<OrganizationTreeDto>(); // 初始化
             return dto;
-        } 
+        }
 
+       
     }
 }

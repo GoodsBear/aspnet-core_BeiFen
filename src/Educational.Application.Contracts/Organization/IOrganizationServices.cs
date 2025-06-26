@@ -58,8 +58,12 @@ namespace Educational.Organization
         /// </summary> 
          Task<ApiResult<List<XialaLevelDto>>> GetLevelAsync();
         /// <summary>
+        /// 组织机构下拉框
+        /// </summary>
+        Task<ApiResult<List<OrganizationSelectDto>>> GetOrganizationAsync();
+        /// <summary>
         /// 组织机构级别添加
         /// </summary>  
-      Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto);
+        Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto);
     }
 } 

@@ -2631,9 +2631,8 @@ namespace Educational.Migrations
                         {
                             b.Navigation("PropertyChanges");
                         });
-#pragma warning restore 612, 618
-                });
+                }
 
         }
     }
-}
+

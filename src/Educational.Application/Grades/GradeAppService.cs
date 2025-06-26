@@ -16,12 +16,13 @@ using Volo.Abp.ObjectMapping;
 
 namespace Educational.Grades
 {
+    [ApiExplorerSettings(GroupName = "年级")]
     public class GradeAppService : ApplicationService, IGradeAppService
     {
         IRepository<Grade, Guid> gradeRep;
-        ILogger<PositionAppService> logger;
+        ILogger<GradeAppService> logger;
 
-        public GradeAppService(IRepository<Grade, Guid> gradeRep, ILogger<PositionAppService> logger)
+        public GradeAppService(IRepository<Grade, Guid> gradeRep, ILogger<GradeAppService> logger)
         {
             this.gradeRep = gradeRep;
             this.logger = logger;

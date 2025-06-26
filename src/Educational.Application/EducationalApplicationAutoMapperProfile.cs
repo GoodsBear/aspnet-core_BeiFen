@@ -23,6 +23,7 @@ using Educational.RolePerssions;
 using Educational.Subject;
 using System.Collections.Generic;
 using System.Linq;
+using Educational.Dto.ClassRooms;
 
 namespace Educational;
 
@@ -33,12 +34,12 @@ public class EducationalApplicationAutoMapperProfile : Profile
 
         CreateMap<CreateUpdateOrganizationLevel, OrganizationLevel>();
         CreateMap<OrganizationLevel, OrganizationLevelDto>();
-        // 添加从 CreateUpdateOrganizationDto 到 OrganizationModel 的映射
+        // 组织机构映射
         CreateMap<CreateUpdateOrganizationDto, OrganizationModel>();
         CreateMap<OrganizationModel, OrganizationDto>();
         CreateMap<OrganizationModel, OrganizationTreeDto>().ReverseMap();
         CreateMap<OrganizationLevel, XialaLevelDto>().ReverseMap();
-
+        CreateMap<OrganizationModel, OrganizationSelectDto>().ReverseMap();
         CreateMap<XialaLevelDto, OrganizationLevel>().ReverseMap();
         //   CreateMap<OrganizationLevel, XialaLevelDto>() .ForMember(dest => dest.LevelNameDto, opt => opt.MapFrom(src => src.Name));
         CreateMap<AddorUpdStaffDTO, StaffInfo>()
@@ -75,13 +76,13 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<StaffRole,RoleStaffDto>().ReverseMap();
         // 字典类型映射
         CreateMap<DictTypeDto, DictType>().ReverseMap();
-
-         
-        CreateMap<CreateUpdatePermissionsDto, Permissions>().ReverseMap();
-        CreateMap<Permissions, PermissionsDto>().ReverseMap();
+        // 教室映射
+        CreateMap<ClassRoom, ClassRoomDto>().ReverseMap();
+        CreateMap<CreateUpdateClassRoomDto, ClassRoom>().ReverseMap();
         //科目管理 
         CreateMap<UpdateSubjectDto, Educational.Subject.SubjectModel>().ReverseMap();
         CreateMap<Educational.Subject.SubjectModel, SubjectDto>().ReverseMap();
         CreateMap<Educational.Subject.SubjectModel, XialaSubjectDto>().ReverseMap();
+
     }
 } 

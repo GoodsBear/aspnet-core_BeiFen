@@ -168,6 +168,10 @@ public class EducationalHttpApiHostModule : AbpModule
             {
                 options.SwaggerDoc("公告", new OpenApiInfo { Title = "公告管理", Version = "v1" });
                 options.SwaggerDoc("课程", new OpenApiInfo { Title = "课程管理", Version = "v1" });
+                options.SwaggerDoc("科目年级", new OpenApiInfo { Title = "科目管理", Version = "v1" });
+                options.SwaggerDoc("年级", new OpenApiInfo { Title = "年级管理", Version = "v1" });
+                options.SwaggerDoc("班级", new OpenApiInfo { Title = "班级管理", Version = "v1" });
+                options.SwaggerDoc("教室", new OpenApiInfo { Title = "教室管理", Version = "v1" });
                 options.SwaggerDoc("组织机构", new OpenApiInfo { Title = "组织机构管理", Version = "v1" });
                 options.SwaggerDoc("职位", new OpenApiInfo { Title = "职位管理", Version = "v1" });
                 options.SwaggerDoc("权限", new OpenApiInfo { Title = "权限管理", Version = "v1" });
@@ -266,7 +270,7 @@ public class EducationalHttpApiHostModule : AbpModule
         //    app.UseMultiTenancy();
         //}
 
-        //ѩ��Id
+        //雪花Id
         YitIdHelper.SetIdGenerator(new IdGeneratorOptions(1));
 
         app.UseUnitOfWork();
@@ -278,6 +282,10 @@ public class EducationalHttpApiHostModule : AbpModule
         {
             c.SwaggerEndpoint("/swagger/公告/swagger.json", "公告管理 v1");
             c.SwaggerEndpoint("/swagger/课程/swagger.json", "课程管理 v1");
+            c.SwaggerEndpoint("/swagger/科目/swagger.json", "科目管理 v1");
+            c.SwaggerEndpoint("/swagger/年级/swagger.json", "年级管理 v1");
+            c.SwaggerEndpoint("/swagger/班级/swagger.json", "班级管理 v1");
+            c.SwaggerEndpoint("/swagger/教室/swagger.json", "教室管理 v1");
             c.SwaggerEndpoint("/swagger/组织机构/swagger.json", "组织机构管理 v1");
             c.SwaggerEndpoint("/swagger/职位/swagger.json", "职位管理 v1");
             c.SwaggerEndpoint("/swagger/权限/swagger.json", "权限管理 v1");
