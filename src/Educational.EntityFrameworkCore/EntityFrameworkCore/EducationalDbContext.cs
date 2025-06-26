@@ -1,5 +1,5 @@
 using Educational.Classgrade;
-﻿using Educational.Classgrade;
+using Educational.Classgrade;
 using Educational.Courses;
 using Educational.Students;
 using Educational.Organization;
@@ -24,7 +24,6 @@ using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
-using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;

@@ -27,11 +27,11 @@ namespace Educational.Courses
 		/// </summary>
 		/// <param name="coursedto"></param>
 		/// <returns></returns>
-		public async Task<ApiResult> AddCourse(CourseDto coursedto)
+		public async Task<ApiResult> AddCourse(CreateCourseDto coursedto)
 		{
 			try
 			{
-				var course = ObjectMapper.Map<CourseDto, Course>(coursedto);
+				var course = ObjectMapper.Map<CreateCourseDto, Course>(coursedto);
 				var cour=await _courseRepository.InsertAsync(course);
 				var res=cour.Equals(course);
 				return ApiResult.Success(ResultCode.Ok);

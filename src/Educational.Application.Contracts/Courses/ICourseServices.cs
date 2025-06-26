@@ -11,7 +11,7 @@ namespace Educational.Courses
 	public interface ICourseServices:IApplicationService
 	{
 		//添加课程
-		Task<ApiResult> AddCourse(CourseDto coursedto);
+		Task<ApiResult> AddCourse(CreateCourseDto coursedto);
 
 		//课程分页
 		Task<ApiResult<ApiPaging<List<CourseDto>>>> GetListCourse(SearchCourseDto seach);
