@@ -1,6 +1,7 @@
-﻿using AutoMapper.Internal.Mappers;
+using AutoMapper.Internal.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections;
 using System.Collections.Generic;

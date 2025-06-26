@@ -4,6 +4,7 @@ using Educational.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    partial class EducationalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250626060637_排课表")]
+    partial class 排课表
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,8 +188,7 @@ namespace Educational.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("CampusId")
-                        .HasMaxLength(50)
-                        .HasColumnType("char(50)");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ClassName")
                         .IsRequired()
@@ -195,15 +197,13 @@ namespace Educational.Migrations
 
                     b.Property<string>("ClassQrCode")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("ClassStatus")
                         .HasColumnType("int");
 
                     b.Property<Guid>("ClassTeacherId")
-                        .HasMaxLength(50)
-                        .HasColumnType("char(50)");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -214,8 +214,7 @@ namespace Educational.Migrations
 
                     b.Property<string>("CourseRemark")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime(6)")
@@ -226,12 +225,10 @@ namespace Educational.Migrations
                         .HasColumnName("CreatorId");
 
                     b.Property<Guid>("DefaultClassroomId")
-                        .HasMaxLength(50)
-                        .HasColumnType("char(50)");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("DefaultCourseId")
-                        .HasMaxLength(50)
-                        .HasColumnType("char(50)");
+                        .HasColumnType("char(36)");
 
                     b.Property<Guid?>("DeleterId")
                         .HasColumnType("char(36)")
@@ -247,8 +244,7 @@ namespace Educational.Migrations
                         .HasColumnName("ExtraProperties");
 
                     b.Property<Guid>("GradeId")
-                        .HasMaxLength(50)
-                        .HasColumnType("char(50)");
+                        .HasColumnType("char(36)");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -279,79 +275,6 @@ namespace Educational.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppClassInfo", (string)null);
-                });
-
-            modelBuilder.Entity("Educational.Classgrade.ClassRoom", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("ClassRoomAddress")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<int>("ClassRoomArea")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ClassRoomDescription")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<string>("ClassRoomName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("varchar(40)")
-                        .HasColumnName("ConcurrencyStamp");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("CreatorId");
-
-                    b.Property<Guid?>("DeleterId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("DeleterId");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("DeletionTime");
-
-                    b.Property<string>("ExtraProperties")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("ExtraProperties");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("LastModificationTime");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("LastModifierId");
-
-                    b.Property<Guid>("OrganizationModelId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ClassRoom");
                 });
 
             modelBuilder.Entity("Educational.Classgrade.Grade", b =>
@@ -431,8 +354,7 @@ namespace Educational.Migrations
 
                     b.Property<string>("ClassQrCode")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -451,8 +373,7 @@ namespace Educational.Migrations
 
                     b.Property<string>("CoverImage")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime(6)")
@@ -525,8 +446,7 @@ namespace Educational.Migrations
 
                     b.Property<string>("ServiceRemark")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("Status")
                         .HasColumnType("tinyint(1)");
@@ -542,8 +462,7 @@ namespace Educational.Migrations
 
                     b.Property<string>("TeacherRemark")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("longtext");
 
                     b.Property<Guid?>("TopicId")
                         .HasColumnType("char(36)");
@@ -739,13 +658,11 @@ namespace Educational.Migrations
 
                     b.Property<string>("MaterialImage")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("MaterialName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("MaterialTypeId")
                         .HasColumnType("int");
@@ -822,8 +739,7 @@ namespace Educational.Migrations
 
                     b.Property<string>("Reason")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("longtext");
 
                     b.Property<Guid>("StaffId")
                         .HasColumnType("char(36)");
@@ -1660,13 +1576,11 @@ namespace Educational.Migrations
                         .HasColumnName("LastModifierId");
 
                     b.Property<int>("LoginCount")
-                        .HasMaxLength(11)
                         .HasColumnType("int");
 
                     b.Property<string>("NickName")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PardentName")
                         .IsRequired()
@@ -1675,8 +1589,7 @@ namespace Educational.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("varchar(11)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("RegisterTime")
                         .HasColumnType("datetime(6)");
@@ -1686,8 +1599,7 @@ namespace Educational.Migrations
 
                     b.Property<string>("Studentlist")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -1728,8 +1640,7 @@ namespace Educational.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
-                    b.Property<DateTime>("EnrollTime")
-                        .HasMaxLength(10)
+                    b.Property<DateTime?>("EnrollTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ExtraProperties")
@@ -1742,8 +1653,7 @@ namespace Educational.Migrations
 
                     b.Property<string>("IdCard")
                         .IsRequired()
-                        .HasMaxLength(18)
-                        .HasColumnType("varchar(18)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -1766,31 +1676,25 @@ namespace Educational.Migrations
 
                     b.Property<string>("ParentName")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("varchar(11)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Relation")
-                        .HasMaxLength(50)
                         .HasColumnType("int");
 
                     b.Property<string>("Remark")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Sex")
-                        .HasMaxLength(10)
                         .HasColumnType("int");
 
                     b.Property<string>("Source")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

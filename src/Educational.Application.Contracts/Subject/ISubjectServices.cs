@@ -17,7 +17,7 @@ namespace Educational.Subject
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<ApiResult<SubjectModel>> GetOneAsync(Guid id);
+        Task<ApiResult<Educational.Subject.SubjectModel>> GetOneAsync(Guid id);
         /// <summary>
         /// 通过表单查询
         /// </summary>
@@ -35,7 +35,7 @@ namespace Educational.Subject
         /// </summary>
         /// <param name="input">修改字段</param>
         /// <returns></returns>
-        Task<ApiResult<SubjectModel>> UpdateAsync(Guid id, UpdateSubjectDto input);
+        Task<ApiResult<Educational.Subject.SubjectModel>> UpdateAsync(Guid id, UpdateSubjectDto input);
         /// <summary>
         /// 主键删除--逻辑删除
         /// </summary> 

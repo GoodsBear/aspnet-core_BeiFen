@@ -8,34 +8,12 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.SpecialSubject
-{ 
-    /// <summary>
-    /// 专题名称
-    /// </summary>
-    public class SpecialSubjectModel : AuditedAggregateRoot<Guid>
+{
+    public class UpdateSpecialSubjectDto
     {
-        //// 构造函数
-        //public SpecialSubjectModel()
-        //{
-        //    // 初始化默认值
-        //    Details = string.Empty;
-        //    AchievementDisplay = string.Empty;
-        //}
-
-        //public SpecialSubjectModel(
-        //    string name,
-        //    int categoryId,
-        //    string teacher,
-        //    string brief = "")
-        //{
-        //    Name = name;
-        //    CategoryId = categoryId;
-        //    Teacher = teacher;
-        //    Brief = brief;
-        //}
         [Required]
-        [StringLength(128)] 
-        public string Name { get; set; } // 专题名称（如"大祥"）
+        [StringLength(128)]
+        public string Name { get; set; } // 专题名称（如"大祥"） 
 
         [Required]
         public Guid CategoryId { get; set; } // 类别ID（如137）
@@ -47,15 +25,13 @@ namespace Educational.SpecialSubject
         [StringLength(64)]
         public string Teacher { get; set; } // 授课老师（如"王二鼻子"）
 
-        [StringLength(500)]
+        [Column(TypeName = "varchar(500)")]
         public string Brief { get; set; } // 简介（如"影楼一大糟"）
 
-        [StringLength(500)]
+        [Column(TypeName = "text")]
         public string? Details { get; set; } // 详细介绍（富文本HTML内容）
 
-        [StringLength(500)]
+        [Column(TypeName = "text")]
         public string? AchievementDisplay { get; set; } // 教学成果展示（富文本HTML内容）
-
- 
     }
 }

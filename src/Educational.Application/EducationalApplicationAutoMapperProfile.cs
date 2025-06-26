@@ -1,19 +1,22 @@
 using AutoMapper;
-using Educational.Courses;
 using AutoMapper;
 using AutoMapper.Internal.Mappers;
 using Educational.Organization;
 using System.Collections.Generic;
 using System.Linq;
 using Educational.Announcements;
+using Educational.Classgrade;
+using Educational.Courses;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
+using Educational.Dto.Grades;
 using Educational.Dto.Positions;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
+using Educational.SpecialSubject;
 using Educational.Staffs;
 using Educational.StafRoles;
 using Educational.StaffTypes;
@@ -24,6 +27,10 @@ using Educational.Subject;
 using System.Collections.Generic;
 using System.Linq;
 using Educational.Dto.ClassRooms;
+using Educational.StaffTypes;
+using Educational.Subject;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Educational;
 
@@ -31,6 +38,14 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
+        //专题一套
+        CreateMap<UpdateSpecialSubjectDto, SpecialSubjectModel>().ReverseMap();
+        CreateMap<SpecialSubjectModel, SpecialSubjectDto>().ReverseMap();
+        CreateMap<UpdateCategoryDto, CategoryModel>().ReverseMap();
+        CreateMap<CategoryModel, CategoryModelDto>().ReverseMap();
+        CreateMap<CategoryModel, CategoryModelDto>().ReverseMap();
+
+
 
         CreateMap<CreateUpdateOrganizationLevel, OrganizationLevel>();
         CreateMap<OrganizationLevel, OrganizationLevelDto>();
@@ -83,7 +98,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
         //科目管理 
         CreateMap<UpdateSubjectDto, Educational.Subject.SubjectModel>().ReverseMap();
         CreateMap<Educational.Subject.SubjectModel, SubjectDto>().ReverseMap();
-        CreateMap<Educational.Subject.SubjectModel, XialaSubjectDto>().ReverseMap();
+
+        CreateMap<DictTypeDto, DictType>().ReverseMap();
 
     }
 } 

@@ -20,10 +20,10 @@ namespace Educational.Subject
     [ApiExplorerSettings(GroupName = "科目")]
     public class SubjectSerives : ApplicationService, ISubjectServices
     {
-        private readonly IRepository<SubjectModel, Guid> _subjectRepository;
+        private readonly IRepository<Educational.Subject.SubjectModel, Guid> _subjectRepository;
         ILogger<SubjectSerives> logger;
 
-        public SubjectSerives(IRepository<SubjectModel, Guid> subjectRepository, ILogger<SubjectSerives> logger)
+        public SubjectSerives(IRepository<Educational.Subject.SubjectModel, Guid> subjectRepository, ILogger<SubjectSerives> logger)
         {
             _subjectRepository = subjectRepository;
             this.logger = logger;
@@ -44,11 +44,11 @@ namespace Educational.Subject
                     return ApiResult<SubjectDto>.Fail(ResultCode.Fail, "科目名称已存在");
                 }
                 //创建机构 
-                var subjectlist = ObjectMapper.Map<UpdateSubjectDto,SubjectModel>(input);
+                var subjectlist = ObjectMapper.Map<UpdateSubjectDto, Educational.Subject.SubjectModel>(input);
                 //插入数据库
                 var subjectDto = await _subjectRepository.InsertAsync(subjectlist);
                 //映射
-                var result = ObjectMapper.Map<SubjectModel, SubjectDto>(subjectDto);
+                var result = ObjectMapper.Map<Educational.Subject.SubjectModel, SubjectDto>(subjectDto);
                 //返回
                 return ApiResult<SubjectDto>.Success(ResultCode.Ok, result);
             }
@@ -86,17 +86,17 @@ namespace Educational.Subject
         /// 反填---科目名称
         /// </summary> 
 
-        public async Task<ApiResult<SubjectModel>> GetOneAsync(Guid id)
+        public async Task<ApiResult<Educational.Subject.SubjectModel>> GetOneAsync(Guid id)
         {
             try
             {  
              var course =  await _subjectRepository.FirstOrDefaultAsync(x => x.Id == id);
-                return ApiResult<SubjectModel>.Success(ResultCode.Ok, course);  
+                return ApiResult<Educational.Subject.SubjectModel>.Success(ResultCode.Ok, course);  
             }
             catch (Exception ex)
             {
                 logger.LogError("反填---科目名称失败" + ex);
-                return ApiResult<SubjectModel>.Fail(ResultCode.Fail, $"反填---科目名称异常: {ex.Message}");
+                return ApiResult<Educational.Subject.SubjectModel>.Fail(ResultCode.Fail, $"反填---科目名称异常: {ex.Message}");
             }
         }
         /// <summary>
@@ -115,7 +115,7 @@ namespace Educational.Subject
                 // 使用ABP自带分页方法 
                 var page = existingSub.PageResult(search.PageIndex, search.PageSize);
                 // 映射 
-                var subjectDto = ObjectMapper.Map<List<SubjectModel>, List<SubjectDto>>(page.Queryable.ToList());
+                var subjectDto = ObjectMapper.Map<List<Educational.Subject.SubjectModel>, List<SubjectDto>>(page.Queryable.ToList());
                 var result = new ApiPaging<List<SubjectDto>>
                 {
                     TotleCount = page.RowCount,
@@ -141,7 +141,7 @@ namespace Educational.Subject
                 // 正确获取可查询接口
                 var queryable = await _subjectRepository.GetListAsync();
                 // 正确映射集合类型
-                var results = ObjectMapper.Map<List<SubjectModel>, List<XialaSubjectDto>>(queryable);
+                var results = ObjectMapper.Map<List<Educational.Subject.SubjectModel>, List<XialaSubjectDto>>(queryable);
                 //  返回成功结果
                 return ApiResult<List<XialaSubjectDto>>.Success(ResultCode.Ok, results);
             }
@@ -155,7 +155,7 @@ namespace Educational.Subject
         /// 修改 
         /// <summary>
 
-        public async Task<ApiResult<SubjectModel>> UpdateAsync(Guid id, UpdateSubjectDto input)
+        public async Task<ApiResult<Educational.Subject.SubjectModel>> UpdateAsync(Guid id, UpdateSubjectDto input)
         {
             try
             {
@@ -163,32 +163,34 @@ namespace Educational.Subject
                 var organization =  await  _subjectRepository.FirstOrDefaultAsync(x => x.Id == id);
                 if (organization == null)
                 {
-                    return ApiResult<SubjectModel>.Fail(ResultCode.Fail, "科目不存在");
+                    return ApiResult<Educational.Subject.SubjectModel>.Fail(ResultCode.Fail, "科目不存在");
                 } 
                 // 检查机构名是否重复（排除自己）
                 var existingOrg = await _subjectRepository.FirstOrDefaultAsync(x => x.SubjectName == input.SubjectName && x.Id != id);
                 if (existingOrg != null)
                 {
-                    return ApiResult<SubjectModel>.Fail(ResultCode.Fail, "科目已存在");
+                    return ApiResult<Educational.Subject.SubjectModel>.Fail(ResultCode.Fail, "科目已存在");
                 }
                  ObjectMapper.Map(input, organization);
                 //organization.Id = id;
                 // 返回更新后的组织机构信息
-               var result = ObjectMapper.Map<UpdateSubjectDto, SubjectModel> (input);
+               var result = ObjectMapper.Map<UpdateSubjectDto, Educational.Subject.SubjectModel> (input);
                 //result.Id = id;
                 var a = await _subjectRepository.UpdateAsync(organization);
                 if (a == null)
                 {
-                    return ApiResult<SubjectModel>.Fail(ResultCode.Fail, "更新科目失败"); 
+                    return ApiResult<Educational.Subject.SubjectModel>.Fail(ResultCode.Fail, "更新科目失败"); 
                 }
-                return ApiResult<SubjectModel>.Success(ResultCode.Ok, result);
+                return ApiResult<Educational.Subject.SubjectModel>.Success(ResultCode.Ok, result);
             }
             catch (Exception ex)
             {
                  logger.LogError(ex, $"更新科目失败. ID={id}, 科目名={input.SubjectName}", id, input.SubjectName);
-                return ApiResult<SubjectModel>.Fail(ResultCode.Fail, $"更新科目失败: {ex.Message}");
+                return ApiResult<Educational.Subject.SubjectModel>.Fail(ResultCode.Fail, $"更新科目失败: {ex.Message}");
             }
         }
+         
 
+        
     }
 }

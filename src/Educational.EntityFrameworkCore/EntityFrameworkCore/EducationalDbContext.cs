@@ -5,11 +5,20 @@ using Educational.Students;
 using Educational.Organization;
 using Educational.Announcements;
 using Educational.Datadictionary;
+using Educational.Announcements;
+using Educational.Classgrade;
+using Educational.ClassSchedule;
+using Educational.Courses;
+using Educational.Datadictionary;
+using Educational.Organization;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
+using Educational.SpecialSubject;
 using Educational.Staffs;
 using Educational.StaffTypes;
+using Educational.Subject;
+using Educational.Students;
 using Educational.Subject;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
@@ -69,9 +78,16 @@ public class EducationalDbContext :
     public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
     public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
     public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
-    public DbSet<Educational.SubjectModel.SubjectModel> SubjectModel { get; set; }//科目表
+    public DbSet<Educational.Subject.SubjectModel> SubjectModel { get; set; }//科目表
     public DbSet<Educational.Materials.Material> Material { get; set; }//物料表
     public DbSet<Educational.Materials.MaterialRecords> MaterialRecords { get; set; }//物料出入库记录表
+    public DbSet<SpecialSubjectModel> SpecialSubjectModel { get; set; }//专题名称
+    public DbSet<CategoryModel> CategoryModel { get; set; }//专题级别名称
+    public DbSet<Educational.ClassSchedule.ClassSchedule> ClassSchedule { get; set; }//排课表
+    public DbSet<ScheduleTime> ScheduleTime { get; set; }//排课子表--上课时间表
+
+
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -89,6 +105,48 @@ public class EducationalDbContext :
             //...
         });
 
+
+        /// <summary>
+        /// 排课表
+        /// </summary>
+        builder.Entity<Educational.ClassSchedule.ClassSchedule>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "ClassSchedule", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
+
+
+        /// <summary>
+        ///排课子表--上课时间表
+        /// </summary>
+        builder.Entity<ScheduleTime>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "ScheduleTime", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
+
+
+        /// <summary>
+        /// 专题列表
+        /// </summary>
+        builder.Entity<SpecialSubjectModel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "SpecialSubjectModel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
+
+        /// <summary>
+        /// 专题级别
+        /// </summary>
+        builder.Entity<CategoryModel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "CategoryModel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
 
         /// <summary>
         /// 组织机构表
@@ -112,7 +170,7 @@ public class EducationalDbContext :
         /// <summary>
         ///  科目管理表
         /// </summary>   
-        builder.Entity<Educational.SubjectModel.SubjectModel>(b =>
+        builder.Entity<Educational.Subject.SubjectModel>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "SubjectModel", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
