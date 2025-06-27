@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper;
 using AutoMapper.Internal.Mappers;
 using Educational.Announcements;
 using Educational.Classgrade;
@@ -16,12 +15,14 @@ using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
+using Educational.SpecialSubject;
 using Educational.Staffs;
 using Educational.StaffTypes;
 using Educational.StafRoles;
 using Educational.Subject;
 using System.Collections.Generic;
 using System.Linq;
+using Volo.Abp.ObjectMapping;
 
 namespace Educational;
 
@@ -29,7 +30,13 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
-
+        //专题一套
+        CreateMap<UpdateSpecialSubjectDto, SpecialSubjectModel>().ReverseMap();
+        CreateMap<SpecialSubjectModel, SpecialSubjectDto>().ReverseMap();
+        CreateMap<UpdateCategoryDto, CategoryModel>().ReverseMap();
+        CreateMap<CategoryModel, CategoryModelDto>().ReverseMap();
+        CreateMap<SpecialSubjectModel, XiAsepecialSubjectDto>().ReverseMap();
+         
         CreateMap<CreateUpdateOrganizationLevel, OrganizationLevel>();
         CreateMap<OrganizationLevel, OrganizationLevelDto>();
         // 添加从 CreateUpdateOrganizationDto 到 OrganizationModel 的映射
