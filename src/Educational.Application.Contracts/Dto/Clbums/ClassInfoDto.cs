@@ -19,14 +19,17 @@ namespace Educational.Dto.Clbums
         /// 分校
         /// </summary>
         public Guid CampusId { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// 年级
         /// </summary>
         public Guid GradeId { get; set; }
+        public string GradeName { get; set; }
         /// <summary>
         /// 班主任
         /// </summary>
         public Guid ClassTeacherId { get; set; }
+        public string StaffName { get; set; }
         /// <summary>
         /// 预招人数
         /// </summary>
@@ -39,10 +42,12 @@ namespace Educational.Dto.Clbums
         /// 默认课程
         /// </summary>
         public Guid DefaultCourseId { get; set; }
+        public string CourseName { get; set; }
         /// <summary>
         /// 默认教室
         /// </summary>
         public Guid DefaultClassroomId { get; set; }
+        public string ClassRoomName { get; set; }
         /// <summary>
         /// 计划开课日期
         /// </summary>

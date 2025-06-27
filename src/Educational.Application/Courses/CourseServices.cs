@@ -1,5 +1,7 @@
 ﻿using Educational.Organization;
+using Educational.Staffs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -110,8 +112,25 @@ namespace Educational.Courses
 			return ApiResult.Success(ResultCode.Ok);
 		}
 
+        /// <summary>
+        /// 获取课程列表下拉框
+        /// </summary>
+        /// <returns>返回课程列表下拉框</returns>
+        public async Task<ApiResult<List<CourseSelectDto>>> GetCourseAsync()
+        {
+            try
+            {
+                var queryable = await _courseRepository.GetListAsync();
+                var results = ObjectMapper.Map<List<Course>, List<CourseSelectDto>>(queryable);
+                return ApiResult<List<CourseSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "课程下拉框获取失败");
+                throw;
+            }
+        }
 
 
-		
-	}
+    }
 }

@@ -16,5 +16,6 @@ namespace Educational.Grades
         Task<ApiResult<GradeDto>> UpdatePosition(Guid id, CreateUpdateGradeDto createUpdateGradeDto);
         Task<ApiResult<ApiPaging<List<GradeDto>>>> GetPositionList([FromQuery] GradeSearchDto searchDto);
         Task<ApiResult> BatchDelete(List<Guid> ids);
+        Task<ApiResult<List<GradeSelectDto>>> GetGradeAsync();
     }
 }

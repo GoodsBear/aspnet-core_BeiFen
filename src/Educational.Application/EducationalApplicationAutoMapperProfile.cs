@@ -5,6 +5,7 @@ using Educational.Courses;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
 using Educational.Dto.ClassRooms;
+using Educational.Dto.Clbums;
 using Educational.Dto.Grades;
 using Educational.Dto.MaterialDtos;
 using Educational.Dto.Positions;
@@ -60,6 +61,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<CreateCourseDto, Course>().ReverseMap().ForMember(dest => dest.CourseName, pot => pot.MapFrom(src => src.CourseName)).ReverseMap();
         CreateMap<Course, CourseDto>(MemberList.Source)
             .ForMember(dest=>dest.CourseName,pot=>pot.MapFrom(src=>src.CourseName)).ReverseMap();
+        CreateMap<Course, CourseSelectDto>(MemberList.Source)
+            .ForMember(dest=>dest.CourseName,pot=>pot.MapFrom(src=>src.CourseName)).ReverseMap();
         // 职位映射
         CreateMap<Position, PositionsDto>().ReverseMap();
         CreateMap<CreateUpdatePositionDto, Position>().ReverseMap();
@@ -70,6 +73,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         // 年级映射
         CreateMap<Grade, GradeDto>().ReverseMap();
         CreateMap<CreateUpdateGradeDto, Grade>().ReverseMap();
+        CreateMap<Grade, GradeSelectDto>().ReverseMap();
         // 角色映射
         CreateMap<CreateUpdateRoleDto, Role>().ReverseMap();
         CreateMap<Role, RoleDto>().ReverseMap();
@@ -87,6 +91,10 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<ClassRoom, ClassRoomDto>().ReverseMap();
         CreateMap<ClassRoom, ClassRoomSelectDto>().ReverseMap();
         CreateMap<CreateUpdateClassRoomDto, ClassRoom>().ReverseMap();
+        // 班级映射
+        CreateMap<ClassInfo, ClassInfoDto>().ReverseMap();
+        CreateMap<ClassInfo, CreateUpdateClassDto>().ReverseMap();
+        CreateMap<ClassInfo, ClassSelectDto>().ReverseMap();
         //科目管理 
         CreateMap<UpdateSubjectDto, Educational.Subject.SubjectModel>().ReverseMap();
         CreateMap<Educational.Subject.SubjectModel, SubjectDto>().ReverseMap();
