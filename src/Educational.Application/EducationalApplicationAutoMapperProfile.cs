@@ -8,6 +8,7 @@ using Educational.Datadictionary;
 using Educational.Dto.Announcements;
 using Educational.Dto.Grades;
 using Educational.Dto.MaterialDtos;
+using Educational.Dto.MaterialRecordsDtos;
 using Educational.Dto.Positions;
 using Educational.Materials;
 using Educational.Organization;
@@ -82,6 +83,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
 		//物料
 		CreateMap<Material, MaterialDto>().ReverseMap();
 		CreateMap<CreateUpdateMaterialDto,Material>().ReverseMap();
-
+        //出入库
+        CreateMap<MaterialRecords, MaterialRecordsDto>().ReverseMap();
+        CreateMap<CreateUpdateMaterialRecordsDto, MaterialRecords>().ReverseMap();
 	}
 } 

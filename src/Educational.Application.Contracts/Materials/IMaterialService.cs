@@ -15,11 +15,6 @@ namespace Educational.Materials
 		// 新增物料
 		Task<ApiResult<MaterialDto>> CreateMaterialAsync(MaterialDto input);
 
-		// 入库操作
-		Task<ApiResult<CreateUpdateMaterialDto>> StockInAsync(Guid id, int quantity);
-
-		// 出库操作
-		Task<ApiResult<CreateUpdateMaterialDto>> StockOutAsync(Guid id, int quantity);
 
 		// 分页查询
 		Task<ApiResult<ApiPaging<List<MaterialDto>>>> GetPagedMaterialsAsync([FromQuery]MaterialSeachDto seachDto);
@@ -28,6 +23,8 @@ namespace Educational.Materials
 		Task<ApiResult> UpdataStatus(List<Guid> ids,bool status);
 		//更新
         Task<ApiResult<MaterialDto>> UpdateMaterialAsync(Guid id, CreateUpdateMaterialDto  input);
+
+
 	}
 }
 

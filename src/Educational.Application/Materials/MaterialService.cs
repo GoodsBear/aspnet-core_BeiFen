@@ -82,53 +82,7 @@ namespace Educational.Materials
 				throw;
 			}
 		}
-		/// <summary>
-		/// 入库
-		/// </summary>
-		/// <param name="id"></param>
-		/// <param name="quantity"></param>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
-		[HttpPut]
-		public async Task<ApiResult<CreateUpdateMaterialDto>> StockInAsync(Guid id, int quantity)
-		{
-			try
-			{
-				var material=await _materialRepository.GetAsync(id);
-				material.StockSum=material.StockSum+quantity;
-				var result=await _materialRepository.UpdateAsync(material);
-                return ApiResult<CreateUpdateMaterialDto>.Success(ResultCode.Ok, ObjectMapper.Map<Material, CreateUpdateMaterialDto>(result));
-			}
-			catch (Exception ex)
-			{
-				logger.LogError("物料入库出错！"+ex.Message);
-				throw;
-			}
-		}
-		/// <summary>
-		/// 出库
-		/// </summary>
-		/// <param name="id"></param>
-		/// <param name="quantity"></param>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
-		[HttpPut]
-		public async Task<ApiResult<CreateUpdateMaterialDto>> StockOutAsync(Guid id, int quantity)
-		{
-			try
-			{
-				var material=await _materialRepository.GetAsync(id);
-				material.StockSum=material.StockSum-quantity;
 
-				var result=await _materialRepository.UpdateAsync(material);
-                return ApiResult<CreateUpdateMaterialDto>.Success(ResultCode.Ok, ObjectMapper.Map<Material, CreateUpdateMaterialDto>(result));
-			}
-			catch (Exception ex)
-			{
-				logger.LogError("物料出库出错！"+ex.Message);
-				throw;
-			}
-		}
 
 		/// <summary>
 		/// 批量修改物料状态
