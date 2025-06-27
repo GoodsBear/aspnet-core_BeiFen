@@ -204,5 +204,66 @@ namespace Educational.Clbums
                 throw;
             }
         }
+        ///// <summary>
+        ///// 修改班级状态
+        ///// </summary>
+        ///// <param name="id">班级ID</param>
+        ///// <param name="Status">新状态（枚举值）</param>
+        ///// <returns>返回受影响行数</returns>
+        //[HttpPost]
+        //public async Task<ApiResult> UpdateClassStatus(Guid id, int Status)
+        //{
+        //    try
+        //    {
+        //        var classInfo = await classinfoRep.GetAsync(id);
+        //        if (classInfo == null)
+        //        {
+        //            return ApiResult.Fail(ResultCode.Fail, "班级不存在！");
+        //        }
+        //        classInfo.ClassStatus = (LessonStateEnum)Status;
+        //        await classinfoRep.UpdateAsync(classInfo);
+        //        return ApiResult.Success(ResultCode.Ok);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.LogError("班级状态修改出错！" + ex.Message);
+        //        throw;
+        //    }
+        //}
+        /// <summary>
+        /// 批量修改班级状态
+        /// </summary>
+        /// <param name="ids">班级ID列表</param>
+        /// <param name="Status">目标状态（枚举int值）</param>
+        /// <returns>返回受影响行数</returns>
+        [HttpPut]
+        public async Task<ApiResult> BatchUpdateClassStatus(List<Guid> ids)
+        {
+            try
+            {
+                int successCount = 0;
+                foreach (var id in ids)
+                {
+                    var classInfo = await classinfoRep.GetAsync(id);
+                    if (classInfo != null)
+                    {
+                        classInfo.ClassStatus = LessonStateEnum.已结业;
+                        await classinfoRep.UpdateAsync(classInfo);
+                        successCount++;
+                    }
+                }
+                return ApiResult.Success(ResultCode.Ok);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("批量修改班级状态出错！" + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<ApiResult> UpdateClassStatus(Guid id, int Status)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

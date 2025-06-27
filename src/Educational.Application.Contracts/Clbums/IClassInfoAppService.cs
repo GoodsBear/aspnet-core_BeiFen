@@ -18,5 +18,7 @@ namespace Educational.Clbums
         Task<ApiResult<ApiPaging<List<ClassInfoDto>>>> GetClassList([FromQuery] ClassSearchDto searchDto);
         Task<ApiResult> BatchDelete(List<Guid> ids);
         Task<ApiResult<List<ClassSelectDto>>> GetClassAsync();
+        Task<ApiResult> BatchUpdateClassStatus(List<Guid> ids);
+        //Task<ApiResult> UpdateClassStatus(Guid id, int Status);
     }
 }
