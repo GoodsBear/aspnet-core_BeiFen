@@ -166,7 +166,9 @@ public class EducationalHttpApiHostModule : AbpModule
             options =>
             {
                 options.SwaggerDoc("公告", new OpenApiInfo { Title = "公告管理", Version = "v1" });
+                options.SwaggerDoc("年级", new OpenApiInfo { Title = "年级管理", Version = "v1" });
                 options.SwaggerDoc("课程", new OpenApiInfo { Title = "课程管理", Version = "v1" });
+                options.SwaggerDoc("排课", new OpenApiInfo { Title = "排课管理", Version = "v1" });
                 options.SwaggerDoc("组织机构", new OpenApiInfo { Title = "组织机构管理", Version = "v1" });
                 options.SwaggerDoc("职位", new OpenApiInfo { Title = "职位管理", Version = "v1" });
                 options.SwaggerDoc("权限", new OpenApiInfo { Title = "权限管理", Version = "v1" });
@@ -277,7 +279,9 @@ public class EducationalHttpApiHostModule : AbpModule
         app.UseAbpSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/公告/swagger.json", "公告管理 v1");
+            c.SwaggerEndpoint("/swagger/年级/swagger.json", "年级管理 v1");
             c.SwaggerEndpoint("/swagger/课程/swagger.json", "课程管理 v1");
+            c.SwaggerEndpoint("/swagger/排课/swagger.json", "排课管理 v1");
             c.SwaggerEndpoint("/swagger/组织机构/swagger.json", "组织机构管理 v1");
             c.SwaggerEndpoint("/swagger/职位/swagger.json", "职位管理 v1");
             c.SwaggerEndpoint("/swagger/权限/swagger.json", "权限管理 v1");
@@ -285,7 +289,7 @@ public class EducationalHttpApiHostModule : AbpModule
             c.SwaggerEndpoint("/swagger/专题/swagger.json", "专题管理 v1");
             c.SwaggerEndpoint("/swagger/成员/swagger.json", "成员管理 v1");
             c.SwaggerEndpoint("/swagger/科目管理/swagger.json", "科目管理 v1");
-            
+
             var configuration = context.ServiceProvider.GetRequiredService<IConfiguration>();
             c.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);
             c.OAuthScopes("Educational");

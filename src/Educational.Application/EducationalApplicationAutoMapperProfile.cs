@@ -3,6 +3,9 @@ using AutoMapper;
 using AutoMapper.Internal.Mappers;
 using Educational.Announcements;
 using Educational.Classgrade;
+using Educational.ClassSchedule;
+using Educational.ClassSchedule.DTO;
+using Educational.ClassSchedule.Update;
 using Educational.Courses;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
@@ -27,6 +30,11 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
+        //排课  
+        CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
+        CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
+        CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
+        CreateMap<UpdateClassScheduleDto, Educational.ClassSchedule.ClassSchedule>().ReverseMap();
         //专题一套
         CreateMap<UpdateSpecialSubjectDto, SpecialSubjectModel>().ReverseMap();
         CreateMap<SpecialSubjectModel, SpecialSubjectDto>().ReverseMap();

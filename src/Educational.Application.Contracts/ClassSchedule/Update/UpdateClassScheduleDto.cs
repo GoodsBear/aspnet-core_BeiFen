@@ -1,40 +1,34 @@
-﻿using Educational.Classgrade;
-using Educational.Courses;
-using Educational.Organization;
+﻿using NPOI.OpenXmlFormats.Dml;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Volo.Abp.Domain.Entities;
 
-namespace Educational.ClassSchedule
+namespace Educational.ClassSchedule.Update
 {
-    /// <summary>
-    /// 排课表
-    /// </summary>
-    public class ClassSchedule : AggregateRoot<Guid>
-    {
+    public class UpdateClassScheduleDto
+    {   
         // 关联分校 (必填)
         [Required]
-        public Guid CampusId { get; set; } 
+        public Guid CampusId { get; set; }
 
         // 关联班级 (必填)
         [Required]
-        public Guid ClassId { get; set; } 
+        public Guid ClassId { get; set; }
         // 关联课程 (必填)
         [Required]
-        public Guid CourseId { get; set; } 
+        public Guid CourseId { get; set; }
 
         [Required]
         public List<string> MainTeacher { get; set; }
         // 关联助教老师 (可选)  
-        public List<string>? AssistantTeacher { get; set; } 
+        public List<string>? AssistantTeacher { get; set; }
         // 时间范围 (必填)
         [Required]
         public DateTime StartDate { get; set; }
-        [Required] 
+        [Required]
         public DateTime EndDate { get; set; }
 
         // 排课规则
@@ -52,5 +46,6 @@ namespace Educational.ClassSchedule
         public int GeneratedSessionCount { get; set; } = 0;  // 生成课次
         // 子集合：具体上课时间
         public ICollection<ScheduleTime>? ScheduleTimes { get; set; } = new List<ScheduleTime>();
+
     }
 }

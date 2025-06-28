@@ -82,6 +82,7 @@ public class EducationalDbContext :
     public DbSet<CategoryModel> CategoryModel { get; set; }//专题级别名称
     public DbSet<Educational.ClassSchedule.ClassSchedule> ClassSchedule { get; set; }//排课表
     public DbSet<ScheduleTime> ScheduleTime { get; set; }//排课子表--上课时间表
+    public DbSet<ConflictModel> ConflictModel { get; set; }//排课子表--冲突表
 
 
 
@@ -102,6 +103,16 @@ public class EducationalDbContext :
             //...
         });
 
+
+        /// <summary>
+        /// 排课子表--冲突表
+        /// </summary>
+        builder.Entity<ConflictModel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "ConflictModel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
 
         /// <summary>
         /// 排课表

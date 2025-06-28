@@ -1,6 +1,7 @@
 ﻿using Educational.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,9 +55,18 @@ namespace Educational.Students
 		/// 来源
 		/// </summary>
         public string Source { get; set; }
-		/// <summary>
-		/// 备注
-		/// </summary>
+
+        /// <summary>
+        /// 课时（必填，默认0）
+        /// </summary>
+        [Required]
+        [Range(0, int.MaxValue)]
+        public int RemainingHours { get; set; } = 0;
+
+        /// <summary>
+        /// 备注
+        /// </summary>
         public string Remark { get; set; }
-	}
+
+    }
 }
