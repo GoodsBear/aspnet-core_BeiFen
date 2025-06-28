@@ -30,6 +30,7 @@ public class Program
 
         try
         {
+
             Log.Information("Starting Educational.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args);
             builder.Host.AddAppSettingsSecretsJson()
