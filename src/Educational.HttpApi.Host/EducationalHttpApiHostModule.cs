@@ -179,8 +179,6 @@ public class EducationalHttpApiHostModule : AbpModule
                 options.SwaggerDoc("权限", new OpenApiInfo { Title = "权限管理", Version = "v1" });
                 options.SwaggerDoc("角色", new OpenApiInfo { Title = "角色管理", Version = "v1" });
                 options.SwaggerDoc("成员", new OpenApiInfo { Title = "成员管理", Version = "v1" });
-                options.SwaggerDoc("年级", new OpenApiInfo { Title = "年级管理", Version = "v1" });
-                options.SwaggerDoc("科目", new OpenApiInfo { Title = "科目管理", Version = "v1" });
                 options.SwaggerDoc("物料", new OpenApiInfo { Title = "物料管理", Version = "v1" });
                 options.SwaggerDoc("成员分配角色", new OpenApiInfo { Title = "成员分配角色管理", Version = "v1" });
                 options.SwaggerDoc("角色分配权限", new OpenApiInfo { Title = "角色分配权限管理", Version = "v1" });
@@ -321,8 +319,6 @@ public class EducationalHttpApiHostModule : AbpModule
             c.SwaggerEndpoint("/swagger/权限/swagger.json", "权限管理 v1");
             c.SwaggerEndpoint("/swagger/角色/swagger.json", "角色管理 v1");
             c.SwaggerEndpoint("/swagger/成员/swagger.json", "成员管理 v1");
-            c.SwaggerEndpoint("/swagger/年级/swagger.json", "年级管理 v1");
-            c.SwaggerEndpoint("/swagger/科目/swagger.json", "科目管理 v1");
             c.SwaggerEndpoint("/swagger/物料/swagger.json", "物料管理 v1");
             c.SwaggerEndpoint("/swagger/成员分配角色/swagger.json", "成员分配角色管理 v1"); 
             c.SwaggerEndpoint("/swagger/角色分配权限/swagger.json", "角色分配权限管理 v1");

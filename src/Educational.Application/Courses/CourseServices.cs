@@ -49,6 +49,7 @@ namespace Educational.Courses
 		/// </summary>
 		/// <param name="seach"></param>
 		/// <returns></returns>
+		[HttpGet("GetListCourse")]
 		public async Task<ApiResult<ApiPaging<List<CourseDto>>>> GetListCourse([FromQuery]SearchCourseDto seach)
 		{
 			var course=await _courseRepository.GetQueryableAsync();
@@ -116,6 +117,7 @@ namespace Educational.Courses
         /// 获取课程列表下拉框
         /// </summary>
         /// <returns>返回课程列表下拉框</returns>
+        [HttpGet("GetCourseAsync")]
         public async Task<ApiResult<List<CourseSelectDto>>> GetCourseAsync()
         {
             try
