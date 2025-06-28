@@ -4,7 +4,6 @@ using Educational.Positions;
 using Educational.RBAC;
 using Educational.StaffTypes;
 using Educational.Tools;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
