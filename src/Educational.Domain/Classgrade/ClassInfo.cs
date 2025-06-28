@@ -23,20 +23,14 @@ namespace Educational.Classgrade
 		/// <summary>
 		/// 分校
 		/// </summary>
-		[Required(ErrorMessage = "分校不能为空")]
-		[StringLength(50, ErrorMessage = "分校不能超过50个字符")]
 		public Guid CampusId { get; set;}
 		/// <summary>
 		/// 年级
 		/// </summary>
-		[Required(ErrorMessage = "年级不能为空")]
-        [StringLength(50, ErrorMessage = "年级不能超过50个字符")]
 		public Guid GradeId { get; set;}
 		/// <summary>
 		/// 班主任
 		/// </summary>
-		[Required(ErrorMessage = "班主任不能为空")]
-        [StringLength(50, ErrorMessage = "班主任不能超过50个字符")]
 		public Guid ClassTeacherId { get; set;}
 		/// <summary>
 		/// 预招人数
@@ -53,14 +47,10 @@ namespace Educational.Classgrade
 		/// <summary>
 		/// 默认课程
 		/// </summary>
-		[Required(ErrorMessage = "默认课程不能为空")]
-		[StringLength(50, ErrorMessage = "默认课程不能超过50个字符")]
 		public Guid DefaultCourseId { get; set;}
 		/// <summary>
 		/// 默认教室
 		/// </summary>
-		[Required(ErrorMessage = "默认教室不能为空")]
-        [StringLength(50, ErrorMessage = "默认教室不能超过50个字符")]
 		public Guid DefaultClassroomId { get; set;}
 		/// <summary>
 		/// 计划开课日期
@@ -87,6 +77,6 @@ namespace Educational.Classgrade
 		/// </summary>
 		[Required(ErrorMessage = "班级状态不能为空")]
         [Range(0, 10000, ErrorMessage = "班级状态不能小于0或大于10000")]
-		public LessonStateEnum ClassStatus { get; set; } = LessonStateEnum.未开课;
+		public LessonStateEnum ClassStatus { get; set; } = LessonStateEnum.未排课;
 	}
 }

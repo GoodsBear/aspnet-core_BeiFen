@@ -1,10 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Educational;
 
@@ -34,20 +37,8 @@ public class Program
                 .UseSerilog();
             await builder.AddApplicationAsync<EducationalHttpApiHostModule>();
 
-            //builder.Services.AddCors(options =>
-            //{
-            //    options.AddPolicy("CorsPolicy", builder =>
-            //    {
-            //        builder.WithOrigins("http://localhost:3000")
-            //            .AllowAnyMethod()
-            //            .AllowAnyHeader()
-            //            .AllowCredentials();
-            //    });
-            //});
-
+           
             var app = builder.Build();
-
-            //app.UseCors();
 
             await app.InitializeApplicationAsync();
             await app.RunAsync();

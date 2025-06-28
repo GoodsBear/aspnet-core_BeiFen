@@ -44,11 +44,11 @@ namespace Educational.Subject
                     return ApiResult<SubjectDto>.Fail(ResultCode.Fail, "科目名称已存在");
                 }
                 //创建机构 
-                var subjectlist = ObjectMapper.Map<UpdateSubjectDto,SubjectModel>(input);
+                var subjectlist = ObjectMapper.Map<UpdateSubjectDto, Educational.Subject.SubjectModel>(input);
                 //插入数据库
                 var subjectDto = await _subjectRepository.InsertAsync(subjectlist);
                 //映射
-                var result = ObjectMapper.Map<SubjectModel, SubjectDto>(subjectDto);
+                var result = ObjectMapper.Map<Educational.Subject.SubjectModel, SubjectDto>(subjectDto);
                 //返回
                 return ApiResult<SubjectDto>.Success(ResultCode.Ok, result);
             }
@@ -115,7 +115,7 @@ namespace Educational.Subject
                 // 使用ABP自带分页方法 
                 var page = existingSub.PageResult(search.PageIndex, search.PageSize);
                 // 映射 
-                var subjectDto = ObjectMapper.Map<List<SubjectModel>, List<SubjectDto>>(page.Queryable.ToList());
+                var subjectDto = ObjectMapper.Map<List<Educational.Subject.SubjectModel>, List<SubjectDto>>(page.Queryable.ToList());
                 var result = new ApiPaging<List<SubjectDto>>
                 {
                     TotleCount = page.RowCount,
@@ -189,6 +189,8 @@ namespace Educational.Subject
                 return ApiResult<Educational.Subject.SubjectModel>.Fail(ResultCode.Fail, $"更新科目失败: {ex.Message}");
             }
         }
+         
 
+        
     }
 }

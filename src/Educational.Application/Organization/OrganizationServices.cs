@@ -144,7 +144,9 @@ namespace Educational.Organization
                                Description=org.Description,
                                DeleterId=org.DeleterId,
                                DeletionTime=org.DeletionTime
-                           };  
+                           };
+                //按照权重进行排序
+                linq = linq.OrderByDescending(x=>x.SortOrder);
                 // 使用ABP自带分页方法 
                 var page = linq.PageResult(search.PageIndex, search.PageSize);
                 // 映射
@@ -153,7 +155,7 @@ namespace Educational.Organization
                 {
                     TotleCount = page.RowCount,
                     TotlePage = (int)Math.Ceiling(page.RowCount * 1.0 / search.PageSize),
-                    Data = linq.ToList()
+                    Data = linq.Skip((search.PageIndex-1)* search.PageSize).Take(search.PageSize).ToList()
                 };
                 return ApiResult<ApiPaging<List<LevelDto>>>.Success(ResultCode.Ok, result);
             }
@@ -162,8 +164,8 @@ namespace Educational.Organization
                 logger.LogError("获取组织机构列表出错: " + ex.Message);
                 throw;
             }
-        } 
-        
+        }  
+
 		/// <summary>
 		/// 更新组织机构
 		/// </summary>
@@ -244,7 +246,24 @@ namespace Educational.Organization
                 Logger.LogError(ex, "组织机构级别获取失败");
                 throw;
             }
-        }  
+        }
+        /// <summary>
+        /// 获取组织机构下拉框
+        /// </summary>
+        public async Task<ApiResult<List<OrganizationSelectDto>>> GetOrganizationAsync()
+        {
+            try
+            {
+                var queryable = await _organizationRepository.GetListAsync();
+                var results = ObjectMapper.Map<List<OrganizationModel>, List<OrganizationSelectDto>>(queryable);
+                return ApiResult<List<OrganizationSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "组织机构下拉框获取失败");
+                throw;
+            }
+        }
         /// <summary>
         /// 树形组织机构表
         /// </summary>
@@ -317,7 +336,8 @@ namespace Educational.Organization
             var dto = ObjectMapper.Map<OrganizationModel, OrganizationTreeDto>(entity);
             dto.Chlidren = new List<OrganizationTreeDto>(); // 初始化
             return dto;
-        } 
+        }
 
+       
     }
 }

@@ -102,7 +102,7 @@ namespace Educational.RBAC.RoleManager
                 var list = await repository.GetQueryableAsync();
 
                 list = list.WhereIf(!string.IsNullOrEmpty(searchRoleDto.RoleName), d => d.RoleName.Equals(searchRoleDto.RoleName));
-
+                //
                 var page = list.PageResult(searchRoleDto.PageIndex, searchRoleDto.PageSize);
 
                 var roleDtos = ObjectMapper.Map<List<Role>, List<RoleDto>>(page.Queryable.ToList());

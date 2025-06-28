@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 
 namespace Educational.Courses
 {
 	/// <summary>
 	/// 课程Dto
 	/// </summary>
-	public class CourseDto
+	public class CourseDto:AuditedEntityDto<Guid>
 	{
 		/// <summary>
 		/// 课程名称

@@ -1,5 +1,7 @@
 ﻿using Educational.Organization;
+using Educational.Staffs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,16 +24,17 @@ namespace Educational.Courses
 			_courseRepository = courseRepository;
 			this.organiRepository = organiRepository;
 		}
+
 		/// <summary>
 		/// 新增课程
 		/// </summary>
 		/// <param name="coursedto"></param>
 		/// <returns></returns>
-		public async Task<ApiResult> AddCourse(CourseDto coursedto)
+		public async Task<ApiResult> AddCourse(CreateCourseDto coursedto)
 		{
 			try
 			{
-				var course = ObjectMapper.Map<CourseDto, Course>(coursedto);
+				var course = ObjectMapper.Map<CreateCourseDto, Course>(coursedto);
 				var cour=await _courseRepository.InsertAsync(course);
 				var res=cour.Equals(course);
 				return ApiResult.Success(ResultCode.Ok);
@@ -109,8 +112,25 @@ namespace Educational.Courses
 			return ApiResult.Success(ResultCode.Ok);
 		}
 
+        /// <summary>
+        /// 获取课程列表下拉框
+        /// </summary>
+        /// <returns>返回课程列表下拉框</returns>
+        public async Task<ApiResult<List<CourseSelectDto>>> GetCourseAsync()
+        {
+            try
+            {
+                var queryable = await _courseRepository.GetListAsync();
+                var results = ObjectMapper.Map<List<Course>, List<CourseSelectDto>>(queryable);
+                return ApiResult<List<CourseSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "课程下拉框获取失败");
+                throw;
+            }
+        }
 
 
-		
-	}
+    }
 }

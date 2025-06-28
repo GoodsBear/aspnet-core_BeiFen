@@ -2,6 +2,7 @@
 using Educational.Dto.Grades;
 using Educational.Dto.Positions;
 using Educational.Positions;
+using Educational.Staffs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,9 +21,9 @@ namespace Educational.Grades
     public class GradeAppService : ApplicationService, IGradeAppService
     {
         IRepository<Grade, Guid> gradeRep;
-        ILogger<PositionAppService> logger;
+        ILogger<GradeAppService> logger;
 
-        public GradeAppService(IRepository<Grade, Guid> gradeRep, ILogger<PositionAppService> logger)
+        public GradeAppService(IRepository<Grade, Guid> gradeRep, ILogger<GradeAppService> logger)
         {
             this.gradeRep = gradeRep;
             this.logger = logger;
@@ -32,6 +33,7 @@ namespace Educational.Grades
         /// </summary>
         /// <param name="ids">批删数组</param>
         /// <returns>返回受影响行数</returns>
+        [HttpDelete]
         public async Task<ApiResult> BatchDelete(List<Guid> ids)
         {
             try
@@ -132,6 +134,24 @@ namespace Educational.Grades
             catch (Exception ex)
             {
                 logger.LogError("年级修改出错！" + ex.Message);
+                throw;
+            }
+        }
+        /// <summary>
+        /// 获取年级列表下拉框
+        /// </summary>
+        /// <returns>返回年级列表下拉框</returns>
+        public async Task<ApiResult<List<GradeSelectDto>>> GetGradeAsync()
+        {
+            try
+            {
+                var queryable = await gradeRep.GetListAsync();
+                var results = ObjectMapper.Map<List<Grade>, List<GradeSelectDto>>(queryable);
+                return ApiResult<List<GradeSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "年级下拉框获取失败");
                 throw;
             }
         }
