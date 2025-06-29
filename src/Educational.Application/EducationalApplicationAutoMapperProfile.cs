@@ -26,6 +26,7 @@ using Educational.Subject;
 using System.Collections.Generic;
 using System.Linq;
 using Volo.Abp.ObjectMapping;
+using Educational.Menu;
 
 namespace Educational;
 
@@ -108,5 +109,9 @@ public class EducationalApplicationAutoMapperProfile : Profile
 		CreateMap<Material, MaterialDto>().ReverseMap();
 		CreateMap<CreateUpdateMaterialDto,Material>().ReverseMap();
 
-	}
+        //动态菜单
+        CreateMap<CreateUpdateMenuDto,Educational.Menu.Menu>().ReverseMap();
+        CreateMap<Educational.Menu.Menu, MenuDto>().ReverseMap();
+
+    }
 } 

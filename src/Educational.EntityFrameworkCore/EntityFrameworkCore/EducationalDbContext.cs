@@ -56,8 +56,8 @@ public class EducationalDbContext :
     {
 
     }
-   
-	public DbSet<Student> Student { get; set; } //学生
+    public DbSet<Educational.Menu.Menu>Menu { get; set; } //动态菜单表
+    public DbSet<Student> Student { get; set; } //学生
 	public DbSet<ClassInfo> Class { get; set; }  //班级
     public DbSet<Grade> Grade { get; set; }   //年级
     public DbSet<Parent> Parent { get; set; }//家长
