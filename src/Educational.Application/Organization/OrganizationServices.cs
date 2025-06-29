@@ -252,7 +252,7 @@ namespace Educational.Organization
         /// <param name="parentId"></param>
         /// <returns></returns>
 
-        public async Task<List<OrganizationTreeDto>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")]Guid parentId)
+        public async Task<ApiResult<List<OrganizationTreeDto>>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")]Guid parentId)
         {
             var allOrganizations = await _organizationRepository.GetListAsync();
 
@@ -272,7 +272,7 @@ namespace Educational.Organization
                 BuildTree(item, orgLookup);
             }
 
-            return tree;
+            return ApiResult<List<OrganizationTreeDto>>.Success(ResultCode.Ok, tree);
         } 
         private void BuildTree(OrganizationTreeDto dto, ILookup<Guid?, OrganizationModel> lookup)
         {

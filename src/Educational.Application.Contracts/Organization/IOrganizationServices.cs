@@ -50,7 +50,7 @@ namespace Educational.Organization
         /// <param name="parentId"></param>
         /// <returns></returns>
        
-         Task<List<OrganizationTreeDto>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId);
+         Task<ApiResult<List<OrganizationTreeDto>>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId);
         /// <summary>
         /// 组织机构级别下拉表
         /// </summary> 
