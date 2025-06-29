@@ -198,5 +198,65 @@ namespace Educational.RBAC.PermissionsManager
                 throw;
             }
         }
+        /// <summary>
+        /// 通过ID获取权限详情
+        /// </summary>
+        /// <param name="guid">权限ID</param>
+        /// <returns>权限详情</returns>
+        [HttpGet("{guid}")]
+        public async Task<ApiResult<PermissionsDto>> GetPermissionsById(Guid guid)
+        {
+            try
+            {
+                var permission = await repository.GetAsync(guid);
+                if (permission == null)
+                {
+                    return ApiResult<PermissionsDto>.Fail(ResultCode.Fail, "未找到该权限信息");
+                }
+
+                var permissionDto = ObjectMapper.Map<Permissions, PermissionsDto>(permission);
+                return ApiResult<PermissionsDto>.Success(ResultCode.Ok, permissionDto);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"获取权限信息出错: {ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 通过指定权限ID获取其所有子级权限ID（递归所有层级，仅返回Guid）
+        /// </summary>
+        /// <param name="guid">父级权限ID</param>
+        /// <returns>所有子级权限ID列表</returns>
+        [HttpGet("all-children-ids/{guid}")]
+        public async Task<ApiResult<List<Guid>>> GetAllChildrenGuids(Guid guid)
+        {
+            try
+            {
+                var allPermissions = await repository.GetListAsync();
+                var result = new List<Guid>();
+                GetChildrenGuidsRecursive(guid, allPermissions, result);
+                return ApiResult<List<Guid>>.Success(ResultCode.Ok, result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"获取所有子级权限ID出错: {ex.Message}");
+                return ApiResult<List<Guid>>.Fail(ResultCode.Fail, "获取所有子级权限ID失败");
+            }
+        }
+
+        /// <summary>
+        /// 递归获取所有子级Guid
+        /// </summary>
+        private void GetChildrenGuidsRecursive(Guid parentId, List<Permissions> allPermissions, List<Guid> result)
+        {
+            var children = allPermissions.Where(p => p.ParentId == parentId).ToList();
+            foreach (var child in children)
+            {
+                result.Add(child.Id);
+                GetChildrenGuidsRecursive(child.Id, allPermissions, result);
+            }
+        }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Educational.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 
@@ -17,6 +19,8 @@ namespace Educational.Courses
 		/// <summary>
 		/// 课程名称
 		/// </summary>
+		[Required(ErrorMessage ="课程名称不能为空")]
+		[StringLength(50,MinimumLength =2,ErrorMessage ="课程名称长度在2-50个字符之间")]
         public string CourseName { get; set; }
 		/// <summary>
 		/// 适用学校
@@ -37,39 +41,47 @@ namespace Educational.Courses
 		/// <summary>
 		/// 单价
 		/// </summary>
-        public decimal Price { get; set; }
+		[Range(0.01, 999999, ErrorMessage = "单价必须在0.01-999999之间")]
+		public decimal Price { get; set; }
+
 		/// <summary>
 		/// 总价
 		/// </summary>
-        public decimal TotalPrice { get; set; }
+		[Range(0.01, 999999, ErrorMessage = "总价必须在0.01-999999之间")]
+		public decimal TotalPrice { get; set; }
 		/// <summary>
 		/// 课时数
 		/// </summary>
-        public int LessonNum { get; set; }
+		[Range(1, 1000, ErrorMessage = "课时数必须在1-1000之间")]
+		public int LessonNum { get; set; }
+
 		/// <summary>
 		/// 有效月数
 		/// </summary>
-        public int ValidMonthNum { get; set; }
+		[Range(1, 36, ErrorMessage = "有效月数必须在1-36之间")]
+		public int ValidMonthNum { get; set; }
 		/// <summary>
 		/// 是否预约
 		/// </summary>
-        public bool IsReserve { get; set; }
+		public bool IsReserve { get; set; }
 		/// <summary>
 		/// 消课课酬
 		/// </summary>
-        public decimal LessonCut { get; set; }
+		[Range(0, 999999, ErrorMessage = "课酬金额必须在0-999999之间")]
+		public decimal LessonCut { get; set; }
 		/// <summary>
 		/// 是否后付费
 		/// </summary>
-        public bool IsAfterPay { get; set; }
+		public bool IsAfterPay { get; set; }
 		/// <summary>
 		/// 课酬计费模式
 		/// </summary>
         public LessonCutModeEnum LessonCutMode { get; set; }
 		/// <summary>
-		/// 上课时长
+		/// 上课时长（分钟）
 		/// </summary>
-        public int LessonDuration { get; set; }
+		[Range(30, 240, ErrorMessage = "上课时长必须在30-240分钟之间")]
+		public int LessonDuration { get; set; }
 		/// <summary>
 		/// 适用年级
 		/// </summary>
@@ -89,34 +101,78 @@ namespace Educational.Courses
 		/// <summary>
 		/// 课程封面图
 		/// </summary>
-        public string CoverImage { get; set; }
+		[Url(ErrorMessage = "封面图必须是有效的URL地址")]
+		[MaxLength(500, ErrorMessage = "封面图URL长度不能超过500字符")]
+		public string CoverImage { get; set; }
 		/// <summary>
 		/// 开启推荐
 		/// </summary>
-        public bool IsOpenRecommend { get; set; }
+		public bool IsOpenRecommend { get; set; }
 		/// <summary>
 		/// 班级群二维码
 		/// </summary>
-        public string ClassQrCode { get; set; }
+		[Url(ErrorMessage = "二维码必须是有效的URL地址")]
+		[MaxLength(500, ErrorMessage = "二维码URL长度不能超过500字符")]
+		public string ClassQrCode { get; set; }
 		/// <summary>
 		/// 库存量
 		/// </summary>
-        public int StockNum { get; set; }
+		[Range(0, 9999, ErrorMessage = "库存量必须在0-9999之间")]
+		public int StockNum { get; set; }
+
 		/// <summary>
 		/// 停售日期
 		/// </summary>
-        public DateTime? StopSaleDate { get; set; }
+		[DataType(DataType.Date, ErrorMessage = "必须是有效的日期格式")]
+		[FutureDate(ErrorMessage = "停售日期必须大于当前日期")] // 需要自定义验证器
+		public DateTime? StopSaleDate { get; set; }
+
 		/// <summary>
-		/// 详情介绍图集
+		/// 详情介绍图集（JSON数组格式）
 		/// </summary>
-        public string DetailImageList { get; set; }
+		[JsonArray(ErrorMessage = "必须是合法的JSON数组格式")] // 需要自定义验证器
+		public string DetailImageList { get; set; }
+
 		/// <summary>
 		/// 师资说明
 		/// </summary>
-        public string TeacherRemark { get; set; }
+		[MaxLength(1000, ErrorMessage = "师资说明不能超过1000字符")]
+		public string TeacherRemark { get; set; }
+
 		/// <summary>
 		/// 服务说明
 		/// </summary>
-        public string ServiceRemark { get; set; }
+		[MaxLength(1000, ErrorMessage = "服务说明不能超过1000字符")]
+		public string ServiceRemark { get; set; }
+	}
+	// 未来日期验证器
+	public class FutureDateAttribute : ValidationAttribute
+	{
+		public override bool IsValid(object value)
+		{
+			if (value is DateTime date)
+			{
+				return date > DateTime.Now;
+			}
+			return false;
+		}
+	}
+
+	// JSON数组验证器
+	public class JsonArrayAttribute : ValidationAttribute
+	{
+		public override bool IsValid(object value)
+		{
+			if (value is not string json) return false;
+			try
+			{
+				JsonDocument.Parse(json);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
 	}
 }

@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 
@@ -56,8 +53,12 @@ namespace Educational.Organization
         /// </summary> 
          Task<ApiResult<List<XialaLevelDto>>> GetLevelAsync();
         /// <summary>
+        /// 组织机构下拉框
+        /// </summary>
+        Task<ApiResult<List<OrganizationSelectDto>>> GetOrganizationAsync();
+        /// <summary>
         /// 组织机构级别添加
-        /// </summary> 
-        //wu
+        /// </summary>  
+        Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto);
     }
-}
+} 

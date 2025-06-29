@@ -138,6 +138,7 @@ namespace Educational.Announcements
         /// <param name="ids">批删数组</param>
         /// <returns>返回受影响行数</returns>
 
+        [HttpDelete]
         public async Task<ApiResult> BatchDelete(List<Guid> ids)
         {
             try

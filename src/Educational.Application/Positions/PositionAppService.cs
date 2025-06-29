@@ -62,8 +62,7 @@ namespace Educational.Positions
         {
             try
             {
-                var position = await positionRep.GetAsync(id);
-
+                var position = await positionRep.GetAsync(id); 
                 if (position == null)
                 {
                     return ApiResult<PositionsDto>.Fail(ResultCode.Fail, "职位不存在！");

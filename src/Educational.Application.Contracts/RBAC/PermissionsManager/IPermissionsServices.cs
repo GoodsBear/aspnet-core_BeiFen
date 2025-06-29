@@ -26,11 +26,25 @@ namespace Educational.RBAC.PermissionsManager
         /// 更新权限
         /// </summary>
         Task<ApiResult<PermissionsDto>> UpdatePermissions(CreateUpdatePermissionsDto createUpdatePermissionsDto, Guid guid);
+
         /// <summary>
         /// 获取权限树形结构
         /// </summary>
         /// <returns>返回树形结构的权限列表</returns>
         Task<ApiResult<List<PermissionsTreeDto>>> GetPermissionsTree();
 
+        /// <summary>
+        /// 通过ID获取权限详情
+        /// </summary>
+        /// <param name="guid">权限ID</param>
+        /// <returns>权限详情</returns>
+        Task<ApiResult<PermissionsDto>> GetPermissionsById(Guid guid);
+
+        /// <summary>
+        /// 获取所有子权限的ID
+        /// </summary>
+        /// <param name="guid">权限ID</param>
+        /// <returns>子权限ID列表</returns>
+        Task<ApiResult<List<Guid>>> GetAllChildrenGuids(Guid guid);
     }
 }

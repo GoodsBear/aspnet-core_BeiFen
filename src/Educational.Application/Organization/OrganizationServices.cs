@@ -144,7 +144,9 @@ namespace Educational.Organization
                                Description=org.Description,
                                DeleterId=org.DeleterId,
                                DeletionTime=org.DeletionTime
-                           };  
+                           };
+                //按照权重进行排序
+                linq = linq.OrderByDescending(x=>x.SortOrder);
                 // 使用ABP自带分页方法 
                 var page = linq.PageResult(search.PageIndex, search.PageSize);
                 // 映射
@@ -153,7 +155,7 @@ namespace Educational.Organization
                 {
                     TotleCount = page.RowCount,
                     TotlePage = (int)Math.Ceiling(page.RowCount * 1.0 / search.PageSize),
-                    Data = linq.ToList()
+                    Data = linq.Skip((search.PageIndex-1)* search.PageSize).Take(search.PageSize).ToList()
                 };
                 return ApiResult<ApiPaging<List<LevelDto>>>.Success(ResultCode.Ok, result);
             }
@@ -162,8 +164,8 @@ namespace Educational.Organization
                 logger.LogError("获取组织机构列表出错: " + ex.Message);
                 throw;
             }
-        } 
-        
+        }  
+
 		/// <summary>
 		/// 更新组织机构
 		/// </summary>
@@ -230,8 +232,7 @@ namespace Educational.Organization
         public async Task<ApiResult<List<XialaLevelDto>>> GetLevelAsync()
         { 
             try
-            {
-
+            { 
                 // 正确获取可查询接口
                 var queryable = await  _organizationLevelRepository.GetListAsync();
                 // 正确映射集合类型
@@ -245,7 +246,24 @@ namespace Educational.Organization
                 Logger.LogError(ex, "组织机构级别获取失败");
                 throw;
             }
-        }  
+        }
+        /// <summary>
+        /// 获取组织机构下拉框
+        /// </summary>
+        public async Task<ApiResult<List<OrganizationSelectDto>>> GetOrganizationAsync()
+        {
+            try
+            {
+                var queryable = await _organizationRepository.GetListAsync();
+                var results = ObjectMapper.Map<List<OrganizationModel>, List<OrganizationSelectDto>>(queryable);
+                return ApiResult<List<OrganizationSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "组织机构下拉框获取失败");
+                throw;
+            }
+        }
         /// <summary>
         /// 树形组织机构表
         /// </summary>
@@ -254,6 +272,10 @@ namespace Educational.Organization
 
         public async Task<ApiResult<List<OrganizationTreeDto>>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")]Guid parentId)
         {
+            if (parentId == null)
+            { 
+                parentId = Guid.Empty;
+            }
             var allOrganizations = await _organizationRepository.GetListAsync();
 
             var roots = allOrganizations.Where(o => o.PartentedId == parentId).OrderBy(x => x.SortOrder).ToList();
@@ -261,11 +283,7 @@ namespace Educational.Organization
 
             // 构建一个查找表，按父ID分组 
             var orgLookup = allOrganizations
-                .ToLookup(o => o.PartentedId as Guid?);
-            //.ToLookup(
-            //        kv => (Guid?)kv.Key, // 将键转换为Guid?
-            //        kv => kv.Value
-            //    ));
+                .ToLookup(o => o.PartentedId as Guid?); 
             // 递归构建子树
             foreach (var item in tree)
             {
@@ -274,6 +292,35 @@ namespace Educational.Organization
 
             return ApiResult<List<OrganizationTreeDto>>.Success(ResultCode.Ok, tree);
         } 
+
+        /// <summary>
+        /// 组织机构级别添加
+        /// </summary> 
+        public async Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto)
+        {
+            try
+            {
+                // 验证机构名是否已存在
+                var existingOrg = await _organizationLevelRepository.FirstOrDefaultAsync(x => x.Name == Dto.Name);
+                if (existingOrg != null)
+                {
+                    return ApiResult<OrganizationLevelDto>.Fail(ResultCode.Fail, "机构名已存在");
+                }
+                //创建机构 
+                var organization = ObjectMapper.Map<CreateUpdateOrganizationLevel, OrganizationLevel>(Dto);
+                //插入数据库
+                var organizationDto = await _organizationLevelRepository.InsertAsync(organization);
+                //映射
+                var result = ObjectMapper.Map<OrganizationLevel, OrganizationLevelDto>(organizationDto);
+                //返回
+                return ApiResult<OrganizationLevelDto>.Success(ResultCode.Ok, result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("组织机构级别add失败" + ex.Message);
+                return ApiResult<OrganizationLevelDto>.Fail(ResultCode.Fail, $"组织机构级别add失败: {ex.Message}");
+            }
+        }
         private void BuildTree(OrganizationTreeDto dto, ILookup<Guid?, OrganizationModel> lookup)
         {
             var children = lookup[dto.Id].OrderBy(x => x.SortOrder).ToList();
@@ -290,5 +337,7 @@ namespace Educational.Organization
             dto.Chlidren = new List<OrganizationTreeDto>(); // 初始化
             return dto;
         }
+
+       
     }
 }

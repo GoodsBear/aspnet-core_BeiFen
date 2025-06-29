@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -56,6 +58,7 @@ public class EducationalHttpApiHostModule : AbpModule
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+        // 配置认证
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 
@@ -167,12 +170,20 @@ public class EducationalHttpApiHostModule : AbpModule
             {
                 options.SwaggerDoc("公告", new OpenApiInfo { Title = "公告管理", Version = "v1" });
                 options.SwaggerDoc("课程", new OpenApiInfo { Title = "课程管理", Version = "v1" });
+                options.SwaggerDoc("科目", new OpenApiInfo { Title = "科目管理", Version = "v1" });
+                options.SwaggerDoc("年级", new OpenApiInfo { Title = "年级管理", Version = "v1" });
+                options.SwaggerDoc("班级", new OpenApiInfo { Title = "班级管理", Version = "v1" });
+                options.SwaggerDoc("教室", new OpenApiInfo { Title = "教室管理", Version = "v1" });
                 options.SwaggerDoc("组织机构", new OpenApiInfo { Title = "组织机构管理", Version = "v1" });
                 options.SwaggerDoc("职位", new OpenApiInfo { Title = "职位管理", Version = "v1" });
                 options.SwaggerDoc("权限", new OpenApiInfo { Title = "权限管理", Version = "v1" });
                 options.SwaggerDoc("角色", new OpenApiInfo { Title = "角色管理", Version = "v1" });
+                options.SwaggerDoc("专题", new OpenApiInfo { Title = "专题管理", Version = "v1" });
                 options.SwaggerDoc("成员", new OpenApiInfo { Title = "成员管理", Version = "v1" });
-
+                options.SwaggerDoc("物料", new OpenApiInfo { Title = "物料管理", Version = "v1" });
+                options.SwaggerDoc("成员分配角色", new OpenApiInfo { Title = "成员分配角色管理", Version = "v1" });
+                options.SwaggerDoc("角色分配权限", new OpenApiInfo { Title = "角色分配权限管理", Version = "v1" });
+                
                 options.DocInclusionPredicate((doc, desc) =>
                 {
                     if (!desc.GroupName.IsNullOrWhiteSpace())
@@ -181,9 +192,33 @@ public class EducationalHttpApiHostModule : AbpModule
                     }
                     return true;
                 });
-
-                options.HideAbpEndpoints();
+                //向每个接口的 Swagger 文档中添加自定义响应头信息，便于前端或测试人员了解接口返回的 header。
+                options.OperationFilter<AddResponseHeadersFilter>();
+                //自动在需要授权的接口的 summary 说明中添加“需要授权”字样，方便在 Swagger UI 上直观区分哪些接口需要登录或权限。
+                options.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
+                //给需要授权的接口自动加上小锁标识（即 Swagger UI 上的“锁”图标），并自动生成授权相关的说明和参数。
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
+                //让 Swagger 生成的模型（Schema）ID 使用完整类名，避免不同命名空间下同名类冲突。
                 options.CustomSchemaIds(type => type.FullName);
+                //获取应用程序运行时的根目录。
+                var basePath = AppDomain.CurrentDomain.BaseDirectory;
+                // 添加Application层的XML注释
+                var applicationXmlPath = Path.Combine(basePath, "Educational.Application.xml");
+                if (File.Exists(applicationXmlPath))
+                {
+                    //启用XML注释
+                    options.IncludeXmlComments(applicationXmlPath);
+                }
+
+                // 添加HttpApi层的XML注释
+                var httpApiXmlPath = Path.Combine(basePath, "Educational.HttpApi.Host.xml");
+                if (File.Exists(httpApiXmlPath))
+                {
+                    //启用XML注释
+                    options.IncludeXmlComments(httpApiXmlPath);
+                }
+                //隐藏 ABP 框架自动生成的一些基础端点，只展示你自己定义的 API，更加简洁。
+                options.HideAbpEndpoints();
 
                 // JWT Bearer认证配置
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -264,7 +299,7 @@ public class EducationalHttpApiHostModule : AbpModule
         //    app.UseMultiTenancy();
         //}
 
-        //ѩ��Id
+        //雪花Id
         YitIdHelper.SetIdGenerator(new IdGeneratorOptions(1));
 
         app.UseUnitOfWork();
@@ -276,11 +311,35 @@ public class EducationalHttpApiHostModule : AbpModule
         {
             c.SwaggerEndpoint("/swagger/公告/swagger.json", "公告管理 v1");
             c.SwaggerEndpoint("/swagger/课程/swagger.json", "课程管理 v1");
+            c.SwaggerEndpoint("/swagger/科目/swagger.json", "科目管理 v1");
+            c.SwaggerEndpoint("/swagger/年级/swagger.json", "年级管理 v1");
+            c.SwaggerEndpoint("/swagger/班级/swagger.json", "班级管理 v1");
+            c.SwaggerEndpoint("/swagger/教室/swagger.json", "教室管理 v1");
             c.SwaggerEndpoint("/swagger/组织机构/swagger.json", "组织机构管理 v1");
             c.SwaggerEndpoint("/swagger/职位/swagger.json", "职位管理 v1");
             c.SwaggerEndpoint("/swagger/权限/swagger.json", "权限管理 v1");
             c.SwaggerEndpoint("/swagger/角色/swagger.json", "角色管理 v1");
+            c.SwaggerEndpoint("/swagger/专题/swagger.json", "专题管理 v1");
             c.SwaggerEndpoint("/swagger/成员/swagger.json", "成员管理 v1");
+            c.SwaggerEndpoint("/swagger/物料/swagger.json", "物料管理 v1");
+            c.SwaggerEndpoint("/swagger/成员分配角色/swagger.json", "成员分配角色管理 v1"); 
+            c.SwaggerEndpoint("/swagger/角色分配权限/swagger.json", "角色分配权限管理 v1");
+            //设置模型（Model）在 Swagger UI 中默认展开的层级深度为1
+            //接口参数或返回值是嵌套对象时，默认只展开一层，便于界面简洁
+            c.DefaultModelExpandDepth(1);
+            //设置文档的默认展开方式为“列表模式”
+            //这样所有的 API 分组（如 Controller）在 Swagger UI 左侧会以列表形式全部展开，方便快速浏览所有接口
+            c.DocExpansion(DocExpansion.List);
+            // 设置模型渲染方式为“Model”，即优先显示模型结构（字段、类型等），而不是 Example（示例数据）。
+            //这样开发者可以更直观地看到接口参数和返回值的结构。
+            c.DefaultModelRendering(ModelRendering.Example);
+            //设置模型默认展开深度为 -1，表示所有模型都折叠（不展开）。
+            //这通常用于让页面更简洁，用户需要时再手动展开模型结构
+            c.DefaultModelExpandDepth(-1);
+            //设置 Swagger UI 的访问路径为 /swagger。
+            c.RoutePrefix = "swagger";
+            //注入自定义 CSS 样式表，路径为 /swagger-ui/custom.css。
+            c.InjectStylesheet("/swagger-ui/custom.css");
 
             var configuration = context.ServiceProvider.GetRequiredService<IConfiguration>();
             c.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);

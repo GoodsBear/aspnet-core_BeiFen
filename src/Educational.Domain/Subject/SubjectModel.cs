@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace Educational.SubjectModel
+namespace Educational.Subject
 {
     /// <summary>
     /// 科目管理实体类
@@ -27,14 +27,14 @@ namespace Educational.SubjectModel
         /// 排序权重，数值越大越靠前
         /// </summary>
         [Column("sort_weight")]
+        [Required(ErrorMessage = "排序权重是必填项")]
         public int SortWeight { get; set; } = 0;
 
         /// <summary>
         /// 科目详细说明
         /// </summary>
         [MaxLength(200)]
-        public string? SubjectDescription { get; set; }
-
+        [Required(ErrorMessage = "科目描述是必填项")]
+        public string? SubjectDescription { get; set; } 
     }
-
 }

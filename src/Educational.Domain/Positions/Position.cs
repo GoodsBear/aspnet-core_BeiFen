@@ -17,6 +17,7 @@ namespace Educational.Positions
         /// 职位名称
         /// </summary>
         [Required(ErrorMessage = "职位名称不能为空")]
+
         public string PositionName { get; set; } = string.Empty;
     }
 }
