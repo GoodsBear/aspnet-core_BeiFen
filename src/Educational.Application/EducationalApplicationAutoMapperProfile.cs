@@ -29,6 +29,7 @@ using System.Linq;
 using Volo.Abp.ObjectMapping;
 using Educational.Menu;
 using Educational.StudentsAndParents.Students;
+using Educational.Dto.MaterialRecordsDtos;
 
 namespace Educational;
 

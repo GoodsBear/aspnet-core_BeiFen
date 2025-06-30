@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Educational.Staffs;
-using Educational.Students;
 using Org.BouncyCastle.Math.EC.Rfc7748;
 using Volo.Abp.Uow;
+using Educational.StudentsAndParends.Students;
 
 namespace Educational.MaterialRetords
 {

@@ -59,10 +59,9 @@ namespace Educational.Organization
         /// <summary>
         /// 组织机构级别添加
         /// </summary>  
-      Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto);
+        Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto);
 
 
         Task<ApiResult<List<SysOreanzationDto>>> GetOrganzationTree();
-        Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto);
     }
 } 
