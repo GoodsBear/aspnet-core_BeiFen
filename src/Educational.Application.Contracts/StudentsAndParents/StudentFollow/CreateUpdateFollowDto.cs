@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Educational.Enmu
-{    public enum StaffStatus
+namespace Educational.StudentsAndParents.StudentFollow
+{
+    public class CreateUpdateFollowDto
     {
-        在职,
-        离职
-    }
 
+    }
 }

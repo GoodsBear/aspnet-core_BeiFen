@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace Educational.Students
+namespace Educational.StudentsAndParends.Students
 {
 	public class Student:FullAuditedAggregateRoot<Guid>
 	{
@@ -37,9 +37,7 @@ namespace Educational.Students
 		/// <summary>
 		/// 亲属关系
 		/// </summary>
-		[Required(ErrorMessage = "亲属关系不能为空")]
-		[MaxLength(50)]
-		public FamilyEnum Relation { get; set; }
+		public Relation Relation { get; set; }
 		/// <summary>
 		/// 学生性别
 		/// </summary>
@@ -79,5 +77,22 @@ namespace Educational.Students
 		[MaxLength(500)]
         [Required(ErrorMessage = "备注不能为空")]
 		public string Remark { get; set; }
+        /// <summary>
+        /// 学员类型
+        /// </summary>
+		public StudentEnum StudentType { get; set; }
+        /// <summary>
+        /// 顾问
+        /// </summary>
+        public Guid Consultant { get; set; }
+		/// <summary>
+		/// 课时数
+		/// </summary>
+		public int LessonNums { get; set; }
+		/// </summary>
+		/// <summary>
+		/// 年龄
+		/// </summary>
+		public int? Age { get; set; }
 	}
 }

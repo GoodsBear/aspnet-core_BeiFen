@@ -105,6 +105,54 @@ namespace Educational.Menu
         }
 
         /// <summary>
+        /// 菜单树形结构列表（多级）
+        /// </summary>
+        [HttpGet]
+        public async Task<ApiResult<List<MenuTreeDto>>> MenuTreeList()
+        {
+            try
+            {
+                var allMenus = await repository.GetListAsync();
+                var rootParentId = Guid.Parse("00000000-0000-0000-0000-000000000000");
+
+                // 递归构建树
+                var tree = BuildMenuTree(allMenus, rootParentId);
+
+                return ApiResult<List<MenuTreeDto>>.Success(ResultCode.Ok, tree);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("树形菜单获取出错: " + ex.Message);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 递归构建菜单树
+        /// </summary>
+        private List<MenuTreeDto> BuildMenuTree(List<Menu> allMenus, Guid parentId)
+        {
+            var children = allMenus
+                .Where(m => m.ParentId == parentId)
+                .ToList();
+
+            var result = new List<MenuTreeDto>();
+            foreach (var menu in children)
+            {
+                var node = new MenuTreeDto
+                {
+                    value = menu.Id,
+                    label = menu.MenuName,
+                    path = menu.MenuPath,
+                    icon = menu.MenuIcon,
+                    children = BuildMenuTree(allMenus, menu.Id)
+                };
+                result.Add(node);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 修改菜单
         /// </summary>
         [HttpPut]

@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Volo.Abp.ObjectMapping;
 using Educational.Menu;
+using Educational.StudentsAndParents.Students;
 
 namespace Educational;
 
@@ -113,5 +114,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<CreateUpdateMenuDto,Educational.Menu.Menu>().ReverseMap();
         CreateMap<Educational.Menu.Menu, MenuDto>().ReverseMap();
 
+        //学员
+        CreateMap<CreateUpdateStudentDto, Educational.StudentsAndParends.Students.Student>().ReverseMap();
+        CreateMap<Educational.StudentsAndParends.Students.Student, StudentsDto>().ReverseMap();
     }
 } 

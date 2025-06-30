@@ -169,6 +169,7 @@ public class EducationalHttpApiHostModule : AbpModule
             options =>
             {
                 options.SwaggerDoc("菜单", new OpenApiInfo { Title = "菜单管理", Version = "v1" });
+                options.SwaggerDoc("学员", new OpenApiInfo { Title = "学员管理", Version = "v1" });
                 options.SwaggerDoc("公告", new OpenApiInfo { Title = "公告管理", Version = "v1" });
                 options.SwaggerDoc("课程", new OpenApiInfo { Title = "课程管理", Version = "v1" });
                 options.SwaggerDoc("科目", new OpenApiInfo { Title = "科目管理", Version = "v1" });
@@ -311,6 +312,7 @@ public class EducationalHttpApiHostModule : AbpModule
         app.UseAbpSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/菜单/swagger.json", "菜单管理 v1");
+            c.SwaggerEndpoint("/swagger/学员/swagger.json", "学员管理 v1");
             c.SwaggerEndpoint("/swagger/公告/swagger.json", "公告管理 v1");
             c.SwaggerEndpoint("/swagger/课程/swagger.json", "课程管理 v1");
             c.SwaggerEndpoint("/swagger/科目/swagger.json", "科目管理 v1");

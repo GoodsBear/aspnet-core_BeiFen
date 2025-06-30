@@ -25,5 +25,10 @@ namespace Educational.Menu
         /// 更新菜单
         /// </summary>
         Task<ApiResult<MenuDto>> UpdateMenu(CreateUpdateMenuDto createUpdateMenuDto, Guid guid);
+        /// <summary>
+        /// 菜单树形结构列表
+        /// </summary>
+        /// <returns></returns>
+        Task<ApiResult<List<MenuTreeDto>>> MenuTreeList();
     }
 }
