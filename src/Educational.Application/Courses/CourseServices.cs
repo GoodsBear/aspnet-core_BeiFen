@@ -1,4 +1,7 @@
-﻿using Educational.Organization;
+﻿using Educational.Enums;
+using Educational.Organization;
+using Educational.SpecialSubject;
+using Educational.Subject;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,11 +19,17 @@ namespace Educational.Courses
 	{
 		IRepository<Course, Guid> _courseRepository;
 		IRepository<OrganizationModel, Guid> organiRepository;
+		IRepository<SubjectModel, Guid> subjectRepository;
+		IRepository<SpecialSubjectModel, Guid> specialRepository;
+		IRepository<OrganizationModel, Guid> organRepository;
 
-		public CourseServices(IRepository<Course, Guid> courseRepository, IRepository<OrganizationModel, Guid> organiRepository)
+		public CourseServices(IRepository<Course, Guid> courseRepository, IRepository<OrganizationModel, Guid> organiRepository, IRepository<SpecialSubjectModel, Guid> specialRepository, IRepository<SubjectModel, Guid> subjectRepository, IRepository<OrganizationModel, Guid> organRepository)
 		{
 			_courseRepository = courseRepository;
 			this.organiRepository = organiRepository;
+			this.specialRepository = specialRepository;
+			this.subjectRepository = subjectRepository;
+			this.organRepository = organRepository;
 		}
 		/// <summary>
 		/// 新增课程
@@ -69,9 +78,24 @@ namespace Educational.Courses
 			{
 				course= course.Where(x=>x.Status==seach.Status);
 			}
+			//获取科目
+			var subject= ObjectMapper.Map<List<SubjectModel>,List<SubjectDto>>((await subjectRepository.GetQueryableAsync()).ToList());
+			//获取专题
+            var topic=ObjectMapper.Map<List<SpecialSubjectModel>,List<SpecialSubjectDto>>((await specialRepository.GetQueryableAsync()).ToList());
+			//获取机构
+            var organization=ObjectMapper.Map<List<OrganizationModel>,List<OrganizationDto>>((await organRepository.GetQueryableAsync()).ToList());
 
 			var coursepage= course.Page(seach.PageIndex,seach.PageSize);
 			var courselist=ObjectMapper.Map<List<Course>, List<CourseDto>>(coursepage.ToList());
+			foreach (var item in courselist)
+			{ 
+				item.CampusName= organization.FirstOrDefault(x=>x.Id==item.CampusId)?.Name;
+				item.SubjectName=subject.FirstOrDefault(x=>x.Id==item.SubjectId)?.SubjectName;
+                item.TopicName=topic.FirstOrDefault(x=>x.Id==item.TopicId)?.Name;
+				CourseType type1 = (CourseType)item.CourseTypeId;
+				item.CourseTypeName = type1.ToString();
+				
+			}
 			ApiPaging<List<CourseDto>> paging=new ApiPaging<List<CourseDto>>
 			{
 				TotleCount= course.Count(),

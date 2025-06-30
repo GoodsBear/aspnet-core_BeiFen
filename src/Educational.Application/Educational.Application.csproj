@@ -20,4 +20,8 @@
     <PackageReference Include="Yitter.IdGenerator" Version="1.0.14" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ClassSchedule\" />
+  </ItemGroup>
+
 </Project>

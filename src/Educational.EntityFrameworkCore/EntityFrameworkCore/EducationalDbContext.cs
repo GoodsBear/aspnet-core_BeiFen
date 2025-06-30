@@ -3,6 +3,7 @@ using Educational.Classgrade;
 using Educational.ClassSchedule;
 using Educational.Courses;
 using Educational.Datadictionary;
+using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.SpecialSubject;

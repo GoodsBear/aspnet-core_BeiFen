@@ -319,7 +319,58 @@ namespace Educational.Organization
             var dto = ObjectMapper.Map<OrganizationModel, OrganizationTreeDto>(entity);
             dto.Chlidren = new List<OrganizationTreeDto>(); // 初始化
             return dto;
-        } 
+        }
 
-    }
+
+        /// <summary>
+        /// 获取机构树
+        /// </summary>
+        /// <returns></returns>
+		public async Task<ApiResult<List<SysOreanzationDto>>> GetOrganzationTree()
+		{
+            try
+            {
+                //获取所有机构
+                var organzation=await _organizationRepository.GetListAsync();
+                //实体转Dto
+                var dtolist=organzation.Select(a=>new SysOreanzationDto
+                {
+                    Id=a.Id,
+                    Name=a.Name,
+                    LevelId=a.LevelId,
+                    PartentedId=a.PartentedId,
+                    ShortName=a.ShortName,
+                    ContactPerson=a.ContactPerson,
+                    Phone=a.Phone,
+                    Fax=a.Fax,
+                    Email=a.Email,
+                    SortOrder=a.SortOrder,
+                    IsActive=a.IsActive,
+                    Description=a.Description,
+                    Children=new List<SysOreanzationDto>()
+                }).ToList();
+
+                var dtoOrganzation = dtolist.ToDictionary(x => x.Id, x => x);
+                //构建树形结构
+                List<SysOreanzationDto> roots = new();
+                foreach (var item in dtolist)
+                {
+                    if (item.Id == Guid.Empty || !dtoOrganzation.ContainsKey(item.PartentedId))
+                    {
+                        roots.Add(item);
+                    }
+                    else
+                    {
+                        dtoOrganzation[item.PartentedId].Children.Add(item);
+                    }
+                }
+                return new ApiResult<List<SysOreanzationDto>>(true, ResultCode.Ok, "成功", roots);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+		}
+	}
 }

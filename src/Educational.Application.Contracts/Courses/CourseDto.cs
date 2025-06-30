@@ -46,6 +46,11 @@ namespace Educational.Courses
 		/// </summary>
 		public CourseType CourseTypeId { get; set; }
 		/// <summary>
+		/// 课程类型名称
+		/// </summary>
+        public string CourseTypeName { get; set; }
+
+		/// <summary>
 		/// 单价
 		/// </summary>
 		public decimal Price { get; set; }
