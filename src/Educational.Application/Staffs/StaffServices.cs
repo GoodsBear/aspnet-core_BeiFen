@@ -179,6 +179,29 @@ namespace Educational.Staffs
                     return ApiResult<ShowStaffDTO>.Fail(ResultCode.Fail, "员工名称已存在");
                 }
                 addorUpdStaffDTO.StaffPassword = Sha256Hash(addorUpdStaffDTO.StaffPassword);
+
+                // 使用逗号(,)作为分隔符，将addorUpdStaffDT0.Organization字符串拆分成字符串数组
+                string[] organization = addorUpdStaffDTO.Organization.Split(',');
+
+                // 初始化一个空字符串，用于存储最终拼接的结果
+                var resultmname = "";
+
+                // 遍历organization数组中的每一个元素
+                foreach (var item in organization)
+                {
+                    // 调用FirstOrderBuildAsync方法查询组织信息，并获取组织名称
+                    // 注意：这里有一些特殊符号(&,>,等)可能是占位符或代码片段不完整
+                    var organizationname = (await organizationRepository.FirstOrDefaultAsync(x => Convert.ToString(x.Id) == item)).Name;
+
+                    // 将查询到的组织名称拼接到resultmname字符串中，并用分号(;)分隔
+                    resultmname += organizationname + ',';
+                }
+
+                // 将拼接好的字符串赋值回addorUpdStaffDT0.Organization属性
+                // 使用TrimEnd(',')去除末尾可能多余的分号(;)
+                // 注意：这里应该使用TrimEnd(';')而不是TrimEnd(',')，因为拼接时使用的是分号
+                addorUpdStaffDTO.Organization = resultmname.TrimEnd(',');
+
                 // 将前端传入的 AddorUpdStaffDTO 映射成实体 StaffInfo，用于数据库操作
                 var staffinfo = ObjectMapper.Map<AddorUpdStaffDTO, StaffInfo>(addorUpdStaffDTO);
 
@@ -210,6 +233,27 @@ namespace Educational.Staffs
             {
                 // 根据员工ID查出原始数据
                 var staffinfo = await basicRepository.FindAsync(staffId);
+                // 使用逗号(,)作为分隔符，将addorUpdStaffDT0.Organization字符串拆分成字符串数组
+                string[] organization = addorUpdStaffDTO.Organization.Split(',');
+
+                // 初始化一个空字符串，用于存储最终拼接的结果
+                var resultmname = "";
+
+                // 遍历organization数组中的每一个元素
+                foreach (var item in organization)
+                {
+                    // 调用FirstOrderBuildAsync方法查询组织信息，并获取组织名称
+                    // 注意：这里有一些特殊符号(&,>,等)可能是占位符或代码片段不完整
+                    var organizationname = (await organizationRepository.FirstOrDefaultAsync(x => Convert.ToString(x.Id) == item)).Name;
+
+                    // 将查询到的组织名称拼接到resultmname字符串中，并用分号(;)分隔
+                    resultmname += organizationname + ',';
+                }
+
+                // 将拼接好的字符串赋值回addorUpdStaffDT0.Organization属性
+                // 使用TrimEnd(',')去除末尾可能多余的分号(;)
+                // 注意：这里应该使用TrimEnd(';')而不是TrimEnd(',')，因为拼接时使用的是分号
+                addorUpdStaffDTO.Organization = resultmname.TrimEnd(',');
                 // 将 DTO 映射成数据库实体
                 ObjectMapper.Map(addorUpdStaffDTO, staffinfo);
 

@@ -264,34 +264,6 @@ namespace Educational.Organization
                 throw;
             }
         }
-        /// <summary>
-        /// 树形组织机构表
-        /// </summary>
-        /// <param name="parentId"></param>
-        /// <returns></returns>
-
-        public async Task<ApiResult<List<OrganizationTreeDto>>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")]Guid parentId)
-        {
-            if (parentId == null)
-            { 
-                parentId = Guid.Empty;
-            }
-            var allOrganizations = await _organizationRepository.GetListAsync();
-
-            var roots = allOrganizations.Where(o => o.PartentedId == parentId).OrderBy(x => x.SortOrder).ToList();
-            var tree = roots.Select(MapToTreeDto).ToList();
-
-            // 构建一个查找表，按父ID分组 
-            var orgLookup = allOrganizations
-                .ToLookup(o => o.PartentedId as Guid?); 
-            // 递归构建子树
-            foreach (var item in tree)
-            {
-                BuildTree(item, orgLookup);
-            }
-
-            return ApiResult<List<OrganizationTreeDto>>.Success(ResultCode.Ok, tree);
-        } 
 
         /// <summary>
         /// 组织机构级别添加
@@ -321,23 +293,54 @@ namespace Educational.Organization
                 return ApiResult<OrganizationLevelDto>.Fail(ResultCode.Fail, $"组织机构级别add失败: {ex.Message}");
             }
         }
-        private void BuildTree(OrganizationTreeDto dto, ILookup<Guid?, OrganizationModel> lookup)
+
+        public async Task<ApiResult<List<OrganizationTreeDto>>> GetTreeAsync(
+            [DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId)
         {
-            var children = lookup[dto.Id].OrderBy(x => x.SortOrder).ToList();
-            dto.Chlidren = children.Select(entity =>
+            if (parentId == null)
             {
-                var childDto = ObjectMapper.Map<OrganizationModel,OrganizationTreeDto>(entity);
-                BuildTree(childDto, lookup); // 递归调用
-                return childDto;
-            }).ToList();
-        } 
-        private OrganizationTreeDto MapToTreeDto(OrganizationModel entity)
-        {
-            var dto = ObjectMapper.Map<OrganizationModel, OrganizationTreeDto>(entity);
-            dto.Chlidren = new List<OrganizationTreeDto>(); // 初始化
-            return dto;
+                parentId = Guid.Empty;
+            }
+
+            var allOrganizations = await _organizationRepository.GetListAsync();
+
+            var roots = allOrganizations
+                .Where(o => o.PartentedId == parentId)
+                .OrderBy(o => o.SortOrder)
+                .ToList();
+
+            var tree = roots.Select(MapToTreeNode).ToList();
+
+            var orgLookup = allOrganizations.ToLookup(o => o.PartentedId);
+
+            foreach (var item in tree)
+            {
+                BuildTree(item, orgLookup);
+            }
+
+            return ApiResult<List<OrganizationTreeDto>>.Success(ResultCode.Ok, tree);
         }
 
-       
+        private OrganizationTreeDto MapToTreeNode(OrganizationModel entity)
+        {
+            return new OrganizationTreeDto
+            {
+                id = entity.Id,
+                label = entity.Name ?? entity.Name ?? "未命名组织", // 确保label不为null
+                                                                // 其他属性...
+            };
+        }
+
+        private void BuildTree(OrganizationTreeDto dto, ILookup<Guid, OrganizationModel> lookup)
+        {
+            var children = lookup[dto.id].OrderBy(o => o.SortOrder).ToList();
+
+            dto.children = children.Select(entity =>
+            {
+                var childDto = MapToTreeNode(entity);
+                BuildTree(childDto, lookup);
+                return childDto;
+            }).ToList();
+        }
     }
 }

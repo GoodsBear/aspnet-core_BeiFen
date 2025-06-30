@@ -14,14 +14,14 @@ namespace Educational.Organization
         /// <summary>
         /// 主键
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid id { get; set; }
         /// <summary>
         /// 部门名称
         /// </summary>
-        public string Name { get; set; }
+        public string label { get; set; }
         /// <summary>
         /// 下级部门集合
         /// </summary>
-        public List<OrganizationTreeDto> Chlidren { get; set; }
+        public List<OrganizationTreeDto> children { get; set; }
     }
 }
