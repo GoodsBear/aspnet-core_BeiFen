@@ -1,10 +1,11 @@
-﻿using Educational.Enmu;
+﻿using Educational.Classgrade;
+using Educational.Dto.ClassRooms;
+using Educational.Enmu;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.StaffTypes;
 using Educational.Tools;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,11 +44,29 @@ namespace Educational.Staffs
             this.typeRep = typeRep;
             this.organizationRepository = organizationRepository;
         }
+        /// <summary>
+        /// 获取成员列表下拉框
+        /// </summary>
+        /// <returns>返回成员列表下拉框</returns>
+        public async Task<ApiResult<List<StaffSelectDto>>> GetStaffAsync()
+        {
+            try
+            {
+                var queryable = await basicRepository.GetListAsync();
+                var results = ObjectMapper.Map<List<StaffInfo>, List<StaffSelectDto>>(queryable);
+                return ApiResult<List<StaffSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "成员下拉框获取失败");
+                throw;
+            }
+        }
         /// <summary>分页查询员工信息</summary>
         /// <param name="search">查询条件</param>
         /// <returns>分页结果，包含员工信息</returns>
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<ApiResult<ApiPaging<List<ShowStaffDTO>>>> GetStaffListAsync([FromQuery]SearchStaffDTO search)
         {
             try

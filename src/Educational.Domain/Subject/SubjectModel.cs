@@ -27,12 +27,14 @@ namespace Educational.Subject
         /// 排序权重，数值越大越靠前
         /// </summary>
         [Column("sort_weight")]
+        [Required(ErrorMessage = "排序权重是必填项")]
         public int SortWeight { get; set; } = 0;
 
         /// <summary>
         /// 科目详细说明
         /// </summary>
         [MaxLength(200)]
+        [Required(ErrorMessage = "科目描述是必填项")]
         public string? SubjectDescription { get; set; } 
     }
 }

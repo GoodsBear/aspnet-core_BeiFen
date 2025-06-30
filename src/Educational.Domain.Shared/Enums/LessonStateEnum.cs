@@ -11,9 +11,9 @@ namespace Educational.Enums
 	/// </summary>
 	public enum LessonStateEnum
 	{
-		未开课,
+		未排课,
 		已停课,
 		进行中,
-		已结课,
+		已结业,
 	}
 }

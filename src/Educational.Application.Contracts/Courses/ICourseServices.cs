@@ -18,6 +18,9 @@ namespace Educational.Courses
 
 		//批量修改课程状态
 		Task<ApiResult> UpdateCourseStatus(List<Guid> guids, bool status,int type);
+		// 获取课程下拉框
+		Task<ApiResult<List<CourseSelectDto>>> GetCourseAsync();
 
-	}
+
+    }
 }
