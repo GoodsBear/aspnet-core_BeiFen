@@ -30,7 +30,7 @@ namespace Educational.StudentsAndParents.ParentServices
 		/// </summary>
 		/// <param name="searchDto"></param>
 		/// <returns></returns>
-		[ApiExplorerSettings(GroupName = "课程")]
+		[ApiExplorerSettings(GroupName = "学员")]
 		public async Task<ApiResult<ApiPaging<List<ParentsDto>>>> GetParentList(ParentSearchDto searchDto)
 		{
 			try
