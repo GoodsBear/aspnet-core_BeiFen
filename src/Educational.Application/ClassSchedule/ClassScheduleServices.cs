@@ -4,7 +4,7 @@ using Educational.ClassSchedule.Update;
 using Educational.Courses;
 using Educational.Organization;
 using Educational.Staffs;
-using Educational.Students;
+using Educational.StudentsAndParends.Students;
 using Educational.Subject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
