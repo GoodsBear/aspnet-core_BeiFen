@@ -16,6 +16,7 @@ using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
+using Educational.SalarySetting;
 using Educational.SpecialSubject;
 using Educational.Staffs;
 using Educational.StaffTypes;
@@ -30,6 +31,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
+        //薪资
+        CreateMap<SalarySettingModel, SalarySettingDto>().ReverseMap();
         //排课  
         CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
         CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
@@ -42,9 +45,12 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<CategoryModel, CategoryModelDto>().ReverseMap();
         CreateMap<SpecialSubjectModel, XiAsepecialSubjectDto>().ReverseMap();
          
+            
         CreateMap<CreateUpdateOrganizationLevel, OrganizationLevel>();
         CreateMap<OrganizationLevel, OrganizationLevelDto>();
         // 添加从 CreateUpdateOrganizationDto 到 OrganizationModel 的映射
+        
+        CreateMap<OrganizationModel, OrganizationTreepageDto>();
         CreateMap<CreateUpdateOrganizationDto, OrganizationModel>();
         CreateMap<OrganizationModel, OrganizationDto>();
         CreateMap<OrganizationModel, OrganizationTreeDto>().ReverseMap();

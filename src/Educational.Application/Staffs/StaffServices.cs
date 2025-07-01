@@ -2,6 +2,7 @@
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
+using Educational.SalarySetting;
 using Educational.StaffTypes;
 using Educational.Tools;
 using Microsoft.AspNetCore.Authorization;
@@ -33,8 +34,10 @@ namespace Educational.Staffs
         private readonly IRepository<Role, Guid> roleRep;
         private readonly IRepository<StaffTypeInfo, Guid> typeRep;
         private readonly IRepository<OrganizationModel, Guid> organizationRepository;
-
-        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep,IRepository<OrganizationModel, Guid> organizationRepository)
+        private readonly IRepository<SalarySettingModel, Guid> salarySettingRepository;
+        
+        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep,IRepository<OrganizationModel, Guid> organizationRepository,
+            IRepository<SalarySettingModel, Guid> salarySettingRepository)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
@@ -42,6 +45,7 @@ namespace Educational.Staffs
             this.roleRep = roleRep;
             this.typeRep = typeRep;
             this.organizationRepository = organizationRepository;
+            this.salarySettingRepository = salarySettingRepository;
         }
         /// <summary>分页查询员工信息</summary>
         /// <param name="search">查询条件</param>
@@ -168,6 +172,14 @@ namespace Educational.Staffs
 
                 // 将插入后的实体对象映射成返回给前端的 ShowStaffDTO
                 var showstaffinfo = ObjectMapper.Map<StaffInfo, ShowStaffDTO>(staffinfo);
+
+
+                //添加职位表的同时添加薪资表
+                SalarySettingModel salary = new SalarySettingModel() { 
+                    StaffinfoName= showstaffinfo.StaffName,
+                    Organization= showstaffinfo.Organization
+                };
+                await salarySettingRepository.InsertAsync(salary); 
 
                 // 封装返回结果，状态码 OK，附带员工信息
                 return ApiResult<ShowStaffDTO>.Success(ResultCode.Ok, showstaffinfo);

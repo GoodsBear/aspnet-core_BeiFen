@@ -5,11 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.ClassSchedule.DTO
 {
-    public class ConflictModelDto : Entity<Guid>
+    public class ConflictModelDto : FullAuditedAggregateRoot<Guid>
     {
+        /// <summary>
+        /// 排课表主键
+        /// </summary> 
+        [Required(ErrorMessage = "排课表主键不能为空")]
+
+        public Guid ClassScheduleId { get; set; }
         /// <summary>
         /// 班级名称
         /// </summary>
@@ -42,14 +49,14 @@ namespace Educational.ClassSchedule.DTO
         /// 开始时间（精确到分钟）
         /// </summary>
         [Required(ErrorMessage = "开始时间不能为空")]
-        public TimeSpan StartTime { get; set; }
+        public DateTime StartTime { get; set; }
 
         /// <summary>
         /// 结束时间（精确到分钟）
         /// </summary>
         [Required(ErrorMessage = "结束时间不能为空")]
         [CustomValidation(typeof(ConflictModel), "ValidateEndTime")]
-        public TimeSpan EndTime { get; set; }
+        public DateTime EndTime { get; set; }
 
         /// <summary>
         /// 上课教师

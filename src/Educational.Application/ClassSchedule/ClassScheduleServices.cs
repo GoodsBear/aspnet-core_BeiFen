@@ -50,6 +50,7 @@ namespace Educational.ClassSchedule
             _studentRepository = studentRepository;
             _logger = logger;
         }
+
         //显示冲突表
         public async Task<ApiResult<ApiPaging<List<ConflictModelDto>>>> GetConfilcListAsync([FromQuery] Seach search)
         {
@@ -81,11 +82,6 @@ namespace Educational.ClassSchedule
         {
             try
             {
-                //检查冲突的方法-（方法内添加方法
-                //input.HasSchedulingConflict =true;
-                //查询冲突，添加冲突表
-                //input.ConflictModel=。。。;
-
                 //日期设置检查
                 if (input.StartDate > input.EndDate)
                 {
@@ -104,10 +100,18 @@ namespace Educational.ClassSchedule
                 }
                 //上课老师和助教老师未匹配薪资，课程时长50分钟 
                 var course = await _courseRepository.FirstOrDefaultAsync(x=>x.Id==input.CourseId);
-                //maxSchedules最大排课数量根据符合条件的天数，条数进行安排，
-                
+                //maxSchedules最大排课数量根据符合条件的天数，条数进行安排， 
                 //上课时间
+                //根据上课时间生成课表
+                //导入课表--批量导出
+                
 
+                //检查冲突
+                //如果有冲突
+                //修改冲突字段
+                //导入冲突表批量导入
+
+                
                 //创建机构 
                 var classSchedule = ObjectMapper.Map<UpdateClassScheduleDto, ClassSchedule>(input);
                 //插入数据库
@@ -126,49 +130,42 @@ namespace Educational.ClassSchedule
         public async  Task<ApiResult<ApiPaging<List<ClassScheduleDto>>>> GetListAsync([FromQuery] ClassScheduleSearchDto search)
         {
             try
-            {
+            {               
                 // 构建查询
                 var classSchedulelist = await _classScheduleRepository.GetQueryableAsync();
                 var scheduleTimeSub = await _scheduleTimeRepository.GetQueryableAsync();
                 var classInfo = await _classInfoRepository.GetQueryableAsync();
                 var staffInfo = await _staffInfoRepository.GetQueryableAsync();
                 var organizationlist = await _organizationRepository.GetQueryableAsync();
+                var conflictlist = await _conflictModelRepository.GetQueryableAsync();
                 var courselist = await _courseRepository.GetQueryableAsync();
-                // 名称查询
-                classSchedulelist = classSchedulelist.WhereIf(search.CampusId != null, x => x.CampusId.Equals(search.CampusId));
+                //  查询
+                 classSchedulelist = classSchedulelist.WhereIf(search.organizationId != null, x => x.OrganizationId.Equals(search.organizationId));
                 classSchedulelist = classSchedulelist.WhereIf(search.ClassId != null, x => x.ClassId.Equals(search.ClassId));
-                classSchedulelist = classSchedulelist.WhereIf(search.CourseId != null, x => x.CampusId.Equals(search.CourseId));
-                //集合
-                var linq = from Schedule in classSchedulelist
-                           join Time in scheduleTimeSub
-                           on Schedule.Id equals Time.ClassScheduleId
-                           join classinfo in classInfo
-                           on Schedule.ClassId equals classinfo.Id
-                           join organization in organizationlist
-                           on Schedule.CampusId equals organization.Id
-                           join course in courselist
-                           on Schedule.CourseId equals course.Id
+                classSchedulelist = classSchedulelist.WhereIf(search.CourseName != null, x => x.CourseName.Equals(search.CourseName));
+                var linq = from s in classSchedulelist
+                           join t in scheduleTimeSub on s.ScheduleTimeId equals t.Id
                            select new ClassScheduleDto
                            {
-                               Id = Schedule.Id,
-                               ClassId = Schedule.ClassId,
-                               CampusId = Schedule.CampusId,
-                               CourseId = Schedule.CourseId,
-                               ClassName = classinfo.ClassName,
-                               OrganizationName = organization.Name,
-                               CourseName = course.CourseName,
-                               MainTeacher = Schedule.MainTeacher,
-                               AssistantTeacher = Schedule.AssistantTeacher,
-                               StartDate = Schedule.StartDate,
-                               EndDate = Schedule.EndDate,
-                               ConsumptionBase = Schedule.ConsumptionBase,
-                               MaxAttendees = Schedule.MaxAttendees,
-                               MaxSchedules = Schedule.MaxSchedules,
-                               SkipHolidays = Schedule.SkipHolidays,
-                               IsTimetableGenerated = Schedule.IsTimetableGenerated,
-                               HasSchedulingConflict = Schedule.HasSchedulingConflict,
-                               GeneratedSessionCount = Schedule.GeneratedSessionCount,
-                               ScheduleTimes = Schedule.ScheduleTimes
+                               Id = s.Id,
+                               ClassId = s.ClassId,
+                               OrganizationId = s.OrganizationId,
+                               OrganizationName = s.OrganizationName,
+                               CourseId = s.CourseId,
+                               CourseName = s.CourseName,
+                               ClassName = s.ClassName,
+                               MainTeacher = s.MainTeacher,
+                               AssistantTeacher = s.AssistantTeacher,
+                               StartDate = s.StartDate,
+                               EndDate = s.EndDate,
+                               ConsumptionBase = s.ConsumptionBase,
+                               MaxAttendees = s.MaxAttendees,
+                               MaxSchedules = s.MaxSchedules,
+                               SkipHolidays = s.SkipHolidays,
+                               IsTimetableGenerated = s.IsTimetableGenerated,
+                               HasSchedulingConflict = s.HasSchedulingConflict,
+                               GeneratedSessionCount = s.GeneratedSessionCount,
+                               ScheduleTimes = $"{t.DayOfWeek} {t.StartTime}-{t.EndTime}"
                            };
                 // 使用ABP自带分页方法 
                 var page = linq.PageResult(search.PageIndex, search.PageSize);
@@ -250,17 +247,26 @@ namespace Educational.ClassSchedule
                 return ApiResult<SubjectDto>.Fail(ResultCode.Fail, $"批量删除排课计划失败: {ex.Message}");
             }
         }
-        //检查冲突--
-        public async Task<ApiResult> CheckConflict(ClassScheduleDto dto)
+
+        public Task<ApiResult> CheckConflict(ClassScheduleDto dto)
         {
-            try
-            {
-                throw new NotImplementedException();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            throw new NotImplementedException();
         }
+        //检查冲突--
+        //public async Task<ApiResult> CheckConflict(Guid classScheduleId)
+        //{
+        //    try
+        //    {
+        //         var classSchedulist=await _classScheduleRepository.FirstOrDefaultAsync(x=>x.Id == classScheduleId); 
+        //        //待生成课表
+
+        //        //生成课表
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
     }
 }

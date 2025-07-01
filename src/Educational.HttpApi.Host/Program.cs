@@ -1,10 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Serialization;
 using Serilog;
 using Serilog.Events;
+using System;
+using System.Threading.Tasks;
 
 namespace Educational;
 
@@ -27,6 +28,10 @@ public class Program
 
         try
         {
+           //Services.AddMvc().AddJsonOptions(options =>
+           // {
+           //     options.SerializerSettings.ContractResolver = new DefaultContractResolver(); // 保留原名[6](@ref)
+           // });
 
             Log.Information("Starting Educational.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args);

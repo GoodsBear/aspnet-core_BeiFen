@@ -27,8 +27,7 @@ namespace Educational.ClassSchedule
         //批量删除排课表
         Task<ApiResult> DeletedClassAsync(List<Guid> guids);
 
-        //冲突显示表
-        Task<ApiResult<ApiPaging<List<ConflictModelDto>>>> GetConfilcListAsync([FromQuery] Seach search);
+
         //检查冲突-- 
         Task<ApiResult> CheckConflict(ClassScheduleDto dto);
     }
