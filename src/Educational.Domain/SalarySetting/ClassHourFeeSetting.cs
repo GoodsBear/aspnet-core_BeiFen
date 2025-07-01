@@ -13,12 +13,11 @@ namespace Educational.SalarySetting
     public class ClassHourFeeSetting : FullAuditedAggregateRoot<Guid>
     {
         //薪资表
-        public Guid SalarySettingId { get; set; }   // 外键
+        public Guid SalarySettingId { get; set; }// 外键
         /// <summary>
         /// 课时时长（分钟）
         /// </summary>
         public int ClassHourDuration { get; set; }
-
         /// <summary>
         /// 课时费（元）
         /// </summary>

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Educational.SalarySetting
 {
-    public class SalarySearch:Seach
+    public enum SalaryType
     {
-        //组织
-        public string? Organization {  get; set; }
+        非底薪模式,底薪模式
     }
 }

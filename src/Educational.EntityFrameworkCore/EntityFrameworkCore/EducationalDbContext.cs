@@ -113,7 +113,7 @@ public class EducationalDbContext :
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "SalarySettingModel", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props 
-            b.HasMany(s => s.ClassHourFeeSettings).WithOne(); // 配置一对多关系
+           // b.HasMany(s => s.ClassHourFeeSettings).WithOne(); // 配置一对多关系
             
         });
         //薪资表

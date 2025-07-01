@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Educational.Organization;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +14,16 @@ namespace Educational.SalarySetting
     /// </summary>
     public class SalarySettingModel : FullAuditedAggregateRoot<Guid>
     {
-        public string StaffinfoName { get; set; }   /// <summary>
-                                                    /// </summary>
-        public decimal? BasicSalary { get; set; }
+        /// <summary>
+        /// 员工姓名
+        /// </summary>
+        [Required]
+        public string StaffinfoName { get; set; }
+
+        // <summary>
+        ///基本工资--模式
+        /// </summary>
+        public SalaryType BasicSalary { get; set; } = SalaryType.非底薪模式;
 
         /// <summary>
         /// 达标课时数
@@ -24,12 +33,14 @@ namespace Educational.SalarySetting
         /// <summary>
         /// 课时费设置列表
         /// </summary>
-        public List<ClassHourFeeSetting>? ClassHourFeeSettings { get; set; }
+        public string? ClassHourFeeSettings { get; set; }
+        //public List<ClassHourFeeSetting>? ClassHourFeeSettings { get; set; }
 
         /// <summary>
-        /// 组织机构
-        /// 用于标识该薪资设置所属的组织架构，比如学校的某个校区、部门等
+        /// 组织机构 
         /// </summary>
-        public string Organization { get; set; }
+        public Guid? OrganizationId { get; set; }
+        public string?  Organization { get; set; }
+         
     }
 }
