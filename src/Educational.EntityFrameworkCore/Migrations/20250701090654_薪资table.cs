@@ -6,15 +6,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Educational.Migrations
 {
     /// <inheritdoc />
-    public partial class 薪资修改 : Migration
+    public partial class 薪资table : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "OrganizationName",
-                table: "AppSalarySettingModel",
-                newName: "Organization");
+            migrationBuilder.DropColumn(
+                name: "RemainingHours",
+                table: "AppStudent");
 
             migrationBuilder.AlterColumn<Guid>(
                 name: "StaffTypeId",
@@ -62,10 +61,12 @@ namespace Educational.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Organization",
-                table: "AppSalarySettingModel",
-                newName: "OrganizationName");
+            migrationBuilder.AddColumn<int>(
+                name: "RemainingHours",
+                table: "AppStudent",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
 
             migrationBuilder.AlterColumn<string>(
                 name: "StaffTypeId",

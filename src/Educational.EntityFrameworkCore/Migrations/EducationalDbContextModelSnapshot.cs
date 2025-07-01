@@ -16,7 +16,7 @@ namespace Educational.Migrations
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
-            #pragma warning disable 612, 618
+#pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("_Abp_DatabaseProvider", EfCoreDatabaseProvider.MySql)
                 .HasAnnotation("ProductVersion", "9.0.4")
@@ -165,9 +165,6 @@ namespace Educational.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
-
-                    b.Property<bool>("IsTimetableGenerated")
-                        .HasColumnType("tinyint(1)");
 
                     b.PrimitiveCollection<string>("MainTeacher")
                         .IsRequired()
@@ -2442,9 +2439,6 @@ namespace Educational.Migrations
                         .HasColumnType("varchar(11)");
 
                     b.Property<int>("Relation")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RemainingHours")
                         .HasColumnType("int");
 
                     b.Property<string>("Remark")

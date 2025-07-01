@@ -18,7 +18,7 @@ namespace Educational.SalarySetting
         /// 员工姓名
         /// </summary>
         [Required]
-        public string StaffinfoName { get; set; }
+        public Guid StaffId { get; set; }
 
         // <summary>
         ///基本工资--模式
@@ -34,13 +34,10 @@ namespace Educational.SalarySetting
         /// 课时费设置列表
         /// </summary>
         public string? ClassHourFeeSettings { get; set; }
-        //public List<ClassHourFeeSetting>? ClassHourFeeSettings { get; set; }
 
         /// <summary>
         /// 组织机构 
         /// </summary>
         public Guid? OrganizationId { get; set; }
-        public string?  Organization { get; set; }
-         
     }
 }
