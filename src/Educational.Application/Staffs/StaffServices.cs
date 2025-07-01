@@ -1,11 +1,12 @@
-﻿using Educational.Enmu;
+﻿using Educational.Classgrade;
+using Educational.Dto.ClassRooms;
+using Educational.Enmu;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.SalarySetting;
 using Educational.StaffTypes;
 using Educational.Tools;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -47,11 +48,29 @@ namespace Educational.Staffs
             this.organizationRepository = organizationRepository;
             this.salarySettingRepository = salarySettingRepository;
         }
+        /// <summary>
+        /// 获取成员列表下拉框
+        /// </summary>
+        /// <returns>返回成员列表下拉框</returns>
+        public async Task<ApiResult<List<StaffSelectDto>>> GetStaffAsync()
+        {
+            try
+            {
+                var queryable = await basicRepository.GetListAsync();
+                var results = ObjectMapper.Map<List<StaffInfo>, List<StaffSelectDto>>(queryable);
+                return ApiResult<List<StaffSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "成员下拉框获取失败");
+                throw;
+            }
+        }
         /// <summary>分页查询员工信息</summary>
         /// <param name="search">查询条件</param>
         /// <returns>分页结果，包含员工信息</returns>
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<ApiResult<ApiPaging<List<ShowStaffDTO>>>> GetStaffListAsync([FromQuery]SearchStaffDTO search)
         {
             try
@@ -164,6 +183,29 @@ namespace Educational.Staffs
                     return ApiResult<ShowStaffDTO>.Fail(ResultCode.Fail, "员工名称已存在");
                 }
                 addorUpdStaffDTO.StaffPassword = Sha256Hash(addorUpdStaffDTO.StaffPassword);
+
+                // 使用逗号(,)作为分隔符，将addorUpdStaffDT0.Organization字符串拆分成字符串数组
+                string[] organization = addorUpdStaffDTO.Organization.Split(',');
+
+                // 初始化一个空字符串，用于存储最终拼接的结果
+                var resultmname = "";
+
+                // 遍历organization数组中的每一个元素
+                foreach (var item in organization)
+                {
+                    // 调用FirstOrderBuildAsync方法查询组织信息，并获取组织名称
+                    // 注意：这里有一些特殊符号(&,>,等)可能是占位符或代码片段不完整
+                    var organizationname = (await organizationRepository.FirstOrDefaultAsync(x => Convert.ToString(x.Id) == item)).Name;
+
+                    // 将查询到的组织名称拼接到resultmname字符串中，并用分号(;)分隔
+                    resultmname += organizationname + ',';
+                }
+
+                // 将拼接好的字符串赋值回addorUpdStaffDT0.Organization属性
+                // 使用TrimEnd(',')去除末尾可能多余的分号(;)
+                // 注意：这里应该使用TrimEnd(';')而不是TrimEnd(',')，因为拼接时使用的是分号
+                addorUpdStaffDTO.Organization = resultmname.TrimEnd(',');
+
                 // 将前端传入的 AddorUpdStaffDTO 映射成实体 StaffInfo，用于数据库操作
                 var staffinfo = ObjectMapper.Map<AddorUpdStaffDTO, StaffInfo>(addorUpdStaffDTO);
 
@@ -203,6 +245,27 @@ namespace Educational.Staffs
             {
                 // 根据员工ID查出原始数据
                 var staffinfo = await basicRepository.FindAsync(staffId);
+                // 使用逗号(,)作为分隔符，将addorUpdStaffDT0.Organization字符串拆分成字符串数组
+                string[] organization = addorUpdStaffDTO.Organization.Split(',');
+
+                // 初始化一个空字符串，用于存储最终拼接的结果
+                var resultmname = "";
+
+                // 遍历organization数组中的每一个元素
+                foreach (var item in organization)
+                {
+                    // 调用FirstOrderBuildAsync方法查询组织信息，并获取组织名称
+                    // 注意：这里有一些特殊符号(&,>,等)可能是占位符或代码片段不完整
+                    var organizationname = (await organizationRepository.FirstOrDefaultAsync(x => Convert.ToString(x.Id) == item)).Name;
+
+                    // 将查询到的组织名称拼接到resultmname字符串中，并用分号(;)分隔
+                    resultmname += organizationname + ',';
+                }
+
+                // 将拼接好的字符串赋值回addorUpdStaffDT0.Organization属性
+                // 使用TrimEnd(',')去除末尾可能多余的分号(;)
+                // 注意：这里应该使用TrimEnd(';')而不是TrimEnd(',')，因为拼接时使用的是分号
+                addorUpdStaffDTO.Organization = resultmname.TrimEnd(',');
                 // 将 DTO 映射成数据库实体
                 ObjectMapper.Map(addorUpdStaffDTO, staffinfo);
 
@@ -228,24 +291,33 @@ namespace Educational.Staffs
         /// <param name="staffId">员工 ID</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
         [HttpDelete]
-        public async Task<ApiResult> DeleteStaff(Guid staffId)
+        public async Task<ApiResult> DeleteStaff([FromQuery]Guid[] Ids)
         {
-            try
-            {
-                // 根据员工ID查出员工信息
-                var staffinfo = await basicRepository.FindAsync(staffId);
-                if (staffinfo == null)
+                try
                 {
-                    return ApiResult.Fail(ResultCode.Fail, "员工不存在");
+                    // 1. 参数验证
+                    if (Ids == null || Ids.Length == 0)
+                    {
+                        return ApiResult.Fail(ResultCode.Fail, "请选择要删除的员工");
+                    }
+
+                    // 2. 批量查询员工信息
+                    var staffList = await basicRepository.GetListAsync(u => Ids.Contains(u.Id));
+
+                    // 3. 验证是否全部找到
+                    if (staffList.Count != Ids.Length)
+                    {
+                        var foundIds = staffList.Select(s => s.Id).ToArray();
+                        var missingIds = Ids.Except(foundIds).ToArray();
+                        return ApiResult.Fail(ResultCode.Fail, $"以下员工不存在：{string.Join(",", missingIds)}");
+                    }
+
+                    // 4. 批量删除
+                    await basicRepository.DeleteManyAsync(staffList);
+
+                    return ApiResult.Success(ResultCode.Ok);
                 }
-
-                // 从数据库中删除
-                await basicRepository.DeleteAsync(staffinfo);
-
-                // 返回操作成功
-                return ApiResult.Success(ResultCode.Ok);
-            }
-            catch (Exception)
+                catch (Exception)
             {
                 // 获取异常（可以考虑在此处记录日志）
                 throw; // 暂时直接抛出异常，可以扩展为日志记录或自定义错误返回
@@ -259,22 +331,33 @@ namespace Educational.Staffs
         /// <param name="status">要修改成的员工状态</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
         [HttpPut]
-        public async Task<ApiResult> UpdateStaffStatus(Guid staffId, StaffStatus status)
+        public async Task<ApiResult> UpdateStaffStatus( Guid[] Ids, StaffStatus status)
         {
             try
             {
-                // 根据员工ID查出员工信息
-                var staffinfo = await basicRepository.FindAsync(staffId);
-                if (staffinfo == null)
+                // 1. 参数验证
+                if (Ids == null || Ids.Length == 0)
                 {
-                    return ApiResult.Fail(ResultCode.Fail, "员工不存在");
+                    return ApiResult.Fail(ResultCode.Fail, "请选择要修改的员工");
                 }
 
-                // 修改员工状态
-                staffinfo.Status = status;
+                // 2. 批量查询员工信息
+                var staffList = await basicRepository.GetListAsync(u => Ids.Contains(u.Id));
 
-                // 更新到数据库
-                await basicRepository.UpdateAsync(staffinfo);
+                // 3. 验证是否全部找到
+                if (staffList.Count != Ids.Length)
+                {
+                    var foundIds = staffList.Select(s => s.Id).ToArray();
+                    var missingIds = Ids.Except(foundIds).ToArray();
+                    return ApiResult.Fail(ResultCode.Fail, $"以下员工不存在：{string.Join(",", missingIds)}");
+                }
+
+                // 4. 批量更新状态
+                foreach (var staff in staffList)
+                {
+                    staff.Status = status;
+                    await basicRepository.UpdateAsync(staff);
+                }
 
                 // 返回操作成功
                 return ApiResult.Success(ResultCode.Ok);

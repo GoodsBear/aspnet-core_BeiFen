@@ -18,6 +18,10 @@ namespace Educational.Controllers
             this.staffServices = staffServices;
             this.positionAppService = positionAppService;
         }
+        /// <summary>
+        /// 成员导出
+        /// </summary>
+        /// <returns>返回成员EXcel文件</returns>
         [HttpGet]
         public async Task<IActionResult> ExportStaffDirect()
         {
@@ -27,7 +31,10 @@ namespace Educational.Controllers
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         fileDto.data.FileName);
         }
-
+        /// <summary>
+        /// 导出职位EXcel
+        /// </summary>
+        /// <returns>返回职位EXcel文件</returns>
         [HttpGet]
         public async Task<IActionResult> GetExportPositionList()
         {

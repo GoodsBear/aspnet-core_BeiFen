@@ -276,7 +276,10 @@ namespace Educational.SpecialSubject
             }
         }
 
-        //下拉专题
+        /// <summary>
+        /// 下拉专题
+        /// </summary>
+        /// <returns></returns>
         public async Task<ApiResult<List<XiAsepecialSubjectDto>>> XiASpecialSubjectAsync()
         {
             try

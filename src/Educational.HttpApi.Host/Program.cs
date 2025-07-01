@@ -5,6 +5,12 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using Serilog.Events;
 using System;
+using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
+using System;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Educational;
@@ -40,20 +46,8 @@ public class Program
                 .UseSerilog();
             await builder.AddApplicationAsync<EducationalHttpApiHostModule>();
 
-            //builder.Services.AddCors(options =>
-            //{
-            //    options.AddPolicy("CorsPolicy", builder =>
-            //    {
-            //        builder.WithOrigins("http://localhost:3000")
-            //            .AllowAnyMethod()
-            //            .AllowAnyHeader()
-            //            .AllowCredentials();
-            //    });
-            //});
-
+           
             var app = builder.Build();
-
-            //app.UseCors();
 
             await app.InitializeApplicationAsync();
             await app.RunAsync();

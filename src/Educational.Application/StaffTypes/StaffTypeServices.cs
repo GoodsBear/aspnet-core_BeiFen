@@ -10,7 +10,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Educational.StaffTypes
 {
-    [ApiExplorerSettings(GroupName = "成员")]
+    [ApiExplorerSettings(GroupName ="成员")]
     public class StaffTypeServices : ApplicationService, IStaffTypeServices
     {
         private readonly IRepository<StaffTypeInfo> repository;

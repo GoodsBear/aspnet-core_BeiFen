@@ -1,13 +1,7 @@
-using AutoMapper.Internal.Mappers;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 
@@ -52,15 +46,19 @@ namespace Educational.Organization
         /// </summary>
         /// <param name="parentId"></param>
         /// <returns></returns>
-       
-         Task<List<OrganizationTreeDto>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId);
+
+        Task<ApiResult<List<OrganizationTreeDto>>> GetTreeAsync([DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId);
         /// <summary>
         /// 组织机构级别下拉表
         /// </summary> 
          Task<ApiResult<List<XialaLevelDto>>> GetLevelAsync();
         /// <summary>
+        /// 组织机构下拉框
+        /// </summary>
+        Task<ApiResult<List<OrganizationSelectDto>>> GetOrganizationAsync();
+        /// <summary>
         /// 组织机构级别添加
         /// </summary>  
-      Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto);
+        Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto);
     }
 } 
