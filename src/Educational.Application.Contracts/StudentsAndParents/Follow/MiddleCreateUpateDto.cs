@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Educational.StudentsAndParents.StudentFollow
+{
+    public class MiddleCreateUpateDto
+    {
+        public Guid StudentId { get; set; }
+
+        public Guid FollowId { get; set; }
+
+    }
+}

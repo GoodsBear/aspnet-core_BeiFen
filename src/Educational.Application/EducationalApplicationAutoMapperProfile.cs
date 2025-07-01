@@ -26,6 +26,13 @@ using Educational.Subject;
 using System.Collections.Generic;
 using System.Linq;
 using Volo.Abp.ObjectMapping;
+using Educational.Menu;
+using Educational.StudentsAndParents.Students;
+using Educational.StudentsAndParents.StudentFollow;
+using Educational.StudentsAndParends.Students.Follow;
+using Educational.StudentsAndParents.Stores;
+using Educational.StudentsAndParends.Students.Store;
+using Educational.StudentsAndParents.StudentStore;
 
 namespace Educational;
 
@@ -108,5 +115,23 @@ public class EducationalApplicationAutoMapperProfile : Profile
 		CreateMap<Material, MaterialDto>().ReverseMap();
 		CreateMap<CreateUpdateMaterialDto,Material>().ReverseMap();
 
-	}
+        //动态菜单
+        CreateMap<CreateUpdateMenuDto,Educational.Menu.Menu>().ReverseMap();
+        CreateMap<Educational.Menu.Menu, MenuDto>().ReverseMap();
+
+        //学员
+        CreateMap<CreateUpdateStudentDto, Educational.StudentsAndParends.Students.Student>().ReverseMap();
+        CreateMap<Educational.StudentsAndParends.Students.Student, StudentsDto>().ReverseMap();
+
+        //学员跟进
+        CreateMap<CreateUpdateFollowDto,Follow>().ReverseMap();
+        CreateMap<Follow, FollowDto>();
+        CreateMap<MiddleCreateUpateDto, StudentFollowRelation>().ReverseMap();
+
+        //学员积分
+        CreateMap<CreateUpdateStoreDto, Store>().ReverseMap();
+        CreateMap<Store, StoreDto>();
+        CreateMap<MeddleStoreDto, StudentStoreRelation>().ReverseMap();
+
+    }
 } 

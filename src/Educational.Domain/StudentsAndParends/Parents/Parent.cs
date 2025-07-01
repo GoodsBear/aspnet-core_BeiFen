@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 
-namespace Educational.Students
+namespace Educational.StudentsAndParends.Parents
 {
 	/// <summary>
 	/// 家长
@@ -21,17 +22,21 @@ namespace Educational.Students
         [MaxLength(20)]
 		public string PardentName { get; set; }
 		/// <summary>
-		/// 手机号
+		/// 手机号/账号
 		/// </summary>
 		[Required(ErrorMessage = "手机号不能为空")]
 		[MaxLength(11)]
 		public string Phone { get; set; }
+        /// <summary>
+        /// 登录密码
+        /// </summary>
+        [Required(ErrorMessage = "密码不能为空")]
+        public string ParentPwd { get; set; }
 		/// <summary>
 		/// 关联学生
 		/// </summary>
-		[MaxLength(500)]
-		[Required(ErrorMessage = "关联学生不能为空")]
-		public string Studentlist { get; set; }
+		[MaxLength(10000)]
+		public List<Guid> Studentlist { get; set; }
 		/// <summary>
 		/// 微信昵称
 		/// </summary>
@@ -44,19 +49,6 @@ namespace Educational.Students
 		[Required(ErrorMessage = "登录次数不能为空")]
 		[MaxLength(11)]
 		public int LoginCount { get; set; } = 0;
-		/// <summary>
-		/// 上次登录时间
-		/// </summary>
-		public DateTime? LastLoginTime { get; set; }
-		/// <summary>
-		/// 上次登录IP
-		/// </summary>
-		[Required(ErrorMessage = "上次登录IP")]
-		public string LastLoginIp { get; set; }
-		/// <summary>
-		/// 注册时间
-		/// </summary>
-		public DateTime RegisterTime { get; set; }
 		/// <summary>
 		/// 状态
 		/// </summary>

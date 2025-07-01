@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Educational.Enmu
-{    public enum StaffStatus
+namespace Educational.Menu
+{
+    public class SearchMenuDto: Seach
     {
-        在职,
-        离职
     }
-
 }
