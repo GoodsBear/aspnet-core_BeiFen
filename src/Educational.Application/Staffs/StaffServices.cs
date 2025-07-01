@@ -319,7 +319,7 @@ namespace Educational.Staffs
         /// <param name="status">要修改成的员工状态</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
         [HttpPut]
-        public async Task<ApiResult> UpdateStaffStatus(Guid[] Ids, StaffStatus status)
+        public async Task<ApiResult> UpdateStaffStatus( Guid[] Ids, StaffStatus status)
         {
             try
             {
