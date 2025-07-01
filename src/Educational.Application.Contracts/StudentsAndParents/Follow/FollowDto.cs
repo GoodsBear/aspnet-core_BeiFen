@@ -1,13 +1,10 @@
 ﻿using Educational.Enums;
 using System;
-using Volo.Abp.Domain.Entities.Auditing;
 
-namespace Educational.StudentsAndParends.Students.Follow
+namespace Educational.StudentsAndParents.StudentFollow
 {
-    /// <summary>
-    /// 跟进记录表
-    /// </summary>
-    public class Follow : FullAuditedAggregateRoot<Guid>
+
+    public class FollowDto
     {
         /// <summary>
         /// 联系途径枚举
@@ -17,8 +14,6 @@ namespace Educational.StudentsAndParends.Students.Follow
         /// 跟进阶段枚举
         /// </summary>
         public FollowStageEnum FollowStageEnum { get; set; }
-
-
         /// <summary>
         /// 联系时间
         /// </summary>
