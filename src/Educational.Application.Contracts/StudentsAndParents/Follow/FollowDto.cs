@@ -7,6 +7,11 @@ namespace Educational.StudentsAndParents.StudentFollow
     public class FollowDto
     {
         /// <summary>
+        /// 跟进记录Id
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
         /// 联系途径枚举
         /// </summary>
         public GetInTouchEnum GetInTouchEnum { get; set; }

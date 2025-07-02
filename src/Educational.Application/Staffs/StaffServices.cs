@@ -409,20 +409,18 @@ namespace Educational.Staffs
         /// <param name="search">查询条件</param>
         /// <returns>返回导出结果</returns>
         [HttpGet]
-        public async Task<ApiResult<ExportResult>> GetExportStaffList()
+        public async Task<(byte[] FileContent, string FileName)> GetExportStaffList()
         {
-            // 获取员工数据源
-            var staffinfo = await basicRepository.GetQueryableAsync();
-            // 映射成DTO
-            var staffdto=ObjectMapper.Map<List<StaffInfo>,List<ShowStaffDTO>>(staffinfo.ToList());
-            // 调用导出帮助类生成 Excel
-            var fileBytes = ExcelExporter.Export(staffdto, "员工信息", "员工信息表");
-            // 返回导出结果
-            return ApiResult<ExportResult>.Success(ResultCode.Ok, new ExportResult
-            {
-                FileName = $"员工信息_{DateTime.Now:yyyyMMddHHmmss}.xlsx",
-                FileContent = fileBytes
-            });
+            // 获取数据
+            var staffinfo = await basicRepository.GetListAsync();
+
+            // 生成文件名
+            var fileName = $"员工列表_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+
+            // 调用ExcelExporter
+            var fileBytes = ExcelExporter.Export(staffinfo, "员工列表", "员工信息");
+
+            return (fileBytes, fileName);
         }
 
         /// <summary>

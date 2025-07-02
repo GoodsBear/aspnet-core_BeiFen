@@ -101,6 +101,7 @@ public class EducationalDbContext :
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限信息表
     public DbSet<RolePermission> RolePermision { get; set; } //角色权限中间表
     public DbSet<Announcement> announcements { get; set; } //公告信息表
+    public DbSet<SalarySettingModel> SalarySettingModel { get; set; } //薪资设置表
 
     //#endregion
 
