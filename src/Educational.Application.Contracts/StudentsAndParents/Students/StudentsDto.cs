@@ -9,6 +9,8 @@ namespace Educational.StudentsAndParents.Students
 {
     public class StudentsDto
     {
+        public Guid Id { get; set; }
+
         /// <summary>
         /// 学员姓名
         /// </summary>

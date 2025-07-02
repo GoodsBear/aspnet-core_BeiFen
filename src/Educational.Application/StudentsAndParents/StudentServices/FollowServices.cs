@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -104,6 +105,7 @@ namespace Educational.StudentsAndParents.StudentServices
                 {
                     return ApiResult<List<FollowDto>>.Fail(ResultCode.Fail, "没有跟进记录");
                 }
+                list = list.OrderByDescending(d => d.CreationTime).ToList();
 
                 var followDtos = new List<FollowDto>();
                 // 遍历学员跟进记录，获取跟进详情
@@ -114,6 +116,7 @@ namespace Educational.StudentsAndParents.StudentServices
                     if (follow != null)
                     {
                         // 将跟进详情映射到FollowDto并加入列表
+
                         var dto = ObjectMapper.Map<Follow, FollowDto>(follow);
                         followDtos.Add(dto);
                     }

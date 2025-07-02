@@ -1,4 +1,5 @@
-﻿using Educational.RBAC.RoleManager;
+﻿using Educational.Enums;
+using Educational.RBAC.RoleManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,16 +48,16 @@ namespace Educational.StudentsAndParents.Students
         /// </summary>
         Task<ApiResult<StudentsDto>> UpdateStudent(CreateUpdateStudentDto createUpdateStudentDto, Guid guid);
         /// <summary>
-        /// 更新学员状态
+        /// 将当前学员状态转变为在线学员、意向学员或结业学员
         /// </summary>
-        Task<ApiResult<StudentsDto>> UpdateStudentType(Guid guid,CreateUpdateStudentDto createUpdateStudentDto);
+        Task<ApiResult> UpdateStudentType(List<Guid> guids,StudentEnum studentEnum);
         /// <summary>
         /// 转校
         /// </summary>
-        Task<ApiResult<StudentsDto>> UpdateStudentSchool(Guid guid, Guid campusId);
+        Task<ApiResult> UpdateStudentSchool(List<Guid> guids, Guid campusId);
         /// <summary>
         /// 修改顾问
         /// </summary>
-        Task<ApiResult<StudentsDto>> UpdateStudentConsultant(Guid guid, Guid consultant);
+        Task<ApiResult> UpdateStudentConsultant(List<Guid> guids, Guid consultant);
     }
 }
