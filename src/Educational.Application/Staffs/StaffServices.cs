@@ -6,6 +6,7 @@ using Educational.Positions;
 using Educational.RBAC;
 using Educational.StaffTypes;
 using Educational.Tools;
+using Lazy.Captcha.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,8 +35,9 @@ namespace Educational.Staffs
         private readonly IRepository<Role, Guid> roleRep;
         private readonly IRepository<StaffTypeInfo, Guid> typeRep;
         private readonly IRepository<OrganizationModel, Guid> organizationRepository;
+        private readonly ICaptcha captcha;
 
-        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep,IRepository<OrganizationModel, Guid> organizationRepository)
+        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep,IRepository<OrganizationModel, Guid> organizationRepository, ICaptcha captcha)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
@@ -43,6 +45,7 @@ namespace Educational.Staffs
             this.roleRep = roleRep;
             this.typeRep = typeRep;
             this.organizationRepository = organizationRepository;
+            this.captcha = captcha;
         }
         /// <summary>
         /// 获取成员列表下拉框
@@ -434,6 +437,11 @@ namespace Educational.Staffs
                 if (staff.StaffPassword != hashedPassword)
                 {
                     return ApiResult<LoginReturnDTO>.Fail(ResultCode.Fail, "密码错误");
+                }
+
+                if (captcha.Validate(loginDTO.CaptchaKey, loginDTO.CaptchaCode) == false)
+                {
+                    return ApiResult<LoginReturnDTO>.Fail(ResultCode.Fail, "验证码错误");
                 }
 
                 var returndto=ObjectMapper.Map<StaffInfo, LoginReturnDTO>(staff);
