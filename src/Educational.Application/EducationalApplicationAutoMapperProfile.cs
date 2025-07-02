@@ -45,7 +45,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
     public EducationalApplicationAutoMapperProfile()
     {
         //薪资
-        CreateMap<SalarySettingModel, SalarySettingDto>().ReverseMap();
+        CreateMap<Educational.SalarySetting.SalarySettingModel, SalarySettingDto>().ReverseMap();
         //排课  
         CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
         CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();

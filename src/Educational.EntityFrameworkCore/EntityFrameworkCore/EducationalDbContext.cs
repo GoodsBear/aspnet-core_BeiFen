@@ -91,8 +91,6 @@ public class EducationalDbContext :
     public DbSet<Position> positions { get; set; }//职位信息表
 
     //#endregion
-
-
     //#region 系统管理
 
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
@@ -101,11 +99,10 @@ public class EducationalDbContext :
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限信息表
     public DbSet<RolePermission> RolePermision { get; set; } //角色权限中间表
     public DbSet<Announcement> announcements { get; set; } //公告信息表
-    public DbSet<SalarySettingModel> SalarySettingModel { get; set; } //薪资设置表
+    public DbSet<Educational.SalarySetting.SalarySettingModel> SalarySettingModel { get; set; } //薪资设置表
 
     //#endregion
 
-    public DbSet<SalarySettingModel> SalarySettingModel { get; set; }//薪资表
     public DbSet<ClassHourFeeSetting> ClassHourFeeSetting { get; set; }//薪资表
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -127,7 +124,7 @@ public class EducationalDbContext :
 
         //薪资表
         // 配置SalarySetting聚合根
-        builder.Entity<SalarySettingModel>(b =>
+        builder.Entity<Educational.SalarySetting.SalarySettingModel>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "SalarySettingModel", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props 

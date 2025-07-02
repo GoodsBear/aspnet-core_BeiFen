@@ -1,10 +1,7 @@
-﻿using Educational.Classgrade;
-using Educational.Dto.ClassRooms;
-using Educational.Enmu;
+﻿using Educational.Enmu;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
-using Educational.SalarySetting;
 using Educational.StaffTypes;
 using Educational.Tools;
 using Microsoft.AspNetCore.Mvc;
@@ -36,9 +33,10 @@ namespace Educational.Staffs
         private readonly IRepository<StaffTypeInfo, Guid> typeRep;
         private readonly IRepository<OrganizationModel, Guid> organizationRepository;
         private readonly IRepository<SalarySettingModel, Guid> salarySettingRepository;
-        
-        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep,IRepository<OrganizationModel, Guid> organizationRepository,
-            IRepository<SalarySettingModel, Guid> salarySettingRepository)
+        ILogger<StaffServices> logger;
+
+        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository,
+            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
@@ -47,6 +45,7 @@ namespace Educational.Staffs
             this.typeRep = typeRep;
             this.organizationRepository = organizationRepository;
             this.salarySettingRepository = salarySettingRepository;
+            this.logger = logger;
         }
         /// <summary>
         /// 获取成员列表下拉框
@@ -62,7 +61,7 @@ namespace Educational.Staffs
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "成员下拉框获取失败");
+                logger.LogError(ex, "成员下拉框获取失败");
                 throw;
             }
         }
@@ -116,7 +115,7 @@ namespace Educational.Staffs
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "员工信息获取失败");
+                logger.LogError(ex, "员工信息获取失败");
                 throw; // 暂时抛出，可拓展成统一异常处理
             }
         }
@@ -459,7 +458,7 @@ namespace Educational.Staffs
             catch (Exception ex)
             {
                 // 异常处理（记录日志等）
-                Logger.LogError(ex, "登录时发生异常");
+                logger.LogError(ex, "登录时发生异常");
                 throw; // 继续抛出异常
             }
         }
