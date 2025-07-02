@@ -55,6 +55,10 @@ namespace Educational.StudentsAndParents.StudentServices
                     }
 
                     var entity = ObjectMapper.Map<CreateUpdateStudentDto, Student>(createUpdateStudentDto);
+
+                    // 根据身份证号计算年龄
+                    entity.Age = CalculateAge(entity.IdCard);
+
                     var res = await repository.InsertAsync(entity);
 
                     if (res != null)
@@ -326,6 +330,7 @@ namespace Educational.StudentsAndParents.StudentServices
                     }
 
                     var data = ObjectMapper.Map(createUpdateStudentDto, entity);
+                    entity.Age = CalculateAge(entity.IdCard);
                     var res = await repository.UpdateAsync(data);
 
                     if (res != null)
@@ -461,6 +466,42 @@ namespace Educational.StudentsAndParents.StudentServices
             {
                 logger.LogError("批量删除操作出错" + ex.Message);
                 throw;
+            }
+        }
+        /// <summary>
+        /// 根据身份证号计算年龄
+        /// </summary>
+        private int CalculateAge(string idCard)
+        {
+            if (string.IsNullOrEmpty(idCard) || idCard.Length != 18)
+            {
+                return 0;
+            }
+
+            try
+            {
+                // 截取身份证中的出生年月日
+                string birthYear = idCard.Substring(6, 4);
+                string birthMonth = idCard.Substring(10, 2);
+                string birthDay = idCard.Substring(12, 2);
+
+                // 转换为日期
+                DateTime birthDate = new DateTime(int.Parse(birthYear), int.Parse(birthMonth), int.Parse(birthDay));
+                DateTime nowDate = DateTime.Now;
+
+                // 计算年龄
+                int age = nowDate.Year - birthDate.Year;
+                // 如果今年的生日还没过，年龄减1
+                if (birthDate.Date > nowDate.Date.AddYears(-age))
+                {
+                    age--;
+                }
+
+                return age;
+            }
+            catch
+            {
+                return 0;
             }
         }
     }
