@@ -1,5 +1,4 @@
-﻿using Educational.Organization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,17 +7,14 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.SalarySetting
-{
-    /// <summary>
-    /// 薪资表实体类
-    /// </summary>
-    public class SalarySettingModel : FullAuditedAggregateRoot<Guid>
+{ 
+    public class SalarySettingDto : FullAuditedAggregateRoot<Guid>
     {
         /// <summary>
         /// 员工姓名
         /// </summary>
         [Required]
-        public Guid? StaffId { get; set; }
+        public Guid StaffId { get; set; }
 
         // <summary>
         ///基本工资--模式

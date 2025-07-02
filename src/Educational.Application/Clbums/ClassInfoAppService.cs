@@ -261,7 +261,7 @@ namespace Educational.Clbums
             }
         }
 
-        public async Task<ApiResult> UpdateClassStatus(Guid id, int Status)
+        public   Task<ApiResult> UpdateClassStatus(Guid id, int Status)
         {
             throw new NotImplementedException();
         }

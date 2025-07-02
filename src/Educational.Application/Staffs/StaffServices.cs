@@ -213,12 +213,15 @@ namespace Educational.Staffs
                 await basicRepository.InsertAsync(staffinfo);
 
                 // 将插入后的实体对象映射成返回给前端的 ShowStaffDTO
-                var showstaffinfo = ObjectMapper.Map<StaffInfo, ShowStaffDTO>(staffinfo); 
+                var showstaffinfo = ObjectMapper.Map<StaffInfo, ShowStaffDTO>(staffinfo);
+
+                //获取机构主键
+                var OrganizationId = await organizationRepository.FirstOrDefaultAsync(x => x.Name == staffinfo.Organization);
 
                 //添加职位表的同时添加薪资表
-                SalarySettingModel salary = new SalarySettingModel() { 
-                    StaffinfoName= showstaffinfo.StaffName,
-                    Organization= showstaffinfo.Organization
+                SalarySettingModel salary = new SalarySettingModel() {
+                    StaffId = staffinfo.Id,
+                    OrganizationId= OrganizationId.Id
                 };
                 var a=await salarySettingRepository.InsertAsync(salary); 
 

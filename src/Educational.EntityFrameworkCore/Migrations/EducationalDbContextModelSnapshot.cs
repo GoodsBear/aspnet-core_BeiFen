@@ -1492,7 +1492,7 @@ namespace Educational.Migrations
                     b.ToTable("AppClassHourFeeSetting", (string)null);
                 });
 
-            modelBuilder.Entity("Educational.SalarySetting.SalarySettingModel", b =>
+            modelBuilder.Entity("Educational.SalarySetting.SalarySetModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
@@ -1545,22 +1545,18 @@ namespace Educational.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<string>("Organization")
-                        .HasColumnType("longtext");
-
                     b.Property<Guid?>("OrganizationId")
                         .HasColumnType("char(36)");
 
                     b.Property<int?>("QualifiedClassHours")
                         .HasColumnType("int");
 
-                    b.Property<string>("StaffinfoName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<Guid>("StaffId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppSalarySettingModel", (string)null);
+                    b.ToTable("AppSalarySetModel", (string)null);
                 });
 
             modelBuilder.Entity("Educational.SpecialSubject.CategoryModel", b =>
