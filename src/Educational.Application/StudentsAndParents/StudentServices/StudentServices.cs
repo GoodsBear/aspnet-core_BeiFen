@@ -1,6 +1,6 @@
 ﻿using Educational.Classgrade;
+using Educational.Enums;
 using Educational.Organization;
-using Educational.RBAC.RoleManager;
 using Educational.Staffs;
 using Educational.StudentsAndParends.Students;
 using Educational.StudentsAndParents.Students;
@@ -91,7 +91,7 @@ namespace Educational.StudentsAndParents.StudentServices
                 list = list.WhereIf(!string.IsNullOrEmpty(searchStudentDto.StudentName), d => d.Name.Contains(searchStudentDto.StudentName));
                 if (searchStudentDto.GradeId != null)
                 {
-                    list = list.Where(d => d.GradeId == searchStudentDto.OrgaizationId);
+                    list = list.Where(d => d.GradeId == searchStudentDto.GradeId);
                 }
                 if (searchStudentDto.OrgaizationId != null)
                 {
@@ -110,6 +110,7 @@ namespace Educational.StudentsAndParents.StudentServices
                             join d in school on a.CampusId equals d.Id
                             select new StudentsDto
                             {
+                                Id = a.Id,
                                 Name = a.Name,
                                 Phone = a.Phone,
                                 CampusId = a.CampusId,
@@ -161,7 +162,7 @@ namespace Educational.StudentsAndParents.StudentServices
                 list = list.WhereIf(!string.IsNullOrEmpty(searchStudentDto.StudentName), d => d.Name.Contains(searchStudentDto.StudentName));
                 if (searchStudentDto.GradeId != null)
                 {
-                    list = list.Where(d => d.GradeId == searchStudentDto.OrgaizationId);
+                    list = list.Where(d => d.GradeId == searchStudentDto.GradeId);
                 }
                 if (searchStudentDto.OrgaizationId != null)
                 {
@@ -181,6 +182,7 @@ namespace Educational.StudentsAndParents.StudentServices
                             join d in school on a.CampusId equals d.Id
                             select new StudentsDto
                             {
+                                Id = a.Id,
                                 Name = a.Name,
                                 Phone = a.Phone,
                                 CampusId = a.CampusId,
@@ -232,7 +234,7 @@ namespace Educational.StudentsAndParents.StudentServices
                 list = list.WhereIf(!string.IsNullOrEmpty(searchStudentDto.StudentName), d => d.Name.Contains(searchStudentDto.StudentName));
                 if(searchStudentDto.GradeId != null)
                 {
-                    list = list.Where(d => d.GradeId == searchStudentDto.OrgaizationId);
+                    list = list.Where(d => d.GradeId == searchStudentDto.GradeId);
                 }
                 if (searchStudentDto.OrgaizationId != null)
                 {
@@ -251,6 +253,7 @@ namespace Educational.StudentsAndParents.StudentServices
                             join d in school on a.CampusId equals d.Id
                             select new StudentsDto
                             {
+                                Id = a.Id,
                                 Name = a.Name,
                                 Phone = a.Phone,
                                 CampusId = a.CampusId,
@@ -344,30 +347,29 @@ namespace Educational.StudentsAndParents.StudentServices
             }
         }
         /// <summary>
-        /// 更新学员状态
+        /// 将当前学员状态转变为在线学员、意向学员或结业学员
         /// </summary>
         [HttpPut]
-        public async Task<ApiResult<StudentsDto>> UpdateStudentType(Guid guid, CreateUpdateStudentDto studentEnum)
+        public async Task<ApiResult> UpdateStudentType(List<Guid> guids, StudentEnum studentEnum)
         {
             try
             {
-                var list = await repository.GetAsync(d => d.Id == guid);
-                if (list == null)
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
-                }
-                var data = ObjectMapper.Map<CreateUpdateStudentDto, Student>(studentEnum, list);
-                var res = await repository.UpdateAsync(data);
-                if (res != null)
-                {
-                    var dto = ObjectMapper.Map<Student, StudentsDto>(res);
-                    return ApiResult<StudentsDto>.Success(ResultCode.Ok, dto);
-                }
-                else
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员状态更新失败");
-                }
 
+                foreach (var item in guids)
+                {
+                    var list = await repository.GetAsync(d => d.Id == item);
+                    if (list == null)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
+                    }
+                    if (list.StudentType == studentEnum)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该学员已是此状态，无需修改！");
+                    }
+                    list.StudentType = studentEnum;
+                    var res = await repository.UpdateAsync(list);
+                }
+                return ApiResult.Success(ResultCode.Ok);
             }
             catch (Exception ex)
             {
@@ -378,29 +380,26 @@ namespace Educational.StudentsAndParents.StudentServices
         /// <summary>
         /// 转校
         /// </summary>
-        public async Task<ApiResult<StudentsDto>> UpdateStudentSchool(Guid guid, Guid campusId)
+        public async Task<ApiResult> UpdateStudentSchool(List<Guid> guids, Guid campusId)
         {
             try
             {
-                var list = await repository.GetAsync(d => d.Id == guid);
-                if (list == null)
+
+                foreach (var item in guids)
                 {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
+                    var list = await repository.GetAsync(d => d.Id == item);
+                    if (list == null)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
+                    }
+                    if (list.CampusId == campusId)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该学员已在此校区，无需转校！");
+                    }
+                    list.CampusId = campusId;
+                    var res = await repository.UpdateAsync(list);
                 }
-                if (list.CampusId == campusId)
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该学员已在此校区，无需转校！");
-                }
-                list.CampusId = campusId;
-                var res = await repository.UpdateAsync(list);
-                if (res != null) {
-                    var dto = ObjectMapper.Map<Student, StudentsDto>(res);
-                    return ApiResult<StudentsDto>.Success(ResultCode.Ok, dto);
-                }
-                else
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员转校失败");
-                }
+                    return ApiResult.Success(ResultCode.Ok);
                 }
             catch (Exception ex)
             {
@@ -412,30 +411,26 @@ namespace Educational.StudentsAndParents.StudentServices
         /// 修改顾问
         /// </summary>
         [HttpPut]
-        public async Task<ApiResult<StudentsDto>> UpdateStudentConsultant(Guid guid, Guid consultant)
+        public async Task<ApiResult> UpdateStudentConsultant(List<Guid> guids, Guid consultant)
         {
             try
             {
-                var list = await repository.GetAsync(d => d.Id == guid);
-                if (list == null)
+
+                foreach (var item in guids)
                 {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
+                    var list = await repository.GetAsync(d => d.Id == item);
+                    if (list == null)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
+                    }
+                    if (list.Consultant == consultant)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该学员已是此顾问，无需修改！");
+                    }
+                    list.Consultant = consultant;
+                    var res = await repository.UpdateAsync(list);
                 }
-                if (list.Consultant == consultant)
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该学员已是此顾问，无需修改！");
-                }
-                list.Consultant = consultant;
-                var res = await repository.UpdateAsync(list);
-                if (res != null)
-                {
-                    var dto = ObjectMapper.Map<Student, StudentsDto>(res);
-                    return ApiResult<StudentsDto>.Success(ResultCode.Ok, dto);
-                }
-                else
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员顾问修改失败");
-                }
+                    return ApiResult.Success(ResultCode.Ok);
             }
             catch (Exception ex)
             {
