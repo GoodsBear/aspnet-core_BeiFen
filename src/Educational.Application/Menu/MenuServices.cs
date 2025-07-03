@@ -141,11 +141,15 @@ namespace Educational.Menu
             {
                 var node = new MenuTreeDto
                 {
-                    value = menu.Id,
-                    label = menu.MenuName,
-                    path = menu.MenuPath,
-                    icon = menu.MenuIcon,
-                    children = BuildMenuTree(allMenus, menu.Id)
+                    Id = menu.Id,
+                    ParentId = menu.ParentId,
+                    MenuName = menu.MenuName,
+                    MenuComponent = menu.MenuComponent,
+                    MenuPath = menu.MenuPath,
+                    MenuIcon = menu.MenuIcon,
+                    MenuSort = menu.MenuSort,
+                    MenuType = menu.MenuType,
+                    Children = BuildMenuTree(allMenus, menu.Id)
                 };
                 result.Add(node);
             }
