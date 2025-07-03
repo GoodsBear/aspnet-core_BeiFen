@@ -408,7 +408,7 @@ namespace Educational.Staffs
         /// <param name="search">查询条件</param>
         /// <returns>返回导出结果</returns>
         [HttpGet]
-        public async Task<(byte[] FileContent, string FileName)> GetExportStaffList()
+        public virtual async Task<(byte[] FileContent, string FileName)> GetExportStaffList()
         {
             // 获取数据
             var staffinfo = await basicRepository.GetListAsync();

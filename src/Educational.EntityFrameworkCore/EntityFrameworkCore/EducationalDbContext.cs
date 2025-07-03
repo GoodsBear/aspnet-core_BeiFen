@@ -103,7 +103,7 @@ public class EducationalDbContext :
 
     //#endregion
 
-    public DbSet<ClassHourFeeSetting> ClassHourFeeSetting { get; set; }//薪资表
+    public DbSet<ClassHourFeeSetting> ClassHourFeeSetting { get; set; }//上课时间表
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -1,23 +1,14 @@
-﻿using Abp.Application.Services;
-using AutoMapper.Internal.Mappers;
-using Educational.Subject;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Threading.Tasks;
-using Educational.Dto.Positions;
-using Educational.Organization;
-using Educational.Positions;
-using Volo.Abp.Application.Services;
-using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
-using Volo.Abp.ObjectMapping;
 namespace Educational.SalarySetting
 {
+    [ApiExplorerSettings(GroupName ="薪资")]
     public class SalarySettingServices : Volo.Abp.Application.Services.ApplicationService, ISalarySettingServices
     {
         IRepository<SalarySettingModel, Guid> _salarySettingRepository;
