@@ -19,4 +19,3 @@ namespace Educational.Organization
         public string Name { get; set; } 
     }
 }
-
