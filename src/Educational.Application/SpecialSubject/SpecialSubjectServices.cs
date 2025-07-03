@@ -14,20 +14,38 @@ using Volo.Abp.ObjectMapping;
 
 namespace Educational.SpecialSubject
 {
+    /// <summary>
+    /// 专题--
+    /// </summary>
+    [ApiExplorerSettings(GroupName = "专题")]
     public class SpecialSubjectServices : ApplicationService, ISpecialSubjectServices
     {
-        IRepository<SpecialSubjectModel, Guid> specialSubjectRepository;
-        IRepository<CategoryModel, Guid> categoryRepository;
+        private readonly IRepository<SpecialSubjectModel, Guid> _specialSubjectRepository;
+        private readonly IRepository<CategoryModel, Guid> _categoryRepository;
         ILogger<SpecialSubjectServices> logger;
+
         public SpecialSubjectServices(
-        IRepository<SpecialSubjectModel, Guid> specialSubjectRepository,
-        IRepository<CategoryModel, Guid> categoryRepository,
-        ILogger<SpecialSubjectServices> logger)
+            IRepository<SpecialSubjectModel, Guid> organizationRepository,
+            IRepository<CategoryModel, Guid> organizationLevelRepository,
+            ILogger<SpecialSubjectServices> logger)
         {
-            specialSubjectRepository = specialSubjectRepository;
-            categoryRepository = categoryRepository;
-             this.logger = logger;
+            _specialSubjectRepository = organizationRepository;
+            _categoryRepository = organizationLevelRepository;
+            this.logger = logger;
         }
+        //IRepository<SpecialSubjectModel, Guid> specialSubjectRepository;
+        //IRepository<CategoryModel, Guid> categoryRepository;
+        //ILogger<SpecialSubjectServices> logger;
+        //public SpecialSubjectServices(
+        //IRepository<SpecialSubjectModel, Guid> specialSubjectRepository,
+        //IRepository<CategoryModel, Guid> categoryRepository,
+        //ILogger<SpecialSubjectServices> logger)
+        //{
+        //    specialSubjectRepository = specialSubjectRepository;
+        //    categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
+        //    // 其他空检查...
+        //    this.logger = logger;
+        //}
         /// <summary>
         /// 专题添加
         /// </summary>
@@ -39,7 +57,7 @@ namespace Educational.SpecialSubject
             try
             {
                 // 验证专题名是否已存在
-                var existingOrg = await specialSubjectRepository.FirstOrDefaultAsync(x => x.Name == input.Name);
+                var existingOrg = await _specialSubjectRepository.FirstOrDefaultAsync(x => x.Name == input.Name);
                 if (existingOrg != null)
                 {
                     return ApiResult<SpecialSubjectDto>.Fail(ResultCode.Fail, "专题名已存在");
@@ -47,7 +65,7 @@ namespace Educational.SpecialSubject
                 //创建专题
                 var organization = ObjectMapper.Map<UpdateSpecialSubjectDto, SpecialSubjectModel>(input);
                 //插入数据库
-                var organizationDto = await specialSubjectRepository.InsertAsync(organization);
+                var organizationDto = await _specialSubjectRepository.InsertAsync(organization);
                 //映射
                 var result = ObjectMapper.Map<SpecialSubjectModel, SpecialSubjectDto>(organizationDto);
                 //返回
@@ -70,15 +88,16 @@ namespace Educational.SpecialSubject
             try
             {
                 // 验证专题级别名是否已存在
-                var existingOrg = await categoryRepository.FirstOrDefaultAsync(x => x.CategoryName == Dto.CategoryName);
+                var existingOrg = await _categoryRepository.FirstOrDefaultAsync(x => x.CategoryName == Dto.CategoryName);
                 if (existingOrg != null)
                 {
                     return ApiResult<CategoryModelDto>.Fail(ResultCode.Fail, "专题级别已存在");
                 }
-                //创建专题级别
+                //创建专题级别System.NullReferenceException:“Object reference not set to an instance of an object.”
+
                 var organization = ObjectMapper.Map<UpdateCategoryDto, CategoryModel>(Dto);
                 //插入数据库
-                var organizationDto = await categoryRepository.InsertAsync(organization);
+                var organizationDto = await _categoryRepository.InsertAsync(organization);
                 //映射
                 var result = ObjectMapper.Map<CategoryModel, CategoryModelDto> (organizationDto);
                 //返回
@@ -103,9 +122,9 @@ namespace Educational.SpecialSubject
                 Guid[] ids = guids.ToArray(); 
                 foreach (var id in ids)
                 {
-                    var course = await specialSubjectRepository.FirstOrDefaultAsync(x => x.Id == id);
+                    var course = await _specialSubjectRepository.FirstOrDefaultAsync(x => x.Id == id);
                     //删除
-                    await specialSubjectRepository.DeleteAsync(course);
+                    await _specialSubjectRepository.DeleteAsync(course);
                 }
                 return ApiResult.Success(ResultCode.Ok);
             }
@@ -125,7 +144,7 @@ namespace Educational.SpecialSubject
         {
             try
             {
-                var course = await specialSubjectRepository.FirstOrDefaultAsync(x => x.Id == id);
+                var course = await _specialSubjectRepository.FirstOrDefaultAsync(x => x.Id == id);
                 return ApiResult<SpecialSubjectModel>.Success(ResultCode.Ok, course);
             }
             catch (Exception ex)
@@ -144,7 +163,7 @@ namespace Educational.SpecialSubject
             try
             {
                 // 正确获取可查询接口
-                var queryable = await categoryRepository.GetListAsync();
+                var queryable = await _categoryRepository.GetListAsync();
                 // 正确映射集合类型
                 var results = ObjectMapper.Map<List<CategoryModel>, List<CategoryModelDto>>(queryable);
                 //  返回成功结果
@@ -168,13 +187,16 @@ namespace Educational.SpecialSubject
             try
             {
                 // 构建专题查询
-                var existingSub = await specialSubjectRepository.GetQueryableAsync();
+                var existingSub = await _specialSubjectRepository.GetQueryableAsync();
                 //专题级别查询
-                var levels = await categoryRepository.GetQueryableAsync();
+                var levels = await _categoryRepository.GetQueryableAsync();
                 // 专题名称查询
                 existingSub = existingSub.WhereIf(!string.IsNullOrEmpty(search.Name), x => x.Name.Contains(search.Name));
                 // 专题名称查询
-                existingSub = existingSub.WhereIf(!(search.CategoryId!=null), x => x.CategoryId== search.CategoryId);
+                if (search.CategoryId != null)
+                {
+                    existingSub = existingSub.Where(x => x.CategoryId == search.CategoryId);
+                } 
                 // 专题名称查询
                 existingSub = existingSub.WhereIf(!string.IsNullOrEmpty(search.Teacher), x => x.Teacher.Contains(search.Teacher));
 
@@ -202,7 +224,7 @@ namespace Educational.SpecialSubject
                 {
                     TotleCount = page.RowCount,
                     TotlePage = (int)Math.Ceiling(page.RowCount * 1.0 / search.PageSize),
-                    Data = linq.ToList()
+                    Data = linq.Skip((search.PageIndex - 1) * search.PageSize).Take(search.PageSize).ToList()
                 };
                 return ApiResult<ApiPaging<List<SpecialSubjectandCategory>>>.Success(ResultCode.Ok, result);
             }
@@ -224,14 +246,14 @@ namespace Educational.SpecialSubject
             try
             {
                 // 检查专题名称是否存在
-                var organization = await specialSubjectRepository.FirstOrDefaultAsync(x => x.Id == id);
+                var organization = await _specialSubjectRepository.FirstOrDefaultAsync(x => x.Id == id);
                 if (organization == null)
                 {
                     return ApiResult<SpecialSubjectDto>.Fail(ResultCode.Fail, "专题不存在");
                 }
 
                 // 检查机构名是否重复（排除自己）
-                var existingOrg = await specialSubjectRepository.FirstOrDefaultAsync(x => x.Name == input.Name && x.Id != id);
+                var existingOrg = await _specialSubjectRepository.FirstOrDefaultAsync(x => x.Name == input.Name && x.Id != id);
                 if (existingOrg != null)
                 {
                     return ApiResult<SpecialSubjectDto>.Fail(ResultCode.Fail, "专题名称已存在");
@@ -241,7 +263,7 @@ namespace Educational.SpecialSubject
                 // 返回更新后信息
                 var result = ObjectMapper.Map<SpecialSubjectModel, SpecialSubjectDto>(organization);
                 //result.Id = id;
-                var a = await specialSubjectRepository.UpdateAsync(organization);
+                var a = await _specialSubjectRepository.UpdateAsync(organization);
                 if (a == null)
                 {
                     return ApiResult<SpecialSubjectDto>.Fail(ResultCode.Fail, "更新专题失败");
@@ -251,6 +273,29 @@ namespace Educational.SpecialSubject
             catch (Exception ex)
             {
                 return ApiResult<SpecialSubjectDto>.Fail(ResultCode.Fail, $"更新专题失败: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 下拉专题
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ApiResult<List<XiAsepecialSubjectDto>>> XiASpecialSubjectAsync()
+        {
+            try
+            {
+                // 正确获取可查询接口
+                var queryable = await _specialSubjectRepository.GetListAsync();
+                // 正确映射集合类型
+                var results = ObjectMapper.Map<List<SpecialSubjectModel>, List<XiAsepecialSubjectDto>>(queryable);
+                //  返回成功结果
+                return ApiResult<List<XiAsepecialSubjectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                // 添加日志记录
+              //  Logger.LogError(ex, "专题级别获取失败");
+                throw;
             }
         }
     }

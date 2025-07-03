@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Educational.Enmu
-{    public enum StaffStatus
+namespace Educational.Enums
+{
+    public enum StudentEnum
     {
-        在职,
-        离职
+        在线学员,
+        意向学员,
+        结业学员
     }
-
 }
