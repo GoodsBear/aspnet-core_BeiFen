@@ -1,6 +1,7 @@
 ﻿using Educational.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,18 @@ namespace Educational.Courses
 		/// 专题名称
 		/// </summary>
 		public string TopicName { get; set; }
+		/// <summary>
+		/// 适用年级
+		/// </summary>
+		public Guid? GratorId { get; set; }
+		/// <summary>
+		/// 年级名称
+		/// </summary>
+		public string GratorName { get; set; }
+		/// <summary>
+		/// 出售单位
+		/// </summary>
+		public string SellUnit { get; set; }
 		/// <summary>
 		/// 课型
 		/// </summary>

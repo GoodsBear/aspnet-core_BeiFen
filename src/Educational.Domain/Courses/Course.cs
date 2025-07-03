@@ -87,6 +87,10 @@ namespace Educational.Courses
 		/// </summary>
 		[Range(30, 240, ErrorMessage = "上课时长必须在30-240分钟之间")]
 		public int LessonDuration { get; set; }
+		/// <summary>
+		/// 状态
+		/// </summary>
+		public bool Status { get; set; }
 
 
 		//						***************************	

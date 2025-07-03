@@ -13,6 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Educational.Classgrade;
+using Educational.Dto.Grades;
 
 namespace Educational.Courses
 {
@@ -24,14 +26,16 @@ namespace Educational.Courses
 		IRepository<SubjectModel, Guid> subjectRepository;
 		IRepository<SpecialSubjectModel, Guid> specialRepository;
 		IRepository<OrganizationModel, Guid> organRepository;
+		IRepository<Grade, Guid> gradeRepository;
 
-		public CourseServices(IRepository<Course, Guid> courseRepository, IRepository<OrganizationModel, Guid> organiRepository, IRepository<SpecialSubjectModel, Guid> specialRepository, IRepository<SubjectModel, Guid> subjectRepository, IRepository<OrganizationModel, Guid> organRepository)
+		public CourseServices(IRepository<Course, Guid> courseRepository, IRepository<OrganizationModel, Guid> organiRepository, IRepository<SpecialSubjectModel, Guid> specialRepository, IRepository<SubjectModel, Guid> subjectRepository, IRepository<OrganizationModel, Guid> organRepository, IRepository<Grade, Guid> gradeRepository)
 		{
 			_courseRepository = courseRepository;
 			this.organiRepository = organiRepository;
 			this.specialRepository = specialRepository;
 			this.subjectRepository = subjectRepository;
 			this.organRepository = organRepository;
+			this.gradeRepository = gradeRepository;
 		}
 
 		/// <summary>
@@ -88,6 +92,8 @@ namespace Educational.Courses
             var topic=ObjectMapper.Map<List<SpecialSubjectModel>,List<SpecialSubjectDto>>((await specialRepository.GetQueryableAsync()).ToList());
 			//获取机构
             var organization=ObjectMapper.Map<List<OrganizationModel>,List<OrganizationDto>>((await organRepository.GetQueryableAsync()).ToList());
+			//获取年级
+            var grade=ObjectMapper.Map<List<Grade>,List<GradeDto>>((await gradeRepository.GetQueryableAsync()).ToList());
 
 			var coursepage= course.Page(seach.PageIndex,seach.PageSize);
 			var courselist=ObjectMapper.Map<List<Course>, List<CourseDto>>(coursepage.ToList());
@@ -96,6 +102,7 @@ namespace Educational.Courses
 				item.CampusName= organization.FirstOrDefault(x=>x.Id==item.CampusId)?.Name;
 				item.SubjectName=subject.FirstOrDefault(x=>x.Id==item.SubjectId)?.SubjectName;
                 item.TopicName=topic.FirstOrDefault(x=>x.Id==item.TopicId)?.Name;
+				item.GratorName=grade.FirstOrDefault(x=>x.Id==item.GratorId)?.GradeName;
 				CourseType type1 = (CourseType)item.CourseTypeId;
 				item.CourseTypeName = type1.ToString();
 				

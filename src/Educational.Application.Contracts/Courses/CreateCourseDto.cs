@@ -68,6 +68,8 @@ namespace Educational.Courses
 		/// 上课时长
 		/// </summary>
 		public int LessonDuration { get; set; }
+		//状态
+		public bool Status { get; set; }
 
 
 		//						***************************	
