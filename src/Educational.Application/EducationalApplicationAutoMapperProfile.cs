@@ -6,7 +6,6 @@ using Educational.Classgrade;
 using Educational.ClassSchedule;
 using Educational.ClassSchedule.DTO;
 using Educational.ClassSchedule.Update;
-using Educational.Courses;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
 using Educational.Dto.ClassRooms;
@@ -15,7 +14,6 @@ using Educational.Dto.Grades;
 using Educational.Dto.MaterialDtos;
 using Educational.Dto.Positions;
 using Educational.Materials;
-using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
@@ -27,9 +25,6 @@ using Educational.Staffs;
 using Educational.StaffTypes;
 using Educational.StafRoles;
 using Educational.Subject;
-using System.Collections.Generic;
-using System.Linq;
-using Volo.Abp.ObjectMapping;
 using Educational.Menu;
 using Educational.StudentsAndParents.Students;
 using Educational.StudentsAndParents.StudentFollow;
@@ -45,7 +40,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
     public EducationalApplicationAutoMapperProfile()
     {
         //薪资
-        CreateMap<Educational.SalarySetting.SalarySettingModel, SalarySettingDto>().ReverseMap();
+        CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
         //排课  
         CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
         CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
