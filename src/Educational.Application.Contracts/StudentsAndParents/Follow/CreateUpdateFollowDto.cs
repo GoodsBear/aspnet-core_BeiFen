@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Educational.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using static Educational.StudentsAndParends.Students.Follow.Follow;
 
 namespace Educational.StudentsAndParents.StudentFollow
 {
-    public class FollowDto
+    public class CreateUpdateFollowDto
     {
         /// <summary>
         /// 联系途径枚举

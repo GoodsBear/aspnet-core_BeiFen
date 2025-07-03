@@ -4,6 +4,7 @@ using Educational.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    partial class EducationalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250702141620_重新初始化员工薪资表")]
+    partial class 重新初始化员工薪资表
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1776,6 +1779,7 @@ namespace Educational.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.PrimitiveCollection<string>("Studentlist")
+                        .IsRequired()
                         .HasMaxLength(10000)
                         .HasColumnType("varchar(10000)");
 
@@ -2138,7 +2142,7 @@ namespace Educational.Migrations
                         .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
-                    b.Property<Guid?>("Consultant")
+                    b.Property<Guid>("Consultant")
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreationTime")
@@ -2188,7 +2192,7 @@ namespace Educational.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<int?>("LessonNums")
+                    b.Property<int>("LessonNums")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")

@@ -70,9 +70,6 @@ namespace Educational.StudentsAndParents.Students
         /// 课时数
         /// </summary>
         public int LessonNums { get; set; }
-        /// <summary>
-        /// 积分
-        public Guid StoreId { get; set; }
         /// </summary>
         /// <summary>
         /// 年龄
