@@ -4,6 +4,7 @@ using Educational.Positions;
 using Educational.RBAC;
 using Educational.StaffTypes;
 using Educational.Tools;
+using Lazy.Captcha.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,10 +35,10 @@ namespace Educational.Staffs
         private readonly IRepository<OrganizationModel, Guid> organizationRepository;
         private readonly IRepository<SalarySettingModel, Guid> salarySettingRepository;
         ILogger<StaffServices> logger;
+        private readonly ICaptcha captcha;
 
-        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository,
+        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository, ICaptcha captcha,
             IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger)
-        {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
             this.positionRep = positionRep;
@@ -46,6 +47,7 @@ namespace Educational.Staffs
             this.organizationRepository = organizationRepository;
             this.salarySettingRepository = salarySettingRepository;
             this.logger = logger;
+            this.captcha = captcha;
         }
         /// <summary>
         /// 获取成员列表下拉框
@@ -447,6 +449,11 @@ namespace Educational.Staffs
                 if (staff.StaffPassword != hashedPassword)
                 {
                     return ApiResult<LoginReturnDTO>.Fail(ResultCode.Fail, "密码错误");
+                }
+
+                if (captcha.Validate(loginDTO.CaptchaKey, loginDTO.CaptchaCode) == false)
+                {
+                    return ApiResult<LoginReturnDTO>.Fail(ResultCode.Fail, "验证码错误");
                 }
 
                 var returndto=ObjectMapper.Map<StaffInfo, LoginReturnDTO>(staff);
