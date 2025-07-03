@@ -54,45 +54,42 @@ namespace Educational.StudentsAndParents.StudentServices
                 var exist = await repository.GetListAsync(d => d.IdCard == createUpdateStudentDto.IdCard);
                 if (exist.Count != 0)
                 {
-                    // 检查身份证号是否已存在
-                    var exist = await repository.GetListAsync(d => d.IdCard == createUpdateStudentDto.IdCard);
-                    if (exist.Count != 0)
-                    {
-                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该身份证号已存在，请勿重复添加！");
-                    }
 
-                    var entity = ObjectMapper.Map<CreateUpdateStudentDto, Student>(createUpdateStudentDto);
-
-                    // 根据身份证号计算年龄
-                    entity.Age = CalculateAge(entity.IdCard);
-
-                    var res = await repository.InsertAsync(entity);
-
-                    if (res != null)
-                    {
-                        var dto = ObjectMapper.Map<Student, StudentsDto>(res);
-                        tran.Complete();
-                        return ApiResult<StudentsDto>.Success(ResultCode.Ok, dto);
-                    }
-                    else
-                    {
-                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员添加失败");
-                    }
-                }
-                var parent=await parentRepository.GetListAsync(d => d.Phone == createUpdateStudentDto.Phone);
-                // 检查手机号是否已存在
-                if (parent.Count==0)
-                {
-                    Parent par =new Parent();
-                    par.PardentName = createUpdateStudentDto.ParentName;
-                    par.Phone = createUpdateStudentDto.Phone;
-                    par.CreationTime = DateTime.Now;
-                    par.Status = true;
-                    await parentRepository.InsertAsync(par);
-                }
+                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该身份证号已存在，请勿重复添加！");
+                }   
 
                 var entity = ObjectMapper.Map<CreateUpdateStudentDto, Student>(createUpdateStudentDto);
+
+                // 根据身份证号计算年龄
+                entity.Age = CalculateAge(entity.IdCard);
+
                 var res = await repository.InsertAsync(entity);
+
+                if (res != null)
+                {
+                    var dto = ObjectMapper.Map<Student, StudentsDto>(res);
+                    return ApiResult<StudentsDto>.Success(ResultCode.Ok, dto);
+                }
+                else
+                {
+
+
+
+                    var parent = await parentRepository.GetListAsync(d => d.Phone == createUpdateStudentDto.Phone);
+                    // 检查手机号是否已存在
+                    if (parent.Count == 0)
+                    {
+                        Parent par = new Parent();
+                        par.PardentName = createUpdateStudentDto.ParentName;
+                        par.Phone = createUpdateStudentDto.Phone;
+                        par.CreationTime = DateTime.Now;
+                        par.Status = true;
+                        await parentRepository.InsertAsync(par);
+                    }
+                }
+
+                var student = ObjectMapper.Map<CreateUpdateStudentDto, Student>(createUpdateStudentDto);
+                var result = await repository.InsertAsync(student);
                 return ApiResult<StudentsDto>.Success(ResultCode.Ok, ObjectMapper.Map<Student, StudentsDto>(entity));
             }
             catch (Exception ex)
