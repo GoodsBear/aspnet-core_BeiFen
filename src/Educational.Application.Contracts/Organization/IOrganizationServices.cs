@@ -38,6 +38,10 @@ namespace Educational.Organization
         /// <returns></returns>
         Task<ApiResult<OrganizationDto>> UpdateAsync(Guid id, OrganizationDto input);
         /// <summary>
+        /// 批量删除
+        /// </summary>
+        Task<ApiResult> BatchDelete(List<Guid> ids);
+        /// <summary>
         /// 主键删除
         /// </summary> 
         Task<ApiResult> DeleteAsync(Guid id);
