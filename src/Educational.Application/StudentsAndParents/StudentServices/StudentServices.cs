@@ -1,6 +1,6 @@
 ﻿using Educational.Classgrade;
+using Educational.Enums;
 using Educational.Organization;
-using Educational.RBAC.RoleManager;
 using Educational.Staffs;
 using Educational.StudentsAndParends.Parents;
 using Educational.StudentsAndParends.Students;
@@ -54,7 +54,30 @@ namespace Educational.StudentsAndParents.StudentServices
                 var exist = await repository.GetListAsync(d => d.IdCard == createUpdateStudentDto.IdCard);
                 if (exist.Count != 0)
                 {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该身份证号已存在，请勿重复添加！");
+                    // 检查身份证号是否已存在
+                    var exist = await repository.GetListAsync(d => d.IdCard == createUpdateStudentDto.IdCard);
+                    if (exist.Count != 0)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该身份证号已存在，请勿重复添加！");
+                    }
+
+                    var entity = ObjectMapper.Map<CreateUpdateStudentDto, Student>(createUpdateStudentDto);
+
+                    // 根据身份证号计算年龄
+                    entity.Age = CalculateAge(entity.IdCard);
+
+                    var res = await repository.InsertAsync(entity);
+
+                    if (res != null)
+                    {
+                        var dto = ObjectMapper.Map<Student, StudentsDto>(res);
+                        tran.Complete();
+                        return ApiResult<StudentsDto>.Success(ResultCode.Ok, dto);
+                    }
+                    else
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员添加失败");
+                    }
                 }
                 var parent=await parentRepository.GetListAsync(d => d.Phone == createUpdateStudentDto.Phone);
                 // 检查手机号是否已存在
@@ -94,7 +117,7 @@ namespace Educational.StudentsAndParents.StudentServices
                 list = list.WhereIf(!string.IsNullOrEmpty(searchStudentDto.StudentName), d => d.Name.Contains(searchStudentDto.StudentName));
                 if (searchStudentDto.GradeId != null)
                 {
-                    list = list.Where(d => d.GradeId == searchStudentDto.OrgaizationId);
+                    list = list.Where(d => d.GradeId == searchStudentDto.GradeId);
                 }
                 if (searchStudentDto.OrgaizationId != null)
                 {
@@ -113,6 +136,7 @@ namespace Educational.StudentsAndParents.StudentServices
                             join d in school on a.CampusId equals d.Id
                             select new StudentsDto
                             {
+                                Id = a.Id,
                                 Name = a.Name,
                                 Phone = a.Phone,
                                 CampusId = a.CampusId,
@@ -164,7 +188,7 @@ namespace Educational.StudentsAndParents.StudentServices
                 list = list.WhereIf(!string.IsNullOrEmpty(searchStudentDto.StudentName), d => d.Name.Contains(searchStudentDto.StudentName));
                 if (searchStudentDto.GradeId != null)
                 {
-                    list = list.Where(d => d.GradeId == searchStudentDto.OrgaizationId);
+                    list = list.Where(d => d.GradeId == searchStudentDto.GradeId);
                 }
                 if (searchStudentDto.OrgaizationId != null)
                 {
@@ -184,6 +208,7 @@ namespace Educational.StudentsAndParents.StudentServices
                             join d in school on a.CampusId equals d.Id
                             select new StudentsDto
                             {
+                                Id = a.Id,
                                 Name = a.Name,
                                 Phone = a.Phone,
                                 CampusId = a.CampusId,
@@ -235,7 +260,7 @@ namespace Educational.StudentsAndParents.StudentServices
                 list = list.WhereIf(!string.IsNullOrEmpty(searchStudentDto.StudentName), d => d.Name.Contains(searchStudentDto.StudentName));
                 if(searchStudentDto.GradeId != null)
                 {
-                    list = list.Where(d => d.GradeId == searchStudentDto.OrgaizationId);
+                    list = list.Where(d => d.GradeId == searchStudentDto.GradeId);
                 }
                 if (searchStudentDto.OrgaizationId != null)
                 {
@@ -254,6 +279,7 @@ namespace Educational.StudentsAndParents.StudentServices
                             join d in school on a.CampusId equals d.Id
                             select new StudentsDto
                             {
+                                Id = a.Id,
                                 Name = a.Name,
                                 Phone = a.Phone,
                                 CampusId = a.CampusId,
@@ -326,6 +352,7 @@ namespace Educational.StudentsAndParents.StudentServices
                     }
 
                     var data = ObjectMapper.Map(createUpdateStudentDto, entity);
+                    entity.Age = CalculateAge(entity.IdCard);
                     var res = await repository.UpdateAsync(data);
 
                     if (res != null)
@@ -347,30 +374,29 @@ namespace Educational.StudentsAndParents.StudentServices
             }
         }
         /// <summary>
-        /// 更新学员状态
+        /// 将当前学员状态转变为在线学员、意向学员或结业学员
         /// </summary>
         [HttpPut]
-        public async Task<ApiResult<StudentsDto>> UpdateStudentType(Guid guid, CreateUpdateStudentDto studentEnum)
+        public async Task<ApiResult> UpdateStudentType(List<Guid> guids, StudentEnum studentEnum)
         {
             try
             {
-                var list = await repository.GetAsync(d => d.Id == guid);
-                if (list == null)
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
-                }
-                var data = ObjectMapper.Map<CreateUpdateStudentDto, Student>(studentEnum, list);
-                var res = await repository.UpdateAsync(data);
-                if (res != null)
-                {
-                    var dto = ObjectMapper.Map<Student, StudentsDto>(res);
-                    return ApiResult<StudentsDto>.Success(ResultCode.Ok, dto);
-                }
-                else
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员状态更新失败");
-                }
 
+                foreach (var item in guids)
+                {
+                    var list = await repository.GetAsync(d => d.Id == item);
+                    if (list == null)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
+                    }
+                    if (list.StudentType == studentEnum)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该学员已是此状态，无需修改！");
+                    }
+                    list.StudentType = studentEnum;
+                    var res = await repository.UpdateAsync(list);
+                }
+                return ApiResult.Success(ResultCode.Ok);
             }
             catch (Exception ex)
             {
@@ -381,29 +407,26 @@ namespace Educational.StudentsAndParents.StudentServices
         /// <summary>
         /// 转校
         /// </summary>
-        public async Task<ApiResult<StudentsDto>> UpdateStudentSchool(Guid guid, Guid campusId)
+        public async Task<ApiResult> UpdateStudentSchool(List<Guid> guids, Guid campusId)
         {
             try
             {
-                var list = await repository.GetAsync(d => d.Id == guid);
-                if (list == null)
+
+                foreach (var item in guids)
                 {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
+                    var list = await repository.GetAsync(d => d.Id == item);
+                    if (list == null)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
+                    }
+                    if (list.CampusId == campusId)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该学员已在此校区，无需转校！");
+                    }
+                    list.CampusId = campusId;
+                    var res = await repository.UpdateAsync(list);
                 }
-                if (list.CampusId == campusId)
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该学员已在此校区，无需转校！");
-                }
-                list.CampusId = campusId;
-                var res = await repository.UpdateAsync(list);
-                if (res != null) {
-                    var dto = ObjectMapper.Map<Student, StudentsDto>(res);
-                    return ApiResult<StudentsDto>.Success(ResultCode.Ok, dto);
-                }
-                else
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员转校失败");
-                }
+                    return ApiResult.Success(ResultCode.Ok);
                 }
             catch (Exception ex)
             {
@@ -415,30 +438,26 @@ namespace Educational.StudentsAndParents.StudentServices
         /// 修改顾问
         /// </summary>
         [HttpPut]
-        public async Task<ApiResult<StudentsDto>> UpdateStudentConsultant(Guid guid, Guid consultant)
+        public async Task<ApiResult> UpdateStudentConsultant(List<Guid> guids, Guid consultant)
         {
             try
             {
-                var list = await repository.GetAsync(d => d.Id == guid);
-                if (list == null)
+
+                foreach (var item in guids)
                 {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
+                    var list = await repository.GetAsync(d => d.Id == item);
+                    if (list == null)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员不存在，请检查！");
+                    }
+                    if (list.Consultant == consultant)
+                    {
+                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该学员已是此顾问，无需修改！");
+                    }
+                    list.Consultant = consultant;
+                    var res = await repository.UpdateAsync(list);
                 }
-                if (list.Consultant == consultant)
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该学员已是此顾问，无需修改！");
-                }
-                list.Consultant = consultant;
-                var res = await repository.UpdateAsync(list);
-                if (res != null)
-                {
-                    var dto = ObjectMapper.Map<Student, StudentsDto>(res);
-                    return ApiResult<StudentsDto>.Success(ResultCode.Ok, dto);
-                }
-                else
-                {
-                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员顾问修改失败");
-                }
+                    return ApiResult.Success(ResultCode.Ok);
             }
             catch (Exception ex)
             {
@@ -469,6 +488,42 @@ namespace Educational.StudentsAndParents.StudentServices
             {
                 logger.LogError("批量删除操作出错" + ex.Message);
                 throw;
+            }
+        }
+        /// <summary>
+        /// 根据身份证号计算年龄
+        /// </summary>
+        private int CalculateAge(string idCard)
+        {
+            if (string.IsNullOrEmpty(idCard) || idCard.Length != 18)
+            {
+                return 0;
+            }
+
+            try
+            {
+                // 截取身份证中的出生年月日
+                string birthYear = idCard.Substring(6, 4);
+                string birthMonth = idCard.Substring(10, 2);
+                string birthDay = idCard.Substring(12, 2);
+
+                // 转换为日期
+                DateTime birthDate = new DateTime(int.Parse(birthYear), int.Parse(birthMonth), int.Parse(birthDay));
+                DateTime nowDate = DateTime.Now;
+
+                // 计算年龄
+                int age = nowDate.Year - birthDate.Year;
+                // 如果今年的生日还没过，年龄减1
+                if (birthDate.Date > nowDate.Date.AddYears(-age))
+                {
+                    age--;
+                }
+
+                return age;
+            }
+            catch
+            {
+                return 0;
             }
         }
     }

@@ -99,6 +99,8 @@ public class EducationalDbContext :
     public DbSet<RolePermission> RolePermision { get; set; } //角色权限中间表
     public DbSet<Announcement> announcements { get; set; } //公告信息表
 
+    public DbSet<SalarySettingModel> SalarySettingModel { get; set; } //薪资表
+
     //#endregion
 
 
