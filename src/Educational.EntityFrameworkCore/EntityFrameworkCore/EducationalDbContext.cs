@@ -99,7 +99,8 @@ public class EducationalDbContext :
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限信息表
     public DbSet<RolePermission> RolePermision { get; set; } //角色权限中间表
     public DbSet<Announcement> announcements { get; set; } //公告信息表
-    public DbSet<Educational.SalarySetting.SalarySettingModel> SalarySettingModel { get; set; } //薪资设置表
+    public DbSet<SalarySettingModel> SalarySettingModel { get; set; } //薪资表
+
 
     //#endregion
 
@@ -120,16 +121,6 @@ public class EducationalDbContext :
             b.ToTable(EducationalConsts.DbTablePrefix + "StaffInfo", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
-        });
-
-        //薪资表
-        // 配置SalarySetting聚合根
-        builder.Entity<Educational.SalarySetting.SalarySettingModel>(b =>
-        {
-            b.ToTable(EducationalConsts.DbTablePrefix + "SalarySettingModel", EducationalConsts.DbSchema);
-            b.ConfigureByConvention(); //auto configure for the base class props 
-           // b.HasMany(s => s.ClassHourFeeSettings).WithOne(); // 配置一对多关系
-            
         });
         //薪资表
         // 配置SalarySetting聚合根
