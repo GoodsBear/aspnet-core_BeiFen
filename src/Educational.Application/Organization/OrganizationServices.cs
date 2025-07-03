@@ -265,6 +265,52 @@ namespace Educational.Organization
             }
         }
 
+
+        /// <summary>
+        /// 字段全显示树形组织机构表
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
+
+        public async Task<List<OrganizationTreepageDto>> GetTreeAllAsync([DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId )
+        {
+            if (parentId == null)
+            {
+                parentId = Guid.Empty;
+            }
+            var allOrganizations = await _organizationRepository.GetListAsync();
+
+            var roots = allOrganizations.Where(o => o.PartentedId == parentId).OrderBy(x => x.SortOrder).ToList();
+            var tree = roots.Select(MapToTreeDto2).ToList();
+
+            // 构建一个查找表，按父ID分组 
+            var orgLookup = allOrganizations
+                .ToLookup(o => o.PartentedId as Guid?);
+            // 递归构建子树
+            foreach (var item in tree)
+            {
+                BuildTree2(item, orgLookup);
+            }
+            return tree;
+        }
+
+        private void BuildTree2(OrganizationTreepageDto dto, ILookup<Guid?, OrganizationModel> lookup)
+        {
+            var children = lookup[dto.Id].OrderBy(x => x.SortOrder).ToList();
+            dto.Chlidren = children.Select(entity =>
+            {
+                var childDto = ObjectMapper.Map<OrganizationModel, OrganizationTreepageDto>(entity);
+                BuildTree2(childDto,lookup); // 递归调用
+                return childDto;
+            }).ToList();
+        }
+        private OrganizationTreepageDto MapToTreeDto2(OrganizationModel entity)
+        {
+            var dto = ObjectMapper.Map<OrganizationModel, OrganizationTreepageDto>(entity);
+            dto.Chlidren = new List<OrganizationTreepageDto>(); // 初始化
+            return dto;
+        }
+
         /// <summary>
         /// 组织机构级别添加
         /// </summary> 

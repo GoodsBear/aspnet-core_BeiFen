@@ -1,6 +1,4 @@
-﻿using Educational.Classgrade;
-using Educational.Dto.ClassRooms;
-using Educational.Enmu;
+﻿using Educational.Enmu;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
@@ -34,8 +32,11 @@ namespace Educational.Staffs
         private readonly IRepository<Role, Guid> roleRep;
         private readonly IRepository<StaffTypeInfo, Guid> typeRep;
         private readonly IRepository<OrganizationModel, Guid> organizationRepository;
+        private readonly IRepository<SalarySettingModel, Guid> salarySettingRepository;
+        ILogger<StaffServices> logger;
 
-        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository,IRepository<Position, Guid> positionRep,IRepository<Role,Guid> roleRep,IRepository<StaffTypeInfo,Guid> typeRep,IRepository<OrganizationModel, Guid> organizationRepository)
+        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository,
+            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
@@ -43,6 +44,8 @@ namespace Educational.Staffs
             this.roleRep = roleRep;
             this.typeRep = typeRep;
             this.organizationRepository = organizationRepository;
+            this.salarySettingRepository = salarySettingRepository;
+            this.logger = logger;
         }
         /// <summary>
         /// 获取成员列表下拉框
@@ -58,7 +61,7 @@ namespace Educational.Staffs
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "成员下拉框获取失败");
+                logger.LogError(ex, "成员下拉框获取失败");
                 throw;
             }
         }
@@ -112,7 +115,7 @@ namespace Educational.Staffs
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "员工信息获取失败");
+                logger.LogError(ex, "员工信息获取失败");
                 throw; // 暂时抛出，可拓展成统一异常处理
             }
         }
@@ -210,6 +213,16 @@ namespace Educational.Staffs
 
                 // 将插入后的实体对象映射成返回给前端的 ShowStaffDTO
                 var showstaffinfo = ObjectMapper.Map<StaffInfo, ShowStaffDTO>(staffinfo);
+
+                //获取机构主键
+                var OrganizationId = await organizationRepository.FirstOrDefaultAsync(x => x.Name == staffinfo.Organization);
+
+                //添加职位表的同时添加薪资表
+                SalarySettingModel salary = new SalarySettingModel() {
+                    StaffId = staffinfo.Id,
+                    OrganizationId= OrganizationId.Id
+                };
+                var a=await salarySettingRepository.InsertAsync(salary); 
 
                 // 封装返回结果，状态码 OK，附带员工信息
                 return ApiResult<ShowStaffDTO>.Success(ResultCode.Ok, showstaffinfo);
@@ -319,7 +332,7 @@ namespace Educational.Staffs
         /// <param name="status">要修改成的员工状态</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
         [HttpPut]
-        public async Task<ApiResult> UpdateStaffStatus(Guid[] Ids, StaffStatus status)
+        public async Task<ApiResult> UpdateStaffStatus( Guid[] Ids, StaffStatus status)
         {
             try
             {
@@ -395,20 +408,18 @@ namespace Educational.Staffs
         /// <param name="search">查询条件</param>
         /// <returns>返回导出结果</returns>
         [HttpGet]
-        public async Task<ApiResult<ExportResult>> GetExportStaffList()
+        public virtual async Task<(byte[] FileContent, string FileName)> GetExportStaffList()
         {
-            // 获取员工数据源
-            var staffinfo = await basicRepository.GetQueryableAsync();
-            // 映射成DTO
-            var staffdto=ObjectMapper.Map<List<StaffInfo>,List<ShowStaffDTO>>(staffinfo.ToList());
-            // 调用导出帮助类生成 Excel
-            var fileBytes = ExcelExporter.Export(staffdto, "员工信息", "员工信息表");
-            // 返回导出结果
-            return ApiResult<ExportResult>.Success(ResultCode.Ok, new ExportResult
-            {
-                FileName = $"员工信息_{DateTime.Now:yyyyMMddHHmmss}.xlsx",
-                FileContent = fileBytes
-            });
+            // 获取数据
+            var staffinfo = await basicRepository.GetListAsync();
+
+            // 生成文件名
+            var fileName = $"员工列表_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+
+            // 调用ExcelExporter
+            var fileBytes = ExcelExporter.Export(staffinfo, "员工列表", "员工信息");
+
+            return (fileBytes, fileName);
         }
 
         /// <summary>
@@ -447,7 +458,7 @@ namespace Educational.Staffs
             catch (Exception ex)
             {
                 // 异常处理（记录日志等）
-                Logger.LogError(ex, "登录时发生异常");
+                logger.LogError(ex, "登录时发生异常");
                 throw; // 继续抛出异常
             }
         }

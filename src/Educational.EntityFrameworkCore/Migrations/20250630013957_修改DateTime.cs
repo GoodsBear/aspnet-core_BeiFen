@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Educational.Migrations
 {
     /// <inheritdoc />
-    public partial class 初始化员工薪资表 : Migration
+    public partial class 修改DateTime : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,9 +86,6 @@ namespace Educational.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "SalarySettingModel");
-
             migrationBuilder.AlterColumn<string>(
                 name: "StaffTypeId",
                 table: "AppStaffInfo",
@@ -130,6 +127,22 @@ namespace Educational.Migrations
                 oldComment: "职位")
                 .Annotation("MySql:CharSet", "utf8mb4")
                 .OldAnnotation("Relational:Collation", "ascii_general_ci");
+
+            migrationBuilder.AlterColumn<TimeSpan>(
+                name: "StartTime",
+                table: "AppConflictModel",
+                type: "time(6)",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "datetime(6)");
+
+            migrationBuilder.AlterColumn<TimeSpan>(
+                name: "EndTime",
+                table: "AppConflictModel",
+                type: "time(6)",
+                nullable: false,
+                oldClrType: typeof(DateTime),
+                oldType: "datetime(6)");
         }
     }
 }

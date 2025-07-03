@@ -174,6 +174,7 @@ public class EducationalHttpApiHostModule : AbpModule
                 options.SwaggerDoc("积分", new OpenApiInfo { Title = "积分管理", Version = "v1" });
                 options.SwaggerDoc("公告", new OpenApiInfo { Title = "公告管理", Version = "v1" });
                 options.SwaggerDoc("课程", new OpenApiInfo { Title = "课程管理", Version = "v1" });
+                options.SwaggerDoc("排课", new OpenApiInfo { Title = "排课管理", Version = "v1" });
                 options.SwaggerDoc("科目", new OpenApiInfo { Title = "科目管理", Version = "v1" });
                 options.SwaggerDoc("年级", new OpenApiInfo { Title = "年级管理", Version = "v1" });
                 options.SwaggerDoc("班级", new OpenApiInfo { Title = "班级管理", Version = "v1" });
@@ -184,6 +185,7 @@ public class EducationalHttpApiHostModule : AbpModule
                 options.SwaggerDoc("角色", new OpenApiInfo { Title = "角色管理", Version = "v1" });
                 options.SwaggerDoc("专题", new OpenApiInfo { Title = "专题管理", Version = "v1" });
                 options.SwaggerDoc("成员", new OpenApiInfo { Title = "成员管理", Version = "v1" });
+                options.SwaggerDoc("薪资", new OpenApiInfo { Title = "薪资管理", Version = "v1" });
                 options.SwaggerDoc("物料", new OpenApiInfo { Title = "物料管理", Version = "v1" });
                 options.SwaggerDoc("成员分配角色", new OpenApiInfo { Title = "成员分配角色管理", Version = "v1" });
                 options.SwaggerDoc("角色分配权限", new OpenApiInfo { Title = "角色分配权限管理", Version = "v1" });
@@ -319,9 +321,10 @@ public class EducationalHttpApiHostModule : AbpModule
             c.SwaggerEndpoint("/swagger/跟进/swagger.json", "跟进管理 v1");
             c.SwaggerEndpoint("/swagger/积分/swagger.json", "积分管理 v1");
             c.SwaggerEndpoint("/swagger/公告/swagger.json", "公告管理 v1");
-            c.SwaggerEndpoint("/swagger/课程/swagger.json", "课程管理 v1");
-            c.SwaggerEndpoint("/swagger/科目/swagger.json", "科目管理 v1");
             c.SwaggerEndpoint("/swagger/年级/swagger.json", "年级管理 v1");
+            c.SwaggerEndpoint("/swagger/课程/swagger.json", "课程管理 v1");
+            c.SwaggerEndpoint("/swagger/排课/swagger.json", "排课管理 v1");
+            c.SwaggerEndpoint("/swagger/科目/swagger.json", "科目管理 v1");
             c.SwaggerEndpoint("/swagger/班级/swagger.json", "班级管理 v1");
             c.SwaggerEndpoint("/swagger/教室/swagger.json", "教室管理 v1");
             c.SwaggerEndpoint("/swagger/组织机构/swagger.json", "组织机构管理 v1");
@@ -331,6 +334,7 @@ public class EducationalHttpApiHostModule : AbpModule
             c.SwaggerEndpoint("/swagger/专题/swagger.json", "专题管理 v1");
             c.SwaggerEndpoint("/swagger/成员/swagger.json", "成员管理 v1");
             c.SwaggerEndpoint("/swagger/科目管理/swagger.json", "科目管理 v1");
+            c.SwaggerEndpoint("/swagger/薪资/swagger.json", "薪资管理 v1");
             
             c.SwaggerEndpoint("/swagger/物料/swagger.json", "物料管理 v1");
             c.SwaggerEndpoint("/swagger/成员分配角色/swagger.json", "成员分配角色管理 v1"); 
