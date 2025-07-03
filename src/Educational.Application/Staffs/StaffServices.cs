@@ -35,6 +35,7 @@ namespace Educational.Staffs
         private readonly IRepository<OrganizationModel, Guid> organizationRepository;
         private readonly IRepository<SalarySettingModel, Guid> salarySettingRepository;
         ILogger<StaffServices> logger;
+        private readonly ICaptcha captcha;
 
         public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository,
             IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger,ICaptcha captcha)
@@ -219,12 +220,12 @@ namespace Educational.Staffs
                 //获取机构主键
                 var OrganizationId = await organizationRepository.FirstOrDefaultAsync(x => x.Name == staffinfo.Organization);
 
-                //添加职位表的同时添加薪资表
-                SalarySettingModel salary = new SalarySettingModel() {
-                    StaffId = staffinfo.Id,
-                    OrganizationId= OrganizationId.Id
-                };
-                var a=await salarySettingRepository.InsertAsync(salary); 
+                ////添加职位表的同时添加薪资表
+                //SalarySettingModel salary = new SalarySettingModel() {
+                //    StaffId = staffinfo.Id,
+                //    OrganizationId= OrganizationId.Id
+                //};
+                //var a=await salarySettingRepository.InsertAsync(salary); 
 
                 // 封装返回结果，状态码 OK，附带员工信息
                 return ApiResult<ShowStaffDTO>.Success(ResultCode.Ok, showstaffinfo);
