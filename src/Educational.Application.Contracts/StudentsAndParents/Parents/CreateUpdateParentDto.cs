@@ -23,7 +23,7 @@ namespace Educational.StudentsAndParents.Parents
         /// <summary>
         /// 微信昵称
         /// </summary>
-        public string NickName { get; set; }
+        public string? NickName { get; set; }
         /// <summary>
         /// 登录次数
         /// </summary>

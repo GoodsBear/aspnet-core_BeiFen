@@ -35,18 +35,22 @@ namespace Educational.StudentsAndParents.ParentServices
 		{
 			try
 			{
+				//查询
 				var parentList =await parentRepository.GetQueryableAsync();
+				//条件
 				parentList = parentList.WhereIf(!string.IsNullOrEmpty(searchDto.Phone), x => x.Phone==searchDto.Phone);
 				parentList= parentList.WhereIf(!string.IsNullOrEmpty(searchDto.NickName), x => x.NickName.Contains(searchDto.NickName));
 				var page = parentList.PageResult(searchDto.PageIndex, searchDto.PageSize);
+				//转换
 				var parentsDto = ObjectMapper.Map<List<Parent>, List<ParentsDto>>(page.Queryable.ToList());
 
 
-
+				//获取家长信息
 				foreach(var item in parentsDto)
 				{
 					var studentlist = await studentRepository.GetQueryableAsync();
 					var studentdto= ObjectMapper.Map<List<Student>, List<StudentsDto>>(studentlist.Where(x=>x.ParentName==item.PardentName).ToList());
+					//获取家长对应的学生信息
 					foreach(var item1 in studentdto)
 					{
 						item.Studentlist += item1.Name + ",";
