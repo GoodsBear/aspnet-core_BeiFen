@@ -35,7 +35,7 @@ namespace Educational.Staffs
         Task<ApiResult> UpdateStaffStatus(Guid[] Ids, StaffStatus status);
 
         /// <summary>导出员工信息</summary>
-        Task<ApiResult<ExportResult>> GetExportStaffList();
+        Task<(byte[] FileContent, string FileName)> GetExportStaffList();
         /// <summary>
         /// 员工下拉框
         /// </summary>

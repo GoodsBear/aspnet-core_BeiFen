@@ -50,5 +50,9 @@ namespace Educational.SpecialSubject
         /// 级别添加
         /// </summary>  
         Task<ApiResult<CategoryModelDto>> CreateCategoryAsync(UpdateCategoryDto Dto);
+        /// <summary>
+        /// 专题下拉
+        /// </summary>
+        Task<ApiResult<List<XiAsepecialSubjectDto>>> XiASpecialSubjectAsync();
     }
 }

@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    [Migration("20250626060637_排课表")]
-    partial class 排课表
+    [Migration("20250629120740_FullAuditedAggregateRoot")]
+    partial class FullAuditedAggregateRoot
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,6 +116,22 @@ namespace Educational.Migrations
                     b.Property<Guid>("CourseId")
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("DeletionTime");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime(6)");
 
@@ -123,6 +139,29 @@ namespace Educational.Migrations
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
+
+                    b.Property<int>("GeneratedSessionCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("HasSchedulingConflict")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<bool>("IsTimetableGenerated")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("LastModifierId");
 
                     b.PrimitiveCollection<string>("MainTeacher")
                         .IsRequired()
@@ -142,13 +181,93 @@ namespace Educational.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CampusId");
-
-                    b.HasIndex("ClassId");
-
-                    b.HasIndex("CourseId");
-
                     b.ToTable("AppClassSchedule", (string)null);
+                });
+
+            modelBuilder.Entity("Educational.ClassSchedule.ConflictModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("ClassDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ClassName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<Guid?>("ClassScheduleId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ClassTime")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<string>("CourseName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("CreatorId");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("DeletionTime");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time(6)");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("LastModifierId");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time(6)");
+
+                    b.Property<string>("TeacherName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassScheduleId");
+
+                    b.ToTable("AppConflictModel", (string)null);
                 });
 
             modelBuilder.Entity("Educational.ClassSchedule.ScheduleTime", b =>
@@ -166,11 +285,53 @@ namespace Educational.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("CreationTime");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("CreatorId");
+
                     b.Property<int>("DayOfWeek")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("DeleterId");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("DeletionTime");
+
                     b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time(6)");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IsDeleted");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("LastModificationTime");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("LastModifierId");
 
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time(6)");
@@ -1685,6 +1846,9 @@ namespace Educational.Migrations
                     b.Property<int>("Relation")
                         .HasColumnType("int");
 
+                    b.Property<int>("RemainingHours")
+                        .HasColumnType("int");
+
                     b.Property<string>("Remark")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -1701,7 +1865,7 @@ namespace Educational.Migrations
                     b.ToTable("AppStudent", (string)null);
                 });
 
-            modelBuilder.Entity("Educational.SubjectModel.SubjectModel", b =>
+            modelBuilder.Entity("Educational.Subject.SubjectModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
@@ -2174,31 +2338,11 @@ namespace Educational.Migrations
                     b.ToTable("AbpSettingDefinitions", (string)null);
                 });
 
-            modelBuilder.Entity("Educational.ClassSchedule.ClassSchedule", b =>
+            modelBuilder.Entity("Educational.ClassSchedule.ConflictModel", b =>
                 {
-                    b.HasOne("Educational.Organization.OrganizationModel", "Campus")
-                        .WithMany()
-                        .HasForeignKey("CampusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Educational.Classgrade.ClassInfo", "Class")
-                        .WithMany()
-                        .HasForeignKey("ClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Educational.Courses.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Campus");
-
-                    b.Navigation("Class");
-
-                    b.Navigation("Course");
+                    b.HasOne("Educational.ClassSchedule.ClassSchedule", null)
+                        .WithMany("ConflictModel")
+                        .HasForeignKey("ClassScheduleId");
                 });
 
             modelBuilder.Entity("Educational.ClassSchedule.ScheduleTime", b =>
@@ -2250,6 +2394,8 @@ namespace Educational.Migrations
 
             modelBuilder.Entity("Educational.ClassSchedule.ClassSchedule", b =>
                 {
+                    b.Navigation("ConflictModel");
+
                     b.Navigation("ScheduleTimes");
                 });
 

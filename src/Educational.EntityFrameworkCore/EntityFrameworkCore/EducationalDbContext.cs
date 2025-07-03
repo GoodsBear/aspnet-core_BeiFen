@@ -6,6 +6,7 @@ using Educational.Datadictionary;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
+using Educational.SalarySetting;
 using Educational.SpecialSubject;
 using Educational.Staffs;
 using Educational.StaffTypes;
@@ -15,6 +16,7 @@ using Educational.StudentsAndParends.Students.EnrollmentRecords;
 using Educational.StudentsAndParends.Students.Follow;
 using Educational.StudentsAndParends.Students.Store;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -81,6 +83,7 @@ public class EducationalDbContext :
     public DbSet<CategoryModel> CategoryModel { get; set; }//专题级别名称
     public DbSet<Educational.ClassSchedule.ClassSchedule> ClassSchedule { get; set; }//排课表
     public DbSet<ScheduleTime> ScheduleTime { get; set; }//排课子表--上课时间表
+    public DbSet<ConflictModel> ConflictModel { get; set; }//排课子表--冲突表
 
    //#region 组织管理
     public DbSet<OrganizationModel> OrganizationModels { get; set; }//组织信息表
@@ -88,8 +91,6 @@ public class EducationalDbContext :
     public DbSet<Position> positions { get; set; }//职位信息表
 
     //#endregion
-
-
     //#region 系统管理
 
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
@@ -103,6 +104,7 @@ public class EducationalDbContext :
 
     //#endregion
 
+    public DbSet<ClassHourFeeSetting> ClassHourFeeSetting { get; set; }//上课时间表
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -121,6 +123,32 @@ public class EducationalDbContext :
             //...
         });
 
+        //薪资表
+        // 配置SalarySetting聚合根
+        builder.Entity<Educational.SalarySetting.SalarySettingModel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "SalarySettingModel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props 
+           // b.HasMany(s => s.ClassHourFeeSettings).WithOne(); // 配置一对多关系
+            
+        });
+        //薪资表
+        // 配置SalarySetting聚合根
+        builder.Entity<ClassHourFeeSetting>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "ClassHourFeeSetting", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+        });
+
+        /// <summary>
+        /// 排课子表--冲突表
+        /// </summary>
+        builder.Entity<ConflictModel>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "ConflictModel", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            //...
+        });
 
         /// <summary>
         /// 排课表

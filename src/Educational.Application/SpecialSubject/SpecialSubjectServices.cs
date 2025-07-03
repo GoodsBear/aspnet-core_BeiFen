@@ -75,8 +75,7 @@ namespace Educational.SpecialSubject
             {
                 logger.LogError($"创建专题失败: {ex.Message}");
                 return ApiResult<SpecialSubjectDto>.Fail(ResultCode.Fail, $"创建专题失败: {ex.Message}");
-            }
-
+            } 
         }
         /// <summary>
         /// 专题级别+add
@@ -93,8 +92,7 @@ namespace Educational.SpecialSubject
                 {
                     return ApiResult<CategoryModelDto>.Fail(ResultCode.Fail, "专题级别已存在");
                 }
-                //创建专题级别System.NullReferenceException:“Object reference not set to an instance of an object.”
-
+                //创建专题级别System.NullReferenceException:“Object reference not set to an instance of an object.
                 var organization = ObjectMapper.Map<UpdateCategoryDto, CategoryModel>(Dto);
                 //插入数据库
                 var organizationDto = await _categoryRepository.InsertAsync(organization);

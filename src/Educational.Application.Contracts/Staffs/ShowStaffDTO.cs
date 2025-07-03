@@ -10,6 +10,7 @@ namespace Educational.Staffs
 {
     public class ShowStaffDTO
     {
+        public Guid Id { get; set; }
         [DisplayName("姓名")]
         public string StaffName { get; set; }
 
