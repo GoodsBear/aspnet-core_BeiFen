@@ -1,12 +1,10 @@
 ﻿using Educational.RBAC;
-using Educational.Staffs;
-using Educational.StafRoles;
+using Educational.RBAC.PermissionsManager;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -18,12 +16,14 @@ namespace Educational.RolePerssions
     {
         private readonly IRepository<RolePermission, Guid> rolePermissionRepository;
         private readonly IRepository<Role, Guid> roleRepository;
+        private readonly IBasicRepository<Permissions, Guid> permissionrepository;
         private readonly ILogger<RolePerssionAppService> logger;
 
-        public RolePerssionAppService(IRepository<RolePermission, Guid> rolePermissionRepository, IRepository<Role, Guid> roleRepository, ILogger<RolePerssionAppService> logger)
+        public RolePerssionAppService(IRepository<RolePermission, Guid> rolePermissionRepository, IRepository<Role, Guid> roleRepository, IBasicRepository<Permissions, Guid> permissionrepository, ILogger<RolePerssionAppService> logger)
         {
             this.rolePermissionRepository = rolePermissionRepository;
             this.roleRepository = roleRepository;
+            this.permissionrepository = permissionrepository;
             this.logger = logger;
         }
         /// <summary>
@@ -59,6 +59,51 @@ namespace Educational.RolePerssions
             catch (Exception ex)
             {
                 logger.LogError($"添加角色权限分配失败: {ex.Message}");
+                throw;
+            }
+        }
+        /// <summary>
+        /// 通过角色Id获取对应权限
+        /// </summary>
+        /// <param name="StaffId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<ApiResult<List<PermissionsDto>>> GetRoleIdToFindPermission(Guid RoleId)
+        {
+            try
+            {
+                // 1. 获取角色下所有权限分配
+                var rolePermissions = await rolePermissionRepository.GetListAsync(x => x.RoleId == RoleId);
+                if (rolePermissions == null || !rolePermissions.Any())
+                {
+                    return ApiResult<List<PermissionsDto>>.Fail(ResultCode.Fail, "未找到对应权限");
+                }
+
+                // 2. 获取所有权限ID
+                var permissionIds = rolePermissions.Select(p => p.PermissionId).ToList();
+
+                // 3. 循环查找每个权限的详细信息
+                var permissionDtos = new List<PermissionsDto>();
+                foreach (var permissionId in permissionIds)
+                {
+                    var permission = await permissionrepository.FindAsync(permissionId);
+                    if (permission != null)
+                    {
+                        var dto = new PermissionsDto
+                        {
+                            Id = permission.Id,
+                            PermissionName = permission.PermissionName,
+                            PermissionsDesc = permission.PermissionsDesc
+                        };
+                        permissionDtos.Add(dto);
+                    }
+                }
+
+                return ApiResult<List<PermissionsDto>>.Success(ResultCode.Ok, permissionDtos);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("权限获取出错" + ex.Message);
                 throw;
             }
         }

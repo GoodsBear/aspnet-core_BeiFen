@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Educational.Migrations
 {
     /// <inheritdoc />
-    public partial class 重新初始化员工薪资表 : Migration
+    public partial class 再次重新初始化薪资表 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,7 +59,10 @@ namespace Educational.Migrations
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     StaffId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    BasicSalary = table.Column<int>(type: "int", nullable: false),
+                    StaffName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BasicSalaryType = table.Column<int>(type: "int", nullable: false),
+                    BasicSalary = table.Column<decimal>(type: "decimal(65,30)", nullable: true),
                     QualifiedClassHours = table.Column<int>(type: "int", nullable: true),
                     ClassHourFeeSettings = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
