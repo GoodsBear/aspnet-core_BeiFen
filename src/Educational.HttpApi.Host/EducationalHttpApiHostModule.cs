@@ -61,6 +61,9 @@ public class EducationalHttpApiHostModule : AbpModule
         // 配置认证
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
+        // 添加验证码服务（基于配置）
+        context.Services.AddCaptcha(context.Services.GetConfiguration());
+
 
         ConfigureAuthentication(context, configuration);
         ConfigureAuthentication(context);
