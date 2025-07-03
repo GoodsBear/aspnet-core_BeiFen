@@ -39,6 +39,7 @@ namespace Educational.Staffs
 
         public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository, ICaptcha captcha,
             IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger)
+        { 
             this.configuration = configuration;
             this.basicRepository = basicRepository;
             this.positionRep = positionRep;
