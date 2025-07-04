@@ -8,7 +8,7 @@ namespace Educational.RBAC.RoleManager
 {
     public class SelRoleDto
     {
-        public Guid vlaue { get; set; }
+        public Guid value { get; set; }
 
         public string label { get; set; }
     }

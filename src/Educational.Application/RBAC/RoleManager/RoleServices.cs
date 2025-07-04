@@ -179,7 +179,7 @@ namespace Educational.RBAC.RoleManager
                 }
                 var selRoleDtos = list.Select(d => new SelRoleDto
                 {
-                    vlaue = d.Id,
+                    value = d.Id,
                     label = d.RoleName
                 }).ToList();
 

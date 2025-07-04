@@ -251,7 +251,7 @@ namespace Educational.Staffs
         /// <param name="addorUpdStaffDTO">前端传入的员工数据 DTO</param>
         /// <returns>返回封装的 ApiResult 包含编辑后的员工信息</returns>
         [HttpPut]
-        public async Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, AddorUpdStaffDTO addorUpdStaffDTO)
+        public async Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, StaffUpdateDTO addorUpdStaffDTO)
         {
             try
             {

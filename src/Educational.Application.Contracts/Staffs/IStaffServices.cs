@@ -23,7 +23,7 @@ namespace Educational.Staffs
         Task<ApiResult<LoginReturnDTO>> Login(LoginDTO loginDTO);
 
         /// <summary>编辑员工</summary>
-        Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, AddorUpdStaffDTO addorUpdStaffDTO);
+        Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, StaffUpdateDTO addorUpdStaffDTO);
 
         /// <summary>修改密码</summary>
         Task<ApiResult> UpdateStaffPassword(Guid staffId, string newPassword);
