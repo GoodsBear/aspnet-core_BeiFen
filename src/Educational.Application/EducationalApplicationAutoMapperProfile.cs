@@ -1,6 +1,4 @@
 using AutoMapper;
-using Educational.Courses;
-using Educational.Organization;
 using Educational.Announcements;
 using Educational.Classgrade;
 using Educational.ClassSchedule;
@@ -15,28 +13,26 @@ using Educational.Dto.Grades;
 using Educational.Dto.MaterialDtos;
 using Educational.Dto.Positions;
 using Educational.Materials;
+using Educational.Menu;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
-using Educational.SalarySetting;
 using Educational.RolePerssions;
+using Educational.SalarySetting;
 using Educational.SpecialSubject;
 using Educational.Staffs;
+using Educational.Staffs.SalarySetting;
 using Educational.StaffTypes;
 using Educational.StafRoles;
-using Educational.Subject;
-using System.Collections.Generic;
-using System.Linq;
-using Volo.Abp.ObjectMapping;
-using Educational.Menu;
-using Educational.StudentsAndParents.Students;
-using Educational.StudentsAndParents.StudentFollow;
 using Educational.StudentsAndParends.Students.Follow;
-using Educational.StudentsAndParents.Stores;
 using Educational.StudentsAndParends.Students.Store;
+using Educational.StudentsAndParents.Stores;
+using Educational.StudentsAndParents.StudentFollow;
+using Educational.StudentsAndParents.Students;
 using Educational.StudentsAndParents.StudentStore;
+using Educational.Subject;
 
 namespace Educational;
 
@@ -44,8 +40,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
-        //薪资
-        CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
+        
         //排课  
         CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
         CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
@@ -148,5 +143,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<Store, StoreDto>();
         CreateMap<MeddleStoreDto, StudentStoreRelation>().ReverseMap();
 
+        //薪资
+        CreateMap<SalarySettingModel, SalarySettingDto>().ReverseMap();
+       
     }
 } 
