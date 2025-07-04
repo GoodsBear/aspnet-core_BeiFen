@@ -35,7 +35,11 @@ namespace Educational.MaterialRetords
 			_studentRepository = studentRepository;
 		}
 
-		//获取物料变动列表
+		/// <summary>
+		/// 获取物料变动列表
+		/// </summary>
+		/// <param name="searchDto"></param>
+		/// <returns></returns>
 		public async Task<ApiResult<ApiPaging<List<MaterialRecordsDto>>>> GetMaterialRetordList([FromQuery] SearchMaterialRecordsDto searchDto)
 		{
 			var retorlist = await _materialRecordsRepository.GetQueryableAsync();

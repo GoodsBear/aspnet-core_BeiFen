@@ -117,7 +117,7 @@ namespace Educational.Courses
 		}
 
 		/// <summary>
-		/// 批量修改课程状态
+		/// 批量操作课程状态(上下架,启用禁用,删除)
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="status"></param>
@@ -126,22 +126,39 @@ namespace Educational.Courses
 		public async Task<ApiResult> UpdateCourseStatus(List<Guid> guids, bool status ,int type)
 		{
 			Guid[] ids= guids.ToArray();
-			foreach(var id in ids)
+			if (type == 0)
 			{
-				var course = await _courseRepository.FirstOrDefaultAsync(x=>x.Id==id);
-				if (type>0)
+				//批量修改课程状态
+				foreach(var id in ids)
 				{
-					//修改课程状态
+					
+					var course = await _courseRepository.FirstOrDefaultAsync(x => x.Id == id);
 					course.Status = status;
+					await _courseRepository.UpdateAsync(course);
 				}
-				else
+				return ApiResult.Success(ResultCode.Ok);
+			}else if (type == 1)
+			{
+				//批量上下架课程
+				foreach (var id in ids)
 				{
-					//修改课程是否上架
+					var course = await _courseRepository.FirstOrDefaultAsync(x => x.Id == id);
 					course.IsOnlineSale = status;
+					await _courseRepository.UpdateAsync(course);
 				}
-				await _courseRepository.UpdateAsync(course);
+				return ApiResult.Success(ResultCode.Ok);
 			}
-			return ApiResult.Success(ResultCode.Ok);
+			else 
+			{
+				//批量删除课程
+				foreach (var id in ids)
+				{
+					var course = await _courseRepository.FirstOrDefaultAsync(x => x.Id == id);
+					course.IsDeleted = status;
+					await _courseRepository.DeleteAsync(course);
+				}
+				return ApiResult.Success(ResultCode.Ok);
+			}
 		}
 
         /// <summary>
