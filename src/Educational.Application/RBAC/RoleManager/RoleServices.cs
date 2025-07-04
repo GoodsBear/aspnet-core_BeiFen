@@ -121,6 +121,7 @@ namespace Educational.RBAC.RoleManager
                 throw;
             }
         }
+
         /// <summary>
         /// 修改角色
         /// </summary>
@@ -159,6 +160,34 @@ namespace Educational.RBAC.RoleManager
             catch (Exception ex)
             {
                 logger.LogError("角色修改出错"+ex.Message);
+                throw;
+            }
+        }
+        /// <summary>
+        /// 获取角色下拉框数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ApiResult<List<SelRoleDto>>> SelRole()
+        {
+            try
+            {
+                var list = await repository.GetListAsync();
+                if (list.Count == 0)
+                {
+                    return ApiResult<List<SelRoleDto>>.Fail(ResultCode.Fail, "暂无角色数据，请先添加角色！");
+                }
+                var selRoleDtos = list.Select(d => new SelRoleDto
+                {
+                    vlaue = d.Id,
+                    label = d.RoleName
+                }).ToList();
+
+                return ApiResult<List<SelRoleDto>>.Success(ResultCode.Ok, selRoleDtos);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("角色下拉框获取出错" + ex.Message);
                 throw;
             }
         }

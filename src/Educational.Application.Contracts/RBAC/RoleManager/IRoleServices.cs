@@ -25,5 +25,10 @@ namespace Educational.RBAC.RoleManager
         /// 更新角色
         /// </summary>
         Task<ApiResult<RoleDto>> UpdateRole(CreateUpdateRoleDto createUpdateRoleDto,Guid guid);
+        /// <summary>
+        /// 角色下拉框
+        /// </summary>
+        /// <returns></returns>
+        Task<ApiResult<List<SelRoleDto>>> SelRole();
     }
 }
