@@ -8,8 +8,8 @@ namespace Educational.Dto.MaterialDtos
 {
 	public class MaterialSeachDto:Seach
 	{
-		public bool MaterialStatus { get; set; }
+		public bool? MaterialStatus { get; set; }
 
-		public string MaterialName { get; set; }
+		public string? MaterialName { get; set; }
 	}
 }

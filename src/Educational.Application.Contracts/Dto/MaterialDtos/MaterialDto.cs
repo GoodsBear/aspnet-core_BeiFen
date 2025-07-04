@@ -10,7 +10,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.Dto.MaterialDtos
 {
-	public class MaterialDto: AuditedAggregateRoot<Guid>
+	public class MaterialDto: AuditedEntityDto<Guid>
 	{
 		/// <summary>
 		/// 物料名称
@@ -26,11 +26,16 @@ namespace Educational.Dto.MaterialDtos
 		/// 物料分类
 		/// </summary>
 		public MaterialTypeEnum MaterialTypeId { get; set; }
+		/// <summary>
+		/// 物料分类名称
+		/// </summary>
+		public string MaterialTypeName { get; set; }
 
 		/// <summary>
 		/// 所属学校
 		/// </summary>
 		public Guid SchoolId { get; set; }
+		public string SchoolName { get; set; }
 
 		/// <summary>
 		/// 库存
@@ -41,5 +46,9 @@ namespace Educational.Dto.MaterialDtos
 		/// 状态
 		/// </summary>
 		public bool Status { get; set; }
-	}
+		/// <summary>
+		/// 物料说明
+		/// </summary>
+        public string MterialDescription { get; set; }
+    }
 }
