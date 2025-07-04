@@ -137,7 +137,8 @@ namespace Educational.Staffs
         /// <param name="userIds">要设置的用户ID集合</param>
         /// <param name="organizationIds">要设置的机构ID集合</param>
         /// <returns>操作结果</returns>
-        public async Task<ApiResult> UpdateStaffOranization([FromQuery] Guid[] Ids, Guid[] organizationIds)
+        [HttpPost]
+        public async Task<ApiResult> StaffOranization([FromQuery] Guid[] Ids, Guid[] organizationIds)
         {
             try
             {
