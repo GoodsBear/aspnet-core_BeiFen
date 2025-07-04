@@ -38,6 +38,7 @@ namespace Educational.ClassSchedule
        //职工薪资表--是否分配
        //职工课时表--是否够时间
         ILogger<ClassScheduleServices> _logger;
+        
         public ClassScheduleServices(IRepository<ClassSchedule, Guid> classScheduleRepository, IRepository<ScheduleTime, Guid> scheduleTimeRepository, IRepository<ConflictModel, Guid> conflictModelRepository, IRepository<ClassInfo, Guid> classInfoRepository, IRepository<Course, Guid> courseRepository, IRepository<StaffInfo, Guid> staffInfoRepository, IRepository<OrganizationModel, Guid> organizationRepository,ILogger<ClassScheduleServices> logger, IRepository<Student, Guid> studentRepository)
         {
             _organizationRepository = organizationRepository;

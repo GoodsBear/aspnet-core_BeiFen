@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.Internal.Mappers;
 using Educational.Courses;
 using Educational.Organization;
 using Educational.Announcements;
@@ -27,6 +28,7 @@ using Educational.StafRoles;
 using Educational.Subject;
 using Educational.Menu;
 using Educational.StudentsAndParents.Students;
+using Educational.Dto.MaterialRecordsDtos;
 using Educational.StudentsAndParents.StudentFollow;
 using Educational.StudentsAndParends.Students.Follow;
 using Educational.StudentsAndParents.Stores;
@@ -124,7 +126,10 @@ public class EducationalApplicationAutoMapperProfile : Profile
 		//物料
 		CreateMap<Material, MaterialDto>().ReverseMap();
 		CreateMap<CreateUpdateMaterialDto,Material>().ReverseMap();
-
+        //出入库
+        CreateMap<MaterialRecords, MaterialRecordsDto>().ReverseMap();
+        CreateMap<CreateUpdateMaterialRecordsDto, MaterialRecords>().ReverseMap();
+        
         //动态菜单
         CreateMap<CreateUpdateMenuDto,Educational.Menu.Menu>().ReverseMap();
         CreateMap<Educational.Menu.Menu, MenuDto>().ReverseMap();

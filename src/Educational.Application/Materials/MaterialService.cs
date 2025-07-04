@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Linq;
+using Volo.Abp.Uow;
 
 namespace Educational.Materials
 {
@@ -195,6 +196,7 @@ namespace Educational.Materials
 		/// <returns></returns>
 		/// <exception cref="NotImplementedException"></exception>
 		[HttpPut]
+		[UnitOfWork]
 		public async Task<ApiResult> UpdataStatus(List<Guid> ids,bool status)
 		{
 			try

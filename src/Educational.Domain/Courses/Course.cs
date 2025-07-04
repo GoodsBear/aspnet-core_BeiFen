@@ -35,14 +35,19 @@ namespace Educational.Courses
 		/// </summary>
         public Guid? TopicId { get; set; }
 		/// <summary>
-		/// 课型
+		/// 适用年级
 		/// </summary>
-        public CourseType CourseTypeId { get; set; }
+		public Guid? GratorId { get; set; }
 		/// <summary>
-		/// 单价
+		/// 出售单位
 		/// </summary>
-		[Range(0.01, 999999, ErrorMessage = "单价必须在0.01-999999之间")]
-		public decimal Price { get; set; }
+		[Required(ErrorMessage ="出售单位不能为空")]
+		public string SellUnit { get; set; }
+
+		/// <summary>
+		/// 课堂类型
+		/// </summary>
+		public CourseType CourseTypeId { get; set; }
 
 		/// <summary>
 		/// 总价
@@ -83,16 +88,14 @@ namespace Educational.Courses
 		[Range(30, 240, ErrorMessage = "上课时长必须在30-240分钟之间")]
 		public int LessonDuration { get; set; }
 		/// <summary>
-		/// 适用年级
-		/// </summary>
-		public Guid? GratorId { get; set; }	
-		/// <summary>
 		/// 状态
 		/// </summary>
-        public bool Status { get; set; }
+		public bool Status { get; set; }
 
 
-		///在线购课报名设置
+		//						***************************	
+		//							在线购课报名设置
+		//						***************************	
 
 		/// <summary>
 		/// 是否上架
