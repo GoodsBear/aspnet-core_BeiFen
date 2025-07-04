@@ -3,7 +3,9 @@ using Educational.Courses;
 using Educational.Organization;
 using Educational.Announcements;
 using Educational.Classgrade;
-using Educational.Courses;
+using Educational.ClassSchedule;
+using Educational.ClassSchedule.DTO;
+using Educational.ClassSchedule.Update;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
 using Educational.Dto.ClassRooms;
@@ -12,20 +14,17 @@ using Educational.Dto.Grades;
 using Educational.Dto.MaterialDtos;
 using Educational.Dto.Positions;
 using Educational.Materials;
-using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
+using Educational.SalarySetting;
 using Educational.RolePerssions;
 using Educational.SpecialSubject;
 using Educational.Staffs;
 using Educational.StaffTypes;
 using Educational.StafRoles;
 using Educational.Subject;
-using System.Collections.Generic;
-using System.Linq;
-using Volo.Abp.ObjectMapping;
 using Educational.Menu;
 using Educational.StudentsAndParents.Students;
 using Educational.StudentsAndParents.StudentFollow;
@@ -40,6 +39,13 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
+        //薪资
+        CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
+        //排课  
+        CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
+        CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
+        CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
+        CreateMap<UpdateClassScheduleDto, Educational.ClassSchedule.ClassSchedule>().ReverseMap();
         //专题一套
         CreateMap<UpdateSpecialSubjectDto, SpecialSubjectModel>().ReverseMap();
         CreateMap<SpecialSubjectModel, SpecialSubjectDto>().ReverseMap();
@@ -47,8 +53,12 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<CategoryModel, CategoryModelDto>().ReverseMap();
         CreateMap<SpecialSubjectModel, XiAsepecialSubjectDto>().ReverseMap();
          
+            
         CreateMap<CreateUpdateOrganizationLevel, OrganizationLevel>();
         CreateMap<OrganizationLevel, OrganizationLevelDto>();
+        // 添加从 CreateUpdateOrganizationDto 到 OrganizationModel 的映射
+        
+        CreateMap<OrganizationModel, OrganizationTreepageDto>();
         // 组织机构映射
         CreateMap<CreateUpdateOrganizationDto, OrganizationModel>();
         CreateMap<OrganizationModel, OrganizationDto>();
