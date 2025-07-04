@@ -21,5 +21,13 @@ namespace Educational.StafRoles
         /// 移除角色用户
         /// </summary>
         Task<ApiResult> RemoveStaffFromRole(Guid roleId, List<Guid> staffIds);
+        /// <summary>
+        /// 通过角色Id获取角色下的用户列表
+        /// </summary>
+        Task<ApiResult<ApiPaging<List<GetRoleIdToShowStaffDto>>>> GetRoleIdToShowStaffList(SearchStaffRoleDto searchStaffRoleDto);
+        /// <summary>
+        /// 通过角色Id获取不在该角色下的用户列表
+        /// </summary>
+        Task<ApiResult<ApiPaging<List<GetRoleIdToShowStaffDto>>>> GetStaffsNotInRole(SearchStaffRoleDto searchStaffRoleDto);
     }
 }
