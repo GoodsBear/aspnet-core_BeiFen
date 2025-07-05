@@ -99,12 +99,12 @@ public class EducationalDbContext :
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限信息表
     public DbSet<RolePermission> RolePermision { get; set; } //角色权限中间表
     public DbSet<Announcement> announcements { get; set; } //公告信息表
-    public DbSet<SalarySettingModel> SalarySettingModel { get; set; } //薪资表
 
+    public DbSet<SalarySettingModel> SalarySettingModel { get; set; } //薪资表
 
     //#endregion
 
-    public DbSet<ClassHourFeeSetting> ClassHourFeeSetting { get; set; }//薪资表
+    public DbSet<ClassHourFeeSetting> ClassHourFeeSetting { get; set; }//上课时间表
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

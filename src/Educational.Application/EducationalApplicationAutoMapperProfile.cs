@@ -4,7 +4,6 @@ using Educational.Classgrade;
 using Educational.ClassSchedule;
 using Educational.ClassSchedule.DTO;
 using Educational.ClassSchedule.Update;
-using Educational.Courses;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
 using Educational.Dto.ClassRooms;
@@ -26,6 +25,10 @@ using Educational.Staffs;
 using Educational.Staffs.SalarySetting;
 using Educational.StaffTypes;
 using Educational.StafRoles;
+using Educational.Subject;
+using Educational.Menu;
+using Educational.StudentsAndParents.Students;
+using Educational.StudentsAndParents.StudentFollow;
 using Educational.StudentsAndParends.Students.Follow;
 using Educational.StudentsAndParends.Students.Store;
 using Educational.StudentsAndParents.Stores;
@@ -41,6 +44,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
     public EducationalApplicationAutoMapperProfile()
     {
         
+        //薪资
+        CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
         //排课  
         CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
         CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
@@ -74,6 +79,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<StaffInfo, LoginReturnDTO>().ReverseMap();
         CreateMap<StaffTypeInfo, ShowStaffTypeDTO>().ReverseMap(); 
         CreateMap<StaffInfo, StaffSelectDto>().ReverseMap();
+        CreateMap<StaffInfo, StaffUpdateDTO>().ReverseMap();
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organizationaaa. */

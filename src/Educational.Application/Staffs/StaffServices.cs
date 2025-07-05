@@ -1,4 +1,5 @@
-﻿using Castle.Components.DictionaryAdapter;
+using Castle.Components.DictionaryAdapter;
+using Abp.Authorization;
 using Educational.Enmu;
 using Educational.Organization;
 using Educational.Positions;
@@ -6,6 +7,7 @@ using Educational.RBAC;
 using Educational.SalarySetting;
 using Educational.StaffTypes;
 using Educational.Tools;
+using Lazy.Captcha.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,17 +31,23 @@ namespace Educational.Staffs
     public class StaffServices : ApplicationService, IStaffServices
     {
         private readonly IConfiguration configuration;
-        private readonly IRepository<StaffInfo,Guid> basicRepository;
+        private readonly IRepository<StaffInfo, Guid> basicRepository;
         private readonly IRepository<Position, Guid> positionRep;
         private readonly IRepository<Role, Guid> roleRep;
         private readonly IRepository<StaffTypeInfo, Guid> typeRep;
         private readonly IRepository<OrganizationModel, Guid> organizationRepository;
         private readonly IRepository<SalarySettingModel, Guid> salarySettingRepository;
         private readonly IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository;
+        private readonly IRepository<StaffRole, Guid> staffrolerepository; //用户角色中间表
+        private readonly IRepository<RolePermission, Guid> rolepermissionrepository; //角色权限中间表
+        private readonly IRepository<Permissions, Guid> permissionrepository; //权限表
         ILogger<StaffServices> logger;
+        private readonly ICaptcha captcha;
+
 
         public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository,
-            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository)
+            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository,ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository,
+             IRepository<Educational.RBAC.Permissions, Guid> permissionrepository)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
@@ -50,6 +58,10 @@ namespace Educational.Staffs
             this.salarySettingRepository = salarySettingRepository;
             this.logger = logger;
             this.classHourFeeSettingRepository = classHourFeeSettingRepository;
+            this.captcha = captcha;
+            this.staffrolerepository = staffrolerepository;
+            this.rolepermissionrepository = rolepermissionrepository;
+            this.permissionrepository = permissionrepository;
         }
         /// <summary>
         /// 获取成员列表下拉框
@@ -74,7 +86,7 @@ namespace Educational.Staffs
         /// <returns>分页结果，包含员工信息</returns>
         [HttpGet]
         //[Authorize]
-        public async Task<ApiResult<ApiPaging<List<ShowStaffDTO>>>> GetStaffListAsync([FromQuery]SearchStaffDTO search)
+        public async Task<ApiResult<ApiPaging<List<ShowStaffDTO>>>> GetStaffListAsync([FromQuery] SearchStaffDTO search)
         {
             try
             {
@@ -99,11 +111,32 @@ namespace Educational.Staffs
                 // 映射成前端显示用的 DTO 列表
                 var resultList = ObjectMapper.Map<List<StaffInfo>, List<ShowStaffDTO>>(stafflist.ToList());
 
+                // 获取所有员工的ID集合
+                var staffIds = resultList.Select(s => s.Id).ToList();
+
+
+                // 6. 一次性查询所有相关角色信息（优化性能）
+                var staffRoles = await (
+                    from sr in await staffrolerepository.GetQueryableAsync()
+                    join r in await roleRep.GetQueryableAsync() on sr.RoleId equals r.Id
+                    where staffIds.Contains(sr.StaffId)
+                    select new { sr.StaffId, r.RoleName }
+                ).ToListAsync();
+
+                // 7. 按员工ID分组角色
+                var rolesGrouped = staffRoles
+                    .GroupBy(x => x.StaffId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => string.Join(", ", g.Select(x => x.RoleName))
+                    );
+
                 foreach (var item in resultList)
                 {
                     item.Position = (await positionRep.GetAsync(item.PositionId)).PositionName;
-                    item.Role = (await roleRep.GetAsync(item.RoleId)).RoleName;
                     item.StaffType = (await typeRep.GetAsync(item.StaffTypeId)).StaffTypeName;
+                    // 角色信息
+                    item.Role = rolesGrouped.TryGetValue(item.Id, out var roles) ? roles : "无角色";
                 }
 
                 // 封装分页数据
@@ -130,7 +163,8 @@ namespace Educational.Staffs
         /// <param name="userIds">要设置的用户ID集合</param>
         /// <param name="organizationIds">要设置的机构ID集合</param>
         /// <returns>操作结果</returns>
-        public async Task<ApiResult> UpdateStaffOranization([FromQuery]Guid[] Ids, Guid[] organizationIds)
+        [HttpPost]
+        public async Task<ApiResult> StaffOranization([FromQuery] Guid[] Ids, Guid[] organizationIds)
         {
             try
             {
@@ -144,7 +178,7 @@ namespace Educational.Staffs
                 // 2. 获取所有机构名称
                 var orgNames = await (await organizationRepository.GetQueryableAsync())
                     .Where(s => organizationIds.Contains(s.Id))
-                    .Select(s => s.Name) 
+                    .Select(s => s.Name)
                     .ToListAsync();
 
                 foreach (var item in Ids)
@@ -242,6 +276,12 @@ namespace Educational.Staffs
                     };
                     await classHourFeeSettingRepository.InsertAsync(money);
                 }
+                ////添加职位表的同时添加薪资表
+                //SalarySettingModel salary = new SalarySettingModel() {
+                //    StaffId = staffinfo.Id,
+                //    OrganizationId= OrganizationId.Id
+                //};
+                //var a=await salarySettingRepository.InsertAsync(salary); 
 
                 // 封装返回结果，状态码 OK，附带员工信息
                 return ApiResult<ShowStaffDTO>.Success(ResultCode.Ok, showstaffinfo);
@@ -259,7 +299,7 @@ namespace Educational.Staffs
         /// <param name="addorUpdStaffDTO">前端传入的员工数据 DTO</param>
         /// <returns>返回封装的 ApiResult 包含编辑后的员工信息</returns>
         [HttpPut]
-        public async Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, AddorUpdStaffDTO addorUpdStaffDTO)
+        public async Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, StaffUpdateDTO addorUpdStaffDTO)
         {
             try
             {
@@ -276,7 +316,7 @@ namespace Educational.Staffs
                 {
                     // 调用FirstOrderBuildAsync方法查询组织信息，并获取组织名称
                     // 注意：这里有一些特殊符号(&,>,等)可能是占位符或代码片段不完整
-                    var organizationname = (await organizationRepository.FirstOrDefaultAsync(x => Convert.ToString(x.Id) == item)).Name;
+                    var organizationname = (await organizationRepository.FirstOrDefaultAsync(x => Convert.ToString(x.Name) == item)).Name;
 
                     // 将查询到的组织名称拼接到resultmname字符串中，并用分号(;)分隔
                     resultmname += organizationname + ',';
@@ -311,33 +351,33 @@ namespace Educational.Staffs
         /// <param name="staffId">员工 ID</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
         [HttpDelete]
-        public async Task<ApiResult> DeleteStaff([FromQuery]Guid[] Ids)
+        public async Task<ApiResult> DeleteStaff([FromQuery] Guid[] Ids)
         {
-                try
+            try
+            {
+                // 1. 参数验证
+                if (Ids == null || Ids.Length == 0)
                 {
-                    // 1. 参数验证
-                    if (Ids == null || Ids.Length == 0)
-                    {
-                        return ApiResult.Fail(ResultCode.Fail, "请选择要删除的员工");
-                    }
-
-                    // 2. 批量查询员工信息
-                    var staffList = await basicRepository.GetListAsync(u => Ids.Contains(u.Id));
-
-                    // 3. 验证是否全部找到
-                    if (staffList.Count != Ids.Length)
-                    {
-                        var foundIds = staffList.Select(s => s.Id).ToArray();
-                        var missingIds = Ids.Except(foundIds).ToArray();
-                        return ApiResult.Fail(ResultCode.Fail, $"以下员工不存在：{string.Join(",", missingIds)}");
-                    }
-
-                    // 4. 批量删除
-                    await basicRepository.DeleteManyAsync(staffList);
-
-                    return ApiResult.Success(ResultCode.Ok);
+                    return ApiResult.Fail(ResultCode.Fail, "请选择要删除的员工");
                 }
-                catch (Exception)
+
+                // 2. 批量查询员工信息
+                var staffList = await basicRepository.GetListAsync(u => Ids.Contains(u.Id));
+
+                // 3. 验证是否全部找到
+                if (staffList.Count != Ids.Length)
+                {
+                    var foundIds = staffList.Select(s => s.Id).ToArray();
+                    var missingIds = Ids.Except(foundIds).ToArray();
+                    return ApiResult.Fail(ResultCode.Fail, $"以下员工不存在：{string.Join(",", missingIds)}");
+                }
+
+                // 4. 批量删除
+                await basicRepository.DeleteManyAsync(staffList);
+
+                return ApiResult.Success(ResultCode.Ok);
+            }
+            catch (Exception)
             {
                 // 获取异常（可以考虑在此处记录日志）
                 throw; // 暂时直接抛出异常，可以扩展为日志记录或自定义错误返回
@@ -351,7 +391,7 @@ namespace Educational.Staffs
         /// <param name="status">要修改成的员工状态</param>
         /// <returns>返回封装的 ApiResult 表示操作结果</returns>
         [HttpPut]
-        public async Task<ApiResult> UpdateStaffStatus( Guid[] Ids, StaffStatus status)
+        public async Task<ApiResult> UpdateStaffStatus(Guid[] Ids, StaffStatus status)
         {
             try
             {
@@ -427,7 +467,7 @@ namespace Educational.Staffs
         /// <param name="search">查询条件</param>
         /// <returns>返回导出结果</returns>
         [HttpGet]
-        public async Task<(byte[] FileContent, string FileName)> GetExportStaffList()
+        public virtual async Task<(byte[] FileContent, string FileName)> GetExportStaffList()
         {
             // 获取数据
             var staffinfo = await basicRepository.GetListAsync();
@@ -468,8 +508,13 @@ namespace Educational.Staffs
                     return ApiResult<LoginReturnDTO>.Fail(ResultCode.Fail, "密码错误");
                 }
 
-                var returndto=ObjectMapper.Map<StaffInfo, LoginReturnDTO>(staff);
-                returndto.Token = GenerateJwtToken(staff);
+                if (captcha.Validate(loginDTO.CaptchaKey, loginDTO.CaptchaCode) == false)
+                {
+                    return ApiResult<LoginReturnDTO>.Fail(ResultCode.Fail, "验证码错误");
+                }
+
+                var returndto = ObjectMapper.Map<StaffInfo, LoginReturnDTO>(staff);
+                returndto.Token = await GenerateJwtTokenAsync(staff);
 
                 // 登录成功，返回用户信息
                 return ApiResult<LoginReturnDTO>.Success(ResultCode.Ok, returndto);
@@ -483,34 +528,52 @@ namespace Educational.Staffs
         }
 
         /// <summary>
-        /// 生成JWT令牌=
+        /// 生成JWT令牌
         /// </summary>
         /// <param name="staff">员工实体</param>
         /// <returns>JWT令牌字符串</returns>
-        private string GenerateJwtToken(StaffInfo staff)
+        private async Task<string> GenerateJwtTokenAsync(StaffInfo staff)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(configuration["Jwt:SecurityKey"]);
 
+            // 1. 获取用户所有角色Id
+            var staffRoles = await staffrolerepository.GetListAsync(x => x.StaffId == staff.Id);
+            var roleIds = staffRoles.Select(sr => sr.RoleId).Distinct().ToList();
+
+            // 2. 获取所有角色名
+            var roles = await roleRep.GetListAsync(r => roleIds.Contains(r.Id));
+            var roleNames = roles.Select(r => r.RoleName).ToList();
+
+            // 3. 获取所有角色的权限Id
+            var rolePermissions = await rolepermissionrepository.GetListAsync(rp => roleIds.Contains(rp.RoleId));
+            var permissionIds = rolePermissions.Select(rp => rp.PermissionId).Distinct().ToList();
+
+            // 4. 获取所有权限名
+            var permissions = await permissionrepository.GetListAsync(p => permissionIds.Contains(p.Id));
+            var permissionNames = permissions.Select(p => p.PermissionName).ToList();
+
+            // 5. 组装Claim
+            var claims = new List<Claim>
+            {
+                new Claim("Id", staff.Id.ToString()),
+                new Claim("StaffName", staff.StaffName ?? string.Empty),
+                new Claim("StaffAccount", staff.StaffAccount ?? string.Empty),
+                new Claim("StaffPhone", staff.StaffPhone ?? string.Empty),
+                new Claim("StaffGender", staff.StaffGender ?? string.Empty),
+                new Claim("StaffTypeId", staff.StaffTypeId.ToString()),
+                new Claim("PositionId", staff.PositionId.ToString()),
+                new Claim("Organization", staff.Organization ?? string.Empty),
+                new Claim("StaffStatus", staff.Status.ToString()),
+                new Claim("PhotoUrl", staff.PhotoUrl ?? string.Empty),
+                new Claim("Birthday", staff.Birthday?.ToString("yyyy-MM-dd") ?? string.Empty),
+                new Claim("Roles", string.Join(",", roleNames)),
+                new Claim("Permissions", string.Join(",", permissionNames))
+            };
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-            // 添加声明
-            new Claim("Id", staff.Id.ToString()),
-            new Claim("StaffName", staff.StaffName ?? string.Empty),
-            new Claim("StaffAccount", staff.StaffAccount ?? string.Empty),
-            new Claim("StaffPhone", staff.StaffPhone ?? string.Empty),
-            new Claim("StaffGender", staff.StaffGender ?? string.Empty),
-            new Claim("StaffTypeId", staff.StaffTypeId.ToString()),
-            new Claim("PositionId", staff.PositionId.ToString()),
-            new Claim("RoleId", staff.RoleId.ToString()),
-            new Claim("Organization", staff.Organization ?? string.Empty),
-            new Claim("StaffStatus", staff.Status.ToString()),
-            new Claim("PhotoUrl", staff.PhotoUrl ?? string.Empty),
-            new Claim("Birthday", staff.Birthday?.ToString("yyyy-MM-dd") ?? string.Empty),
-
-        }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(configuration["Jwt:ExpirationInMinutes"])),
                 Issuer = configuration["Jwt:Issuer"],
                 Audience = configuration["Jwt:Audience"],
@@ -528,7 +591,6 @@ namespace Educational.Staffs
         /// </summary>
         /// <param name="input">原始密码</param>
         /// <returns>SHA256 加密后的密码</returns>
-
         private string Sha256Hash(string input)
         {
             using (var sha256 = SHA256.Create())

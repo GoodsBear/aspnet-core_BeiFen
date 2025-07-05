@@ -27,7 +27,7 @@ namespace Educational.StafRoles
             this.roleRepository = roleRepository;
         }
         /// <summary>
-        /// 根据已有的角色添加成员
+        /// 给角色分配用户
         /// </summary>
         /// <param name="input">角色分配成员dto</param>
         /// <returns>返回受影响行数</returns>
@@ -67,7 +67,7 @@ namespace Educational.StafRoles
         }
 
         /// <summary>
-        /// 添加修改用户角色分配
+        /// 用户分配角色
         /// </summary>
         /// <param name="input">用户分配角色dto</param>
         /// <returns>返回受影响行数</returns>

@@ -15,7 +15,7 @@ namespace Educational.Staffs
         /// <summary>分页查询员工信息</summary>
         Task<ApiResult<ApiPaging<List<ShowStaffDTO>>>> GetStaffListAsync(SearchStaffDTO search);
         /// <summary>更新员工组织机构</summary>
-        Task<ApiResult> UpdateStaffOranization(Guid[] Ids, Guid[] organizationIds);
+        Task<ApiResult> StaffOranization(Guid[] Ids, Guid[] organizationIds);
         /// <summary>添加员工</summary>
         Task<ApiResult<ShowStaffDTO>> AddStaff(AddorUpdStaffDTO addorUpdStaffDTO);
 
@@ -23,7 +23,7 @@ namespace Educational.Staffs
         Task<ApiResult<LoginReturnDTO>> Login(LoginDTO loginDTO);
 
         /// <summary>编辑员工</summary>
-        Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, AddorUpdStaffDTO addorUpdStaffDTO);
+        Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, StaffUpdateDTO addorUpdStaffDTO);
 
         /// <summary>修改密码</summary>
         Task<ApiResult> UpdateStaffPassword(Guid staffId, string newPassword);
@@ -40,6 +40,6 @@ namespace Educational.Staffs
         /// 员工下拉框
         /// </summary>
         Task<ApiResult<List<StaffSelectDto>>> GetStaffAsync();
-
+        //IactionResult
     }
 }

@@ -14,12 +14,14 @@ namespace Educational.Staffs
         /// 员工姓名
         /// </summary>
         [Required]
-        public Guid StaffId { get; set; } 
-        public string? StaffName { get; set; }
+        public Guid StaffId { get; set; }
+        public string StaffName { get; set; }
+
         // <summary>
         ///基本工资--模式
         /// </summary>
-        public SalaryType BasicSalaryType { get; set; } 
+        public SalaryType BasicSalaryType { get; set; }
+
 
         // <summary>
         ///底薪--模式
