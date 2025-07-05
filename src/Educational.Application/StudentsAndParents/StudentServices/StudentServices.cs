@@ -91,9 +91,6 @@ namespace Educational.StudentsAndParents.StudentServices
                 }
                 else
                 {
-
-
-
                     var parent = await parentRepository.GetListAsync(d => d.Phone == createUpdateStudentDto.Phone);
                     // 检查手机号是否已存在
                     if (parent.Count == 0)
