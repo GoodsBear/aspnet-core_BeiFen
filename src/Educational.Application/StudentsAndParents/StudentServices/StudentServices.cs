@@ -1,5 +1,7 @@
 ﻿using Educational.Classgrade;
+using Educational.Dto.MaterialDtos;
 using Educational.Enums;
+using Educational.Materials;
 using Educational.Organization;
 using Educational.Staffs;
 using Educational.StudentsAndParends.Parents;
@@ -40,11 +42,28 @@ namespace Educational.StudentsAndParents.StudentServices
 			this.logger = logger;
 			this.parentRepository = parentRepository;
 		}
-
-		/// <summary>
-		/// 新增学员
-		/// </summary>
-		[HttpPost]
+        /// <summary>
+        /// 学员下拉框
+        /// </summary>
+        /// <returns>返回 学员下拉框</returns>
+        public async Task<ApiResult<List<StudentSelectDto>>> GetStudentAsync()
+        {
+            try
+            {
+                var queryable = await repository.GetListAsync();
+                var results = ObjectMapper.Map<List<Student>, List<StudentSelectDto>>(queryable);
+                return ApiResult<List<StudentSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "学员下拉框获取失败");
+                throw;
+            }
+        }
+        /// <summary>
+        /// 新增学员
+        /// </summary>
+        [HttpPost]
         [UnitOfWork]
         public async Task<ApiResult<StudentsDto>> AddAsync(CreateUpdateStudentDto createUpdateStudentDto)
         {

@@ -35,37 +35,51 @@ namespace Educational.MaterialRetords
 			_studentRepository = studentRepository;
 		}
 
-		//获取物料变动列表
+		/// <summary>
+		/// 获取物料变动列表
+		/// </summary>
+		/// <param name="searchDto">查询dto</param>
+		/// <returns>返回 获取物料变动列表</returns>
 		public async Task<ApiResult<ApiPaging<List<MaterialRecordsDto>>>> GetMaterialRetordList([FromQuery] SearchMaterialRecordsDto searchDto)
 		{
 			var retorlist = await _materialRecordsRepository.GetQueryableAsync();
 			if (searchDto.StaffId != null)
 			{
-                retorlist = retorlist.Where(x => x.StaffId == searchDto.StaffId);
+				retorlist = retorlist.Where(x => x.StaffId == searchDto.StaffId);
 			}
-			if(searchDto.MaterialId != null)
+			if (searchDto.MaterialId != null)
 			{
-                retorlist = retorlist.Where(x => x.MaterialId == searchDto.MaterialId);
+				retorlist = retorlist.Where(x => x.MaterialId == searchDto.MaterialId);
 			}
-			if(searchDto.StudentId != null)
+			if (searchDto.StudentId != null)
 			{
-                retorlist = retorlist.Where(x => x.StudentId == searchDto.StudentId);
+				retorlist = retorlist.Where(x => x.StudentId == searchDto.StudentId);
 			}
-			if(searchDto.ChangeType != null)
+			if (searchDto.ChangeType != null)
 			{
-                retorlist = retorlist.Where(x => x.ChangeType == searchDto.ChangeType);
+				retorlist = retorlist.Where(x => x.ChangeType == searchDto.ChangeType);
+			}
+			if (!string.IsNullOrEmpty(searchDto.startTime))
+			{
+				retorlist = retorlist.Where(x => x.ChangeDate >= DateTime.Parse(searchDto.startTime));
+			}
+			if (!string.IsNullOrEmpty(searchDto.endTime))
+			{
+				retorlist = retorlist.Where(x => x.ChangeDate < DateTime.Parse(searchDto.endTime).AddDays(1));
 			}
 			var page = retorlist.PageResult(searchDto.PageIndex, searchDto.PageSize);
-			var retords=ObjectMapper.Map<List<MaterialRecords>, List<MaterialRecordsDto>>(page.Queryable.ToList());
-			var material=_materialRepository.GetListAsync().Result;
-			var staffinfo= _staffRepository.GetListAsync().Result;
-			var student= _studentRepository.GetListAsync().Result;
-			foreach(var item in retords)
+			var retords = ObjectMapper.Map<List<MaterialRecords>, List<MaterialRecordsDto>>(page.Queryable.ToList());
+			var material = _materialRepository.GetListAsync().Result;
+			var staffinfo = _staffRepository.GetListAsync().Result;
+			var student = _studentRepository.GetListAsync().Result;
+			foreach (var item in retords)
 			{
-				item.MaterialName= material.Where(x=>x.Id==item.MaterialId).ToList().FirstOrDefault().MaterialName;
-				item.StaffName= staffinfo.Where(x=>x.Id==item.StaffId).ToList().FirstOrDefault().StaffName;
-				item.StudentName= student.Where(x=>x.Id==item.StudentId).ToList().FirstOrDefault().Name;
-			}
+				item.MaterialName = material.Where(x => x.Id == item.MaterialId).ToList().FirstOrDefault().MaterialName;
+				item.StaffName = staffinfo.Where(x => x.Id == item.StaffId).ToList().FirstOrDefault().StaffName;
+				item.StudentName = student.Where(x => x.Id == item.StudentId).ToList().FirstOrDefault().Name;
+				item.ChangeTypeName = Enum.GetName(typeof(ChangeEnum), item.ChangeType);
+
+            }
 			var result = new ApiPaging<List<MaterialRecordsDto>>
 			{
 				TotleCount = page.RowCount,

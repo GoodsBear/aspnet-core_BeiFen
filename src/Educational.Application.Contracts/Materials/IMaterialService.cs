@@ -25,6 +25,8 @@ namespace Educational.Materials
 		Task<ApiResult> BatchDelete(List<Guid> ids);
         // 物料修改
         Task<ApiResult<MaterialDto>> UpdateMaterial(Guid id, CreateUpdateMaterialDto createPositionDto);
+		// 获取物料下拉框
+		Task<ApiResult<List<MaterialSelectDto>>> GetMaterialAsync();
     }
 }
 

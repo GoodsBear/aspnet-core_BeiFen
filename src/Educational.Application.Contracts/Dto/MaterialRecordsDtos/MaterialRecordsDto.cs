@@ -50,10 +50,15 @@ namespace Educational.Dto.MaterialRecordsDtos
 		/// 变动类型
 		/// </summary>
 		public ChangeEnum ChangeType { get; set; }
+		public string ChangeTypeName { get; set; }
 
 		/// <summary>
 		/// 原因
 		/// </summary>
 		public string Reason { get; set; }
-	}
+        /// <summary>
+        /// 变动时间
+        /// </summary>
+        public DateTime ChangeDate { get; set; }
+    }
 }

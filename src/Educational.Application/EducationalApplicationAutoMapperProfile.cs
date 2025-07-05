@@ -34,6 +34,7 @@ using Educational.StudentsAndParends.Students.Follow;
 using Educational.StudentsAndParents.Stores;
 using Educational.StudentsAndParends.Students.Store;
 using Educational.StudentsAndParents.StudentStore;
+using Educational.StudentsAndParends.Students;
 
 namespace Educational;
 
@@ -126,6 +127,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
 		//物料
 		CreateMap<Material, MaterialDto>().ReverseMap();
 		CreateMap<CreateUpdateMaterialDto,Material>().ReverseMap();
+        CreateMap<Material, MaterialSelectDto>().ReverseMap();
         //出入库
         CreateMap<MaterialRecords, MaterialRecordsDto>().ReverseMap();
         CreateMap<CreateUpdateMaterialRecordsDto, MaterialRecords>().ReverseMap();
@@ -137,7 +139,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         //学员
         CreateMap<CreateUpdateStudentDto, Educational.StudentsAndParends.Students.Student>().ReverseMap();
         CreateMap<Educational.StudentsAndParends.Students.Student, StudentsDto>().ReverseMap();
-
+        CreateMap<Student, StudentSelectDto>().ReverseMap();
         //学员跟进
         CreateMap<CreateUpdateFollowDto,Follow>().ReverseMap();
         CreateMap<Follow, FollowDto>();

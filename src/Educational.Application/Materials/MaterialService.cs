@@ -244,5 +244,23 @@ namespace Educational.Materials
                 throw;
             }
         }
+		/// <summary>
+		/// 获取物料下拉
+		/// </summary>
+		/// <returns></returns>
+        public async Task<ApiResult<List<MaterialSelectDto>>> GetMaterialAsync()
+        {
+            try
+            {
+                var queryable = await _materialRepository.GetListAsync();
+                var results = ObjectMapper.Map<List<Material>, List<MaterialSelectDto>>(queryable);
+                return ApiResult<List<MaterialSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "物料下拉框获取失败");
+                throw;
+            }
+        }
     }
 }
