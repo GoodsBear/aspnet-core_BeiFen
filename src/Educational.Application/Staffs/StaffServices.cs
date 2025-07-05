@@ -106,11 +106,32 @@ namespace Educational.Staffs
                 // 映射成前端显示用的 DTO 列表
                 var resultList = ObjectMapper.Map<List<StaffInfo>, List<ShowStaffDTO>>(stafflist.ToList());
 
+                // 获取所有员工的ID集合
+                var staffIds = resultList.Select(s => s.Id).ToList();
+
+
+                // 6. 一次性查询所有相关角色信息（优化性能）
+                var staffRoles = await (
+                    from sr in await staffrolerepository.GetQueryableAsync()
+                    join r in await roleRep.GetQueryableAsync() on sr.RoleId equals r.Id
+                    where staffIds.Contains(sr.StaffId)
+                    select new { sr.StaffId, r.RoleName }
+                ).ToListAsync();
+
+                // 7. 按员工ID分组角色
+                var rolesGrouped = staffRoles
+                    .GroupBy(x => x.StaffId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => string.Join(", ", g.Select(x => x.RoleName))
+                    );
+
                 foreach (var item in resultList)
                 {
                     item.Position = (await positionRep.GetAsync(item.PositionId)).PositionName;
-                    item.Role = (await roleRep.GetAsync(item.RoleId)).RoleName;
                     item.StaffType = (await typeRep.GetAsync(item.StaffTypeId)).StaffTypeName;
+                    // 角色信息
+                    item.Role = rolesGrouped.TryGetValue(item.Id, out var roles) ? roles : "无角色";
                 }
 
                 // 封装分页数据
@@ -137,7 +158,8 @@ namespace Educational.Staffs
         /// <param name="userIds">要设置的用户ID集合</param>
         /// <param name="organizationIds">要设置的机构ID集合</param>
         /// <returns>操作结果</returns>
-        public async Task<ApiResult> UpdateStaffOranization([FromQuery] Guid[] Ids, Guid[] organizationIds)
+        [HttpPost]
+        public async Task<ApiResult> StaffOranization([FromQuery] Guid[] Ids, Guid[] organizationIds)
         {
             try
             {
@@ -251,7 +273,7 @@ namespace Educational.Staffs
         /// <param name="addorUpdStaffDTO">前端传入的员工数据 DTO</param>
         /// <returns>返回封装的 ApiResult 包含编辑后的员工信息</returns>
         [HttpPut]
-        public async Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, AddorUpdStaffDTO addorUpdStaffDTO)
+        public async Task<ApiResult<ShowStaffDTO>> UpdateStaff(Guid staffId, StaffUpdateDTO addorUpdStaffDTO)
         {
             try
             {
@@ -268,7 +290,7 @@ namespace Educational.Staffs
                 {
                     // 调用FirstOrderBuildAsync方法查询组织信息，并获取组织名称
                     // 注意：这里有一些特殊符号(&,>,等)可能是占位符或代码片段不完整
-                    var organizationname = (await organizationRepository.FirstOrDefaultAsync(x => Convert.ToString(x.Id) == item)).Name;
+                    var organizationname = (await organizationRepository.FirstOrDefaultAsync(x => Convert.ToString(x.Name) == item)).Name;
 
                     // 将查询到的组织名称拼接到resultmname字符串中，并用分号(;)分隔
                     resultmname += organizationname + ',';

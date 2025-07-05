@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Educational.Staffs
 {
-    public class AddorUpdStaffDTO
+    public class StaffUpdateDTO
     {
         /// <summary>
         /// 姓名（必填）
@@ -24,12 +24,6 @@ namespace Educational.Staffs
         [Required]
         [Comment("登录账号")]
         public string StaffAccount { get; set; }
-        /// <summary>
-        /// 登录密码
-        /// </summary>
-        [Required]
-        [Comment("登录密码")]
-        public string StaffPassword { get; set; }
         /// <summary>
         /// 电话
         /// </summary>
