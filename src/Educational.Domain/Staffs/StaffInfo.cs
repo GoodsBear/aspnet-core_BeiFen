@@ -54,12 +54,6 @@ namespace Educational.Staffs
         [Comment("职位")]
         [DisplayName("职位")]
         public Guid PositionId { get; set; }
-
-        [MaxLength(50)]
-        [Comment("权限角色")]
-        [DisplayName("权限角色")]
-        public Guid RoleId { get; set; }
-
         [MaxLength(50)]
         [Comment("人员类型")]
         [DisplayName("人员类型")]
