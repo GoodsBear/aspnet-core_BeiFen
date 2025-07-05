@@ -15,7 +15,7 @@ namespace Educational.Staffs
         /// <summary>分页查询员工信息</summary>
         Task<ApiResult<ApiPaging<List<ShowStaffDTO>>>> GetStaffListAsync(SearchStaffDTO search);
         /// <summary>更新员工组织机构</summary>
-        Task<ApiResult> UpdateStaffOranization(Guid[] Ids, Guid[] organizationIds);
+        Task<ApiResult> StaffOranization(Guid[] Ids, Guid[] organizationIds);
         /// <summary>添加员工</summary>
         Task<ApiResult<ShowStaffDTO>> AddStaff(AddorUpdStaffDTO addorUpdStaffDTO);
 

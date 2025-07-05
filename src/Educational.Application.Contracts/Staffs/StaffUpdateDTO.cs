@@ -25,12 +25,6 @@ namespace Educational.Staffs
         [Comment("登录账号")]
         public string StaffAccount { get; set; }
         /// <summary>
-        /// 登录密码
-        /// </summary>
-        [Required]
-        [Comment("登录密码")]
-        public string StaffPassword { get; set; }
-        /// <summary>
         /// 电话
         /// </summary>
         [Required]
@@ -57,13 +51,6 @@ namespace Educational.Staffs
         [Required]
         [Comment("职位")]
         public Guid PositionId { get; set; }
-        /// <summary>
-        /// 权限角色
-        /// </summary>'
-        [Required]
-        [Comment("权限角色")]
-        public Guid RoleId { get; set; }
-
         /// <summary>
         /// 人员类型
         /// </summary>
