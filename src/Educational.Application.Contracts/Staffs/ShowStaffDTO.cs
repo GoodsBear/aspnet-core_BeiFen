@@ -28,8 +28,6 @@ namespace Educational.Staffs
         public Guid PositionId { get; set; }
         [DisplayName("职位")]
         public string Position { get; set; }
-        [DisplayName("角色编号")]
-        public Guid RoleId { get; set; }
         [DisplayName("权限角色")]
         public string Role { get; set; }
 
