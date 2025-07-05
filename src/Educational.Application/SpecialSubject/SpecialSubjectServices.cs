@@ -1,4 +1,5 @@
 ﻿using Educational.Organization;
+using Educational.Staffs;
 using Educational.Subject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,16 +23,19 @@ namespace Educational.SpecialSubject
     {
         private readonly IRepository<SpecialSubjectModel, Guid> _specialSubjectRepository;
         private readonly IRepository<CategoryModel, Guid> _categoryRepository;
+        private readonly IRepository<StaffInfo, Guid> _staffInfoRepository;
         ILogger<SpecialSubjectServices> logger;
 
         public SpecialSubjectServices(
             IRepository<SpecialSubjectModel, Guid> organizationRepository,
             IRepository<CategoryModel, Guid> organizationLevelRepository,
-            ILogger<SpecialSubjectServices> logger)
+            ILogger<SpecialSubjectServices> logger,
+            IRepository<StaffInfo, Guid> staffInfoRepository)
         {
             _specialSubjectRepository = organizationRepository;
             _categoryRepository = organizationLevelRepository;
             this.logger = logger;
+            _staffInfoRepository = staffInfoRepository;
         }
         //IRepository<SpecialSubjectModel, Guid> specialSubjectRepository;
         //IRepository<CategoryModel, Guid> categoryRepository;
@@ -255,17 +259,19 @@ namespace Educational.SpecialSubject
                 if (existingOrg != null)
                 {
                     return ApiResult<SpecialSubjectDto>.Fail(ResultCode.Fail, "专题名称已存在");
-                }
+                } 
+
                 ObjectMapper.Map(input, organization);
+
                 //organization.Id = id;
-                // 返回更新后信息
-                var result = ObjectMapper.Map<SpecialSubjectModel, SpecialSubjectDto>(organization);
+                // 返回更新后信息 
                 //result.Id = id;
                 var a = await _specialSubjectRepository.UpdateAsync(organization);
                 if (a == null)
                 {
                     return ApiResult<SpecialSubjectDto>.Fail(ResultCode.Fail, "更新专题失败");
                 }
+                var result = ObjectMapper.Map<SpecialSubjectModel, SpecialSubjectDto>(organization);
                 return ApiResult<SpecialSubjectDto>.Success(ResultCode.Ok, result);
             }
             catch (Exception ex)
