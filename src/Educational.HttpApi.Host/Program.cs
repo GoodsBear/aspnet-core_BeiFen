@@ -1,16 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json.Serialization;
 using Serilog;
 using Serilog.Events;
 using System;
-using Microsoft.OpenApi.Models;
-using Serilog;
-using Serilog.Events;
-using System;
-using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Educational;
