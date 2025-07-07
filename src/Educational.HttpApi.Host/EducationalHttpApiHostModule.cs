@@ -25,6 +25,7 @@ using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.Modularity;
+using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
@@ -64,6 +65,14 @@ public class EducationalHttpApiHostModule : AbpModule
         // 添加验证码服务（基于配置）
         context.Services.AddCaptcha(context.Services.GetConfiguration());
 
+        Configure<AbpClaimsPrincipalFactoryOptions>(options =>
+        {
+            options.ClaimsMap[Volo.Abp.Security.Claims.AbpClaimTypes.UserId] = new List<string> { "Id" };
+            options.ClaimsMap[Volo.Abp.Security.Claims.AbpClaimTypes.UserName] = new List<string> { "StaffAccount" };
+            options.ClaimsMap[Volo.Abp.Security.Claims.AbpClaimTypes.Role] = new List<string> { "Roles" };
+
+            options.IsDynamicClaimsEnabled = true;
+        });
 
         ConfigureAuthentication(context, configuration);
         ConfigureAuthentication(context);
