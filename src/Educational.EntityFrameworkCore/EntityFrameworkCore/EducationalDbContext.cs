@@ -3,6 +3,7 @@ using Educational.Classgrade;
 using Educational.ClassSchedule;
 using Educational.Courses;
 using Educational.Datadictionary;
+using Educational.Menu;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
@@ -96,6 +97,8 @@ public class EducationalDbContext :
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
     public DbSet<StaffRole> StaffRole { get; set; } //员工角色中间表
     public DbSet<Role> Role { get; set; } //角色信息表
+
+    //public DbSet<MenuPermissionsRelation> MenuPermissionsRelation { get; set; } //权限菜单中间表
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限信息表
     public DbSet<RolePermission> RolePermision { get; set; } //角色权限中间表
     public DbSet<Announcement> announcements { get; set; } //公告信息表

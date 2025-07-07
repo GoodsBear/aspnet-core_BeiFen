@@ -4,6 +4,7 @@ using Educational.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    partial class EducationalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250706054726_增加权限表相应的字段_让权限表与菜单表进行关联")]
+    partial class 增加权限表相应的字段_让权限表与菜单表进行关联
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -614,9 +617,8 @@ namespace Educational.Migrations
                     b.Property<int>("LessonNum")
                         .HasColumnType("int");
 
-                    b.Property<string>("SellUnit")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("ServiceRemark")
                         .IsRequired()
@@ -845,11 +847,6 @@ namespace Educational.Migrations
                     b.Property<int>("MaterialTypeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("MterialDescription")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
                     b.Property<Guid>("SchoolId")
                         .HasColumnType("char(36)");
 
@@ -868,9 +865,6 @@ namespace Educational.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("ChangeDate")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("ChangeSum")
                         .HasColumnType("int");
@@ -2022,6 +2016,7 @@ namespace Educational.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.PrimitiveCollection<string>("Studentlist")
+                        .IsRequired()
                         .HasMaxLength(10000)
                         .HasColumnType("varchar(10000)");
 
@@ -2384,7 +2379,7 @@ namespace Educational.Migrations
                         .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
 
-                    b.Property<Guid?>("Consultant")
+                    b.Property<Guid>("Consultant")
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreationTime")
@@ -2434,7 +2429,7 @@ namespace Educational.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<int?>("LessonNums")
+                    b.Property<int>("LessonNums")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")

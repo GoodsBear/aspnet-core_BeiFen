@@ -27,10 +27,10 @@ public class Program
 
         try
         {
-           //Services.AddMvc().AddJsonOptions(options =>
-           // {
-           //     options.SerializerSettings.ContractResolver = new DefaultContractResolver(); // 保留原名[6](@ref)
-           // });
+            //Services.AddMvc().AddJsonOptions(options =>
+            // {
+            //     options.SerializerSettings.ContractResolver = new DefaultContractResolver(); // 保留原名[6](@ref)
+            // });
 
             Log.Information("Starting Educational.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args);
@@ -39,10 +39,10 @@ public class Program
                 .UseSerilog();
             await builder.AddApplicationAsync<EducationalHttpApiHostModule>();
 
-           
+
             var app = builder.Build();
 
-            app.UseCors(a=>a.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(a => a.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             await app.InitializeApplicationAsync();
             await app.RunAsync();

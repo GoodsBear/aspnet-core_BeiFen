@@ -14,7 +14,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
 namespace Educational.StafRoles
-{
+{ 
     [ApiExplorerSettings(GroupName = "成员分配角色")]
     public class StafRoleAppService : ApplicationService, IStafRoleAppService
     {
