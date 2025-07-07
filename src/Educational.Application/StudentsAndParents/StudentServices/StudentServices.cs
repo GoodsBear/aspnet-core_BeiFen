@@ -1,7 +1,10 @@
 ﻿using Educational.Classgrade;
+using Educational.Dto.MaterialDtos;
 using Educational.Enums;
+using Educational.Materials;
 using Educational.Organization;
 using Educational.Staffs;
+using Educational.StudentsAndParends.Parents;
 using Educational.StudentsAndParends.Students;
 using Educational.StudentsAndParents.Students;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +17,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Uow;
 
 namespace Educational.StudentsAndParents.StudentServices
 {
@@ -21,62 +25,93 @@ namespace Educational.StudentsAndParents.StudentServices
     public class StudentServices : ApplicationService, IStudentServices
     {
         private readonly IRepository<Student, Guid> repository;
+        private readonly IRepository<Parent, Guid> parentRepository;
         private readonly IRepository<Grade, Guid> gardrepository;
         private readonly IRepository<StaffInfo, Guid> staffrepository;
         private readonly IRepository<OrganizationModel> organizationrepository;
         private readonly ILogger<StudentServices> logger;
 
-        public StudentServices(IRepository<Student, Guid> repository,IRepository<Educational.Classgrade.Grade,Guid> gardrepository,IRepository<StaffInfo,Guid> staffrepository,
-            IRepository<OrganizationModel> organizationrepository ,
-            ILogger<StudentServices> logger)
+		public StudentServices(IRepository<Student, Guid> repository, IRepository<Educational.Classgrade.Grade, Guid> gardrepository, IRepository<StaffInfo, Guid> staffrepository,
+			IRepository<OrganizationModel> organizationrepository,
+			ILogger<StudentServices> logger, IRepository<Parent, Guid> parentRepository)
+		{
+			this.repository = repository;
+			this.gardrepository = gardrepository;
+			this.staffrepository = staffrepository;
+			this.organizationrepository = organizationrepository;
+			this.logger = logger;
+			this.parentRepository = parentRepository;
+		}
+        /// <summary>
+        /// 学员下拉框
+        /// </summary>
+        /// <returns>返回 学员下拉框</returns>
+        public async Task<ApiResult<List<StudentSelectDto>>> GetStudentAsync()
         {
-            this.repository = repository;
-            this.gardrepository = gardrepository;
-            this.staffrepository = staffrepository;
-            this.organizationrepository = organizationrepository;
-            this.logger = logger;
+            try
+            {
+                var queryable = await repository.GetListAsync();
+                var results = ObjectMapper.Map<List<Student>, List<StudentSelectDto>>(queryable);
+                return ApiResult<List<StudentSelectDto>>.Success(ResultCode.Ok, results);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "学员下拉框获取失败");
+                throw;
+            }
         }
-
         /// <summary>
         /// 新增学员
         /// </summary>
         [HttpPost]
+        [UnitOfWork]
         public async Task<ApiResult<StudentsDto>> AddAsync(CreateUpdateStudentDto createUpdateStudentDto)
         {
             try
             {
-                using (var tran = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                // 检查身份证号是否已存在
+                var exist = await repository.GetListAsync(d => d.IdCard == createUpdateStudentDto.IdCard);
+                if (exist.Count != 0)
                 {
-                    // 检查身份证号是否已存在
-                    var exist = await repository.GetListAsync(d => d.IdCard == createUpdateStudentDto.IdCard);
-                    if (exist.Count != 0)
+
+                    return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该身份证号已存在，请勿重复添加！");
+                }   
+
+                var entity = ObjectMapper.Map<CreateUpdateStudentDto, Student>(createUpdateStudentDto);
+
+                // 根据身份证号计算年龄
+                entity.Age = CalculateAge(entity.IdCard);
+
+                var res = await repository.InsertAsync(entity);
+
+                if (res != null)
+                {
+                    var dto = ObjectMapper.Map<Student, StudentsDto>(res);
+                    return ApiResult<StudentsDto>.Success(ResultCode.Ok, dto);
+                }
+                else
+                {
+                    var parent = await parentRepository.GetListAsync(d => d.Phone == createUpdateStudentDto.Phone);
+                    // 检查手机号是否已存在
+                    if (parent.Count == 0)
                     {
-                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "该身份证号已存在，请勿重复添加！");
-                    }
-
-                    var entity = ObjectMapper.Map<CreateUpdateStudentDto, Student>(createUpdateStudentDto);
-
-                    // 根据身份证号计算年龄
-                    entity.Age = CalculateAge(entity.IdCard);
-
-                    var res = await repository.InsertAsync(entity);
-
-                    if (res != null)
-                    {
-                        var dto = ObjectMapper.Map<Student, StudentsDto>(res);
-                        tran.Complete();
-                        return ApiResult<StudentsDto>.Success(ResultCode.Ok, dto);
-                    }
-                    else
-                    {
-                        return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "学员添加失败");
+                        Parent par = new Parent();
+                        par.PardentName = createUpdateStudentDto.ParentName;
+                        par.Phone = createUpdateStudentDto.Phone;
+                        par.CreationTime = DateTime.Now;
+                        par.Status = true;
+                        await parentRepository.InsertAsync(par);
                     }
                 }
+
+                var student = ObjectMapper.Map<CreateUpdateStudentDto, Student>(createUpdateStudentDto);
+                var result = await repository.InsertAsync(student);
+                return ApiResult<StudentsDto>.Success(ResultCode.Ok, ObjectMapper.Map<Student, StudentsDto>(entity));
             }
             catch (Exception ex)
             {
                 logger.LogError("学员添加出错: " + ex.Message);
-                throw;
+                return ApiResult<StudentsDto>.Fail(ResultCode.Fail, "添加失败！");
             }
         }
 

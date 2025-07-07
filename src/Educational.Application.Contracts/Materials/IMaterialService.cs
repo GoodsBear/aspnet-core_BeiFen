@@ -13,19 +13,20 @@ namespace Educational.Materials
 	public interface IMaterialService: IApplicationService
 	{
 		// 新增物料
-		Task<ApiResult<MaterialDto>> CreateMaterialAsync(MaterialDto input);
+		Task<ApiResult<MaterialDto>> CreateMaterialAsync(CreateUpdateMaterialDto input);
 
-		// 入库操作
-		Task<ApiResult<CreateUpdateMaterialDto>> StockInAsync(Guid id, int quantity);
-
-		// 出库操作
-		Task<ApiResult<CreateUpdateMaterialDto>> StockOutAsync(Guid id, int quantity);
 
 		// 分页查询
 		Task<ApiResult<ApiPaging<List<MaterialDto>>>> GetPagedMaterialsAsync([FromQuery]MaterialSeachDto seachDto);
 
 		// 更新状态
 		Task<ApiResult> UpdataStatus(List<Guid> ids,bool status);
-	}
+		// 批量删除
+		Task<ApiResult> BatchDelete(List<Guid> ids);
+        // 物料修改
+        Task<ApiResult<MaterialDto>> UpdateMaterial(Guid id, CreateUpdateMaterialDto createPositionDto);
+		// 获取物料下拉框
+		Task<ApiResult<List<MaterialSelectDto>>> GetMaterialAsync();
+    }
 }
 

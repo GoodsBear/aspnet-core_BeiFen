@@ -38,5 +38,10 @@ namespace Educational.Dto.MaterialDtos
 		/// 状态
 		/// </summary>
 		public bool Status { get; set; }
-	}
+        /// <summary>
+        /// 物料说明
+        /// </summary>
+        public string MterialDescription { get; set; }
+    }
+
 }

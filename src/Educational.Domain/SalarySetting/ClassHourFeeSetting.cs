@@ -17,15 +17,15 @@ namespace Educational.SalarySetting
         /// <summary>
         /// 课时时长（分钟）
         /// </summary>
-        public int ClassHourDuration { get; set; }
+        public int ClassHourDuration { get; set; } = 50;
         /// <summary>
         /// 课时费（元）
         /// </summary>
-        public decimal ClassHourFee { get; set; }
+        public decimal ClassHourFee { get; set; } = 0;
 
         /// <summary>
         /// 助教费（元）
         /// </summary>
-        public decimal AssistantFee { get; set; }
+        public decimal AssistantFee { get; set; } = 0;
     }
 }

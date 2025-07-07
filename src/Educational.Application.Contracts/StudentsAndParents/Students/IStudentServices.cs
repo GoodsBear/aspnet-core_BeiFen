@@ -11,6 +11,10 @@ namespace Educational.StudentsAndParents.Students
     public interface IStudentServices
     {
         /// <summary>
+        /// 获取所有学员下拉框
+        /// </summary>
+        Task<ApiResult<List<StudentSelectDto>>> GetStudentAsync();
+        /// <summary>
         /// 新增学员
         /// </summary>
         /// <param name="createUpdateStudentDto"></param>

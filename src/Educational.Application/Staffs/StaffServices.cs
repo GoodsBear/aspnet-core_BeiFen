@@ -3,6 +3,13 @@ using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.Shared.Models;
+﻿using Abp.Authorization;
+﻿using Castle.Components.DictionaryAdapter;
+using Educational.Enmu;
+using Educational.Organization;
+using Educational.Positions;
+using Educational.RBAC;
+using Educational.SalarySetting;
 using Educational.StaffTypes;
 using Educational.Tools;
 using Lazy.Captcha.Core;
@@ -39,12 +46,14 @@ namespace Educational.Staffs
         private readonly IRepository<RolePermission, Guid> rolepermissionrepository; //角色权限中间表
         private readonly IRepository<Permissions, Guid> permissionrepository; //权限表
         private readonly IRepository<Educational.Menu.Menu, Guid> menuRepository; //菜单
+        private readonly IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository;
         ILogger<StaffServices> logger;
         private readonly ICaptcha captcha;
-
-
+        
         public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository,
             IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Educational.RBAC.Permissions, Guid> permissionrepository,IRepository<Educational.Menu.Menu,Guid> menuRepository)
+            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Educational.RBAC.Permissions, Guid> permissionrepository,
+            IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
@@ -59,6 +68,7 @@ namespace Educational.Staffs
             this.rolepermissionrepository = rolepermissionrepository;
             this.permissionrepository = permissionrepository;
             this.menuRepository = menuRepository;
+            this.classHourFeeSettingRepository = classHourFeeSettingRepository;
         }
         /// <summary>
         /// 获取成员列表下拉框
@@ -259,6 +269,27 @@ namespace Educational.Staffs
                 //};
                 //var a=await salarySettingRepository.InsertAsync(salary); 
 
+                //添加职位表的同时添加薪资表
+                SalarySettingModel salary = new SalarySettingModel()
+                {
+                    StaffId = staffinfo.Id,
+                    StaffName = staffinfo.StaffName,
+                    OrganizationId = OrganizationId.Id
+                };
+                var a=await salarySettingRepository.InsertAsync(salary);
+
+                if (a != null)
+                {  
+                    ClassHourFeeSetting money = new ClassHourFeeSetting()
+                    {
+                        SalarySettingId = a.Id,
+                        ClassHourDuration = 0,
+                        ClassHourFee = 0,
+                        AssistantFee = 0
+                    };
+                    await classHourFeeSettingRepository.InsertAsync(money);
+                }
+
                 // 封装返回结果，状态码 OK，附带员工信息
                 return ApiResult<ShowStaffDTO>.Success(ResultCode.Ok, showstaffinfo);
             }
@@ -266,7 +297,7 @@ namespace Educational.Staffs
             {
                 // 捕获异常（可以考虑在此处记录日志）
                 throw; // 暂时继续抛出异常，可以扩展为日志记录或自定义错误返回
-            }
+            } 
         }
 
         /// <summary>

@@ -40,11 +40,11 @@ namespace Educational.Controllers
             }
 
             // 校验文件扩展名
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (Array.IndexOf(allowedExtensions, ext) < 0)
             {
-                throw new UserFriendlyException("仅支持图片格式：jpg, jpeg, png, gif, bmp");
+                throw new UserFriendlyException("仅支持图片格式：jpg, jpeg, png, gif, bmp，webp");
             }
 
             // 根据日期生成子文件夹（yyyyMMdd）

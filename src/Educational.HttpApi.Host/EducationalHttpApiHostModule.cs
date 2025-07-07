@@ -203,6 +203,7 @@ public class EducationalHttpApiHostModule : AbpModule
                 options.SwaggerDoc("角色分配权限", new OpenApiInfo { Title = "角色分配权限管理", Version = "v1" });
                 options.SwaggerDoc("科目管理", new OpenApiInfo { Title = "科目管理管理", Version = "v1" });
 
+                
                 options.DocInclusionPredicate((doc, desc) =>
                 {
                     if (!desc.GroupName.IsNullOrWhiteSpace())

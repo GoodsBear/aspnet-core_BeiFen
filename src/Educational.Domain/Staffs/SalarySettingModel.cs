@@ -9,7 +9,7 @@ namespace Educational.Staffs
     /// 薪资表实体类
     /// </summary>
     public class SalarySettingModel : FullAuditedAggregateRoot<Guid>
-    {
+    { 
         /// <summary>
         /// 员工姓名
         /// </summary>
