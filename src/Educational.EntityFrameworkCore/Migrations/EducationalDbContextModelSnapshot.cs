@@ -813,6 +813,7 @@ namespace Educational.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
 
+
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
                         .HasColumnType("longtext")
@@ -823,7 +824,6 @@ namespace Educational.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
-
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("LastModificationTime");
@@ -831,6 +831,7 @@ namespace Educational.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
+
 
                     b.Property<string>("MaterialImage")
                         .IsRequired()
@@ -900,6 +901,7 @@ namespace Educational.Migrations
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("DeletionTime");
+
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
@@ -1042,7 +1044,6 @@ namespace Educational.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
