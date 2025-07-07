@@ -129,6 +129,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         //动态菜单
         CreateMap<CreateUpdateMenuDto,Educational.Menu.Menu>().ReverseMap();
         CreateMap<Educational.Menu.Menu, MenuDto>().ReverseMap();
+        CreateMap<Educational.Menu.Menu, Educational.Shared.Models.MenuInfo>().ReverseMap();
 
         //学员
         CreateMap<CreateUpdateStudentDto, Educational.StudentsAndParends.Students.Student>().ReverseMap();
