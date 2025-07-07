@@ -76,7 +76,14 @@ namespace Educational.MaterialRetords
 			{
 				item.MaterialName = material.Where(x => x.Id == item.MaterialId).ToList().FirstOrDefault().MaterialName;
 				item.StaffName = staffinfo.Where(x => x.Id == item.StaffId).ToList().FirstOrDefault().StaffName;
-				item.StudentName = student.Where(x => x.Id == item.StudentId).ToList().FirstOrDefault().Name;
+				if(item.StudentId == null)
+				{
+                    item.StudentName = null;
+				}
+				else
+				{
+                    item.StudentName = student.Where(x => x.Id == item.StudentId).ToList().FirstOrDefault().Name;
+                }
 				item.ChangeTypeName = Enum.GetName(typeof(ChangeEnum), item.ChangeType);
 
             }
@@ -100,17 +107,13 @@ namespace Educational.MaterialRetords
 		{
 			try
 			{
-
-				var materialRecord = new MaterialRecords
-				{
-					MaterialId = createUpdateMaterialRecordsDto.MaterialId,
-					ChangeSum = createUpdateMaterialRecordsDto.ChangeSum,
-					StaffId = createUpdateMaterialRecordsDto.StaffId,
-					ChangeType = ChangeEnum.入库,
-					Reason = createUpdateMaterialRecordsDto.Reason
-				};
-				var result = await _materialRecordsRepository.InsertAsync(materialRecord);
-				var material=await _materialRepository.GetAsync(createUpdateMaterialRecordsDto.MaterialId);
+                var material = await _materialRepository.FirstOrDefaultAsync(x => x.Id == createUpdateMaterialRecordsDto.MaterialId);
+                createUpdateMaterialRecordsDto.ChangeType = ChangeEnum.入库;
+                createUpdateMaterialRecordsDto.Reason = createUpdateMaterialRecordsDto.Reason;
+				createUpdateMaterialRecordsDto.MaterialId = material.Id;
+                createUpdateMaterialRecordsDto.ChangeDate = DateTime.Now;
+                var createUpdateMaterialRecordsDtos = ObjectMapper.Map<CreateUpdateMaterialRecordsDto, MaterialRecords>(createUpdateMaterialRecordsDto);
+                var result = await _materialRecordsRepository.InsertAsync(createUpdateMaterialRecordsDtos);
 				material.StockSum+=createUpdateMaterialRecordsDto.ChangeSum;
 				await _materialRepository.UpdateAsync(material);
 				return ApiResult<MaterialRecordsDto>.Success(ResultCode.Ok, ObjectMapper.Map<MaterialRecords, MaterialRecordsDto>(result));
@@ -131,18 +134,14 @@ namespace Educational.MaterialRetords
 		{
 			try
 			{
-				var materialRecord = new MaterialRecords
-				{
-					MaterialId = createUpdateMaterialRecordsDto.MaterialId,
-					ChangeSum = createUpdateMaterialRecordsDto.ChangeSum,
-					StaffId = createUpdateMaterialRecordsDto.StaffId,
-                    StudentId = createUpdateMaterialRecordsDto.StudentId,
-					ChangeType = ChangeEnum.出库,
-					Reason = createUpdateMaterialRecordsDto.Reason
-				};
-				var result = await _materialRecordsRepository.InsertAsync(materialRecord);
-				var material = await _materialRepository.GetAsync(createUpdateMaterialRecordsDto.MaterialId);
-				if (material.StockSum< createUpdateMaterialRecordsDto.ChangeSum)
+                var material = await _materialRepository.FirstOrDefaultAsync(x => x.Id == createUpdateMaterialRecordsDto.MaterialId);
+                createUpdateMaterialRecordsDto.ChangeType = ChangeEnum.出库;
+                createUpdateMaterialRecordsDto.Reason = createUpdateMaterialRecordsDto.Reason;
+                createUpdateMaterialRecordsDto.MaterialId = material.Id;
+                createUpdateMaterialRecordsDto.ChangeDate = DateTime.Now;
+                var createUpdateMaterialRecordsDtos = ObjectMapper.Map<CreateUpdateMaterialRecordsDto, MaterialRecords>(createUpdateMaterialRecordsDto);
+                var result = await _materialRecordsRepository.InsertAsync(createUpdateMaterialRecordsDtos);
+				if (material.StockSum < createUpdateMaterialRecordsDto.ChangeSum)
 				{
 					return ApiResult<MaterialRecordsDto>.Fail(ResultCode.Fail, "库存不足！");
 				}

@@ -135,6 +135,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
 		CreateMap<Material, MaterialDto>().ReverseMap();
 		CreateMap<CreateUpdateMaterialDto,Material>().ReverseMap();
         CreateMap<Material, MaterialSelectDto>().ReverseMap();
+        CreateMap<MaterialRecords,CreateMaterialRecordDto>().ReverseMap();
         //出入库
         CreateMap<MaterialRecords, MaterialRecordsDto>().ReverseMap();
         CreateMap<CreateUpdateMaterialRecordsDto, MaterialRecords>().ReverseMap();
