@@ -9,7 +9,7 @@ using Volo.Abp.Application.Dtos;
 
 namespace Educational.Organization
 {
-    public class CreateUpdateOrganizationDto : AuditedEntityDto<Guid>
+    public class CreateUpdateOrganizationDto
     { 
         /// <summary>
         /// »ú¹¹Ãû
