@@ -161,7 +161,7 @@ namespace Educational.Staffs
         /// <summary>
         /// 批量设置用户所属机构
         /// </summary>
-        /// <param name="userIds">要设置的用户ID集合</param>
+        /// <param name="Ids">要设置的用户ID集合</param>
         /// <param name="organizationIds">要设置的机构ID集合</param>
         /// <returns>操作结果</returns>
         [HttpPost]
