@@ -9,8 +9,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 namespace Educational.SpecialSubject
 {
     public class CategoryModelDto 
-    { 
-        public Guid Id { get; set; }
+    {  
         /// <summary>
         /// 专题类别名称
         /// </summary>

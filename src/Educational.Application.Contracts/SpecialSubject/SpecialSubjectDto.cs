@@ -10,8 +10,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 namespace Educational.SpecialSubject
 {
     public class SpecialSubjectDto  
-    {
-        public Guid Id { get; set; }
+    { 
         [Required]
         [StringLength(128)]
         public string Name { get; set; } // 专题名称（如"大祥"）

@@ -30,8 +30,7 @@ namespace Educational.SpecialSubject
         /// </summary>
         /// <param name="input">修改字段</param>
         /// <returns></returns>
-        Task<ApiResult<SpecialSubjectDto>> CreateAsync(UpdateSpecialSubjectDto input);
-
+        Task<ApiResult<SpecialSubjectDto>> CreateAsync(UpdateSpecialSubjectDto input); 
         /// <summary>
         /// 修改字段
         /// </summary>

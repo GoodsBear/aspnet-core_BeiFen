@@ -11,7 +11,6 @@ namespace Educational.Organization
 {
     public class OrganizationDto  
     { 
-        public Guid Id { get; set; }
         /// <summary>
         /// 机构名
         /// </summary>
