@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace Educational.Organization
 { 
-    public class OrganizationTreepageDto : FullAuditedAggregateRoot<Guid>
+    public class OrganizationTreepageDto  
     {
+        public Guid Id { get; set; }
         /// <summary>
         /// 机构名
         /// </summary>

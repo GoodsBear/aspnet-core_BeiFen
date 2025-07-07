@@ -141,9 +141,7 @@ namespace Educational.Organization
                                Email=   org.Email,
                                SortOrder=org.SortOrder,
                                IsActive=org.IsActive,
-                               Description=org.Description,
-                               DeleterId=org.DeleterId,
-                               DeletionTime=org.DeletionTime
+                               Description=org.Description 
                            };
                 //按照权重进行排序
                 linq = linq.OrderByDescending(x=>x.SortOrder);

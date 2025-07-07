@@ -18,7 +18,7 @@ namespace Educational.SpecialSubject
        /// </summary>
        /// <param name="id"></param>
        /// <returns></returns>
-        Task<ApiResult<SpecialSubjectModel>> GetAsync(Guid id);
+        Task<ApiResult<SpecialSubjectDto>> GetAsync(Guid id);//保留这个
         /// <summary>
         /// 通过表单查询
         /// </summary>

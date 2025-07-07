@@ -9,8 +9,9 @@ using Volo.Abp.Application.Dtos;
 
 namespace Educational.Organization
 {
-    public class CreateUpdateOrganizationDto : AuditedEntityDto<Guid>
+    public class CreateUpdateOrganizationDto 
     { 
+        public Guid Id { get; set; }
         /// <summary>
         /// »ú¹¹Ãû
         /// </summary>

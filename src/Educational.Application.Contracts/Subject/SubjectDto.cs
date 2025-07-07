@@ -9,9 +9,9 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.Subject
 {
-    public class SubjectDto : FullAuditedAggregateRoot<Guid>
+    public class SubjectDto 
     { 
-
+            public Guid Id { get; set; }
             /// <summary>
             /// 科目名称（如“数学”“英语”）
             /// </summary>

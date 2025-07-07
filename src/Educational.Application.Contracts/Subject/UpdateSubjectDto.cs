@@ -13,8 +13,7 @@ namespace Educational.Subject
     /// 修改添加Subject
     /// </summary>
     public class UpdateSubjectDto
-    { 
-
+    {  
             /// <summary>
             /// 科目名称（如“数学”“英语”）
             /// </summary>

@@ -5,8 +5,9 @@ using Volo.Abp.Application.Dtos;
 
 namespace Educational.Organization
 {
-    public class LevelDto:FullAuditedEntityDto<Guid>
+    public class LevelDto 
     {
+        public Guid Id { get; set; }
         /// <summary>
         /// 机构级别
         /// </summary>

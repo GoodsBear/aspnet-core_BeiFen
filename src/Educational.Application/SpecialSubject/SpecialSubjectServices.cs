@@ -142,17 +142,17 @@ namespace Educational.SpecialSubject
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ApiResult<SpecialSubjectModel>> GetAsync(Guid id)
+        public async Task<ApiResult<SpecialSubjectDto>> GetAsync(Guid id)
         {
             try
             {
                 var course = await _specialSubjectRepository.FirstOrDefaultAsync(x => x.Id == id);
-                return ApiResult<SpecialSubjectModel>.Success(ResultCode.Ok, course);
+                var result = ObjectMapper.Map<SpecialSubjectModel, SpecialSubjectDto>(course); return ApiResult<SpecialSubjectDto>.Success(ResultCode.Ok, result);
             }
             catch (Exception ex)
             {
                 logger.LogError("反填---专题失败" + ex);
-                return ApiResult<SpecialSubjectModel>.Fail(ResultCode.Fail, $"反填---专题异常: {ex.Message}");
+                return ApiResult<SpecialSubjectDto>.Fail(ResultCode.Fail, $"反填---专题异常: {ex.Message}");
             }
         }
         /// <summary>
