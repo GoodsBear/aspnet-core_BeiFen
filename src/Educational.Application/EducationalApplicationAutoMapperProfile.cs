@@ -15,14 +15,17 @@ using Educational.Dto.Grades;
 using Educational.Dto.MaterialDtos;
 using Educational.Dto.Positions;
 using Educational.Materials;
+using Educational.Menu;
+using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
-using Educational.SalarySetting;
 using Educational.RolePerssions;
+using Educational.SalarySetting;
 using Educational.SpecialSubject;
 using Educational.Staffs;
+using Educational.Staffs.SalarySetting;
 using Educational.StaffTypes;
 using Educational.StafRoles;
 using Educational.Subject;
@@ -31,9 +34,13 @@ using Educational.StudentsAndParents.Students;
 using Educational.Dto.MaterialRecordsDtos;
 using Educational.StudentsAndParents.StudentFollow;
 using Educational.StudentsAndParends.Students.Follow;
-using Educational.StudentsAndParents.Stores;
 using Educational.StudentsAndParends.Students.Store;
+using Educational.StudentsAndParents.Stores;
+using Educational.StudentsAndParents.StudentFollow;
+using Educational.StudentsAndParents.Students;
 using Educational.StudentsAndParents.StudentStore;
+using Educational.StudentsAndParends.Students;
+using Educational.Subject;
 
 namespace Educational;
 
@@ -127,6 +134,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
 		//物料
 		CreateMap<Material, MaterialDto>().ReverseMap();
 		CreateMap<CreateUpdateMaterialDto,Material>().ReverseMap();
+        CreateMap<Material, MaterialSelectDto>().ReverseMap();
         //出入库
         CreateMap<MaterialRecords, MaterialRecordsDto>().ReverseMap();
         CreateMap<CreateUpdateMaterialRecordsDto, MaterialRecords>().ReverseMap();
@@ -138,7 +146,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         //学员
         CreateMap<CreateUpdateStudentDto, Educational.StudentsAndParends.Students.Student>().ReverseMap();
         CreateMap<Educational.StudentsAndParends.Students.Student, StudentsDto>().ReverseMap();
-
+        CreateMap<Student, StudentSelectDto>().ReverseMap();
         //学员跟进
         CreateMap<CreateUpdateFollowDto,Follow>().ReverseMap();
         CreateMap<Follow, FollowDto>();
@@ -149,5 +157,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<Store, StoreDto>();
         CreateMap<MeddleStoreDto, StudentStoreRelation>().ReverseMap();
 
+        //薪资
+        CreateMap<SalarySettingModel, SalarySettingDto>().ReverseMap();
+       
     }
 } 

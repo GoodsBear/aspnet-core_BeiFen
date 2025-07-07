@@ -614,8 +614,9 @@ namespace Educational.Migrations
                     b.Property<int>("LessonNum")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<string>("SellUnit")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ServiceRemark")
                         .IsRequired()
@@ -844,6 +845,11 @@ namespace Educational.Migrations
                     b.Property<int>("MaterialTypeId")
                         .HasColumnType("int");
 
+                    b.Property<string>("MterialDescription")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
                     b.Property<Guid>("SchoolId")
                         .HasColumnType("char(36)");
 
@@ -862,6 +868,9 @@ namespace Educational.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("ChangeDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("ChangeSum")
                         .HasColumnType("int");

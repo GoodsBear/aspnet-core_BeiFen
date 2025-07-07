@@ -13,7 +13,7 @@ namespace Educational.Materials
 	public interface IMaterialService: IApplicationService
 	{
 		// 新增物料
-		Task<ApiResult<MaterialDto>> CreateMaterialAsync(MaterialDto input);
+		Task<ApiResult<MaterialDto>> CreateMaterialAsync(CreateUpdateMaterialDto input);
 
 
 		// 分页查询
@@ -21,10 +21,12 @@ namespace Educational.Materials
 
 		// 更新状态
 		Task<ApiResult> UpdataStatus(List<Guid> ids,bool status);
-		//更新
-        Task<ApiResult<MaterialDto>> UpdateMaterialAsync(Guid id, CreateUpdateMaterialDto  input);
-
-
-	}
+		// 批量删除
+		Task<ApiResult> BatchDelete(List<Guid> ids);
+        // 物料修改
+        Task<ApiResult<MaterialDto>> UpdateMaterial(Guid id, CreateUpdateMaterialDto createPositionDto);
+		// 获取物料下拉框
+		Task<ApiResult<List<MaterialSelectDto>>> GetMaterialAsync();
+    }
 }
 

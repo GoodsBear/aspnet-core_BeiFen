@@ -14,9 +14,7 @@ namespace Educational.Materials
 		桌椅,
 		娱乐设施,
 		电脑耗材,
-		运动器材,
-		学习用品,
-		其他
+		学习用品
 		
 	}
 }

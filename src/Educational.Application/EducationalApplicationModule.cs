@@ -13,16 +13,21 @@ namespace Educational;
     typeof(EducationalApplicationContractsModule),
     typeof(AbpSettingManagementApplicationModule),
     typeof(EducationalDomainSharedModule),
-    typeof(AbpSwashbuckleModule)
-    )]
-[DependsOn(typeof(AbpSwashbuckleModule))]
-    public class EducationalApplicationModule : AbpModule
+    typeof(AbpSwashbuckleModule),
+    typeof(AbpAutoMapperModule),
+    (typeof(AbpSwashbuckleModule))
+    )] 
+ public class EducationalApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         Configure<AbpAutoMapperOptions>(options =>
         {
-            options.AddMaps<EducationalApplicationModule>();
+            options.AddMaps<EducationalApplicationModule>(validate: false); // 临时关闭验证
         });
+        //Configure<AbpAutoMapperOptions>(options =>
+        //{
+        //    options.AddMaps<EducationalApplicationModule>();
+        //});
     }
 }

@@ -35,11 +35,15 @@ namespace Educational.Materials
 		[RegularExpression(@"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
 			ErrorMessage = "员工ID格式不正确")]
 		public Guid StaffId { get; set; }
-
-		/// <summary>
-		/// 涉及学生ID（可选）
-		/// </summary>
-		[RegularExpression(@"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        /// <summary>
+        /// 变动时间
+        /// </summary>
+        [Required(ErrorMessage = "必须填写变动时间")]
+        public DateTime ChangeDate { get; set; }
+        /// <summary>
+        /// 涉及学生ID（可选）
+        /// </summary>
+        [RegularExpression(@"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
 			ErrorMessage = "学生ID格式不正确")]
 		public Guid? StudentId { get; set; }
 
@@ -56,6 +60,7 @@ namespace Educational.Materials
 		[Required(ErrorMessage = "必须填写变动原因")]
 		[StringLength(500, MinimumLength = 5, ErrorMessage = "原因需在5-500个字符之间")]
 		public string Reason { get; set; }
+	
 	}
 	public class NotZeroAttribute : ValidationAttribute
 	{

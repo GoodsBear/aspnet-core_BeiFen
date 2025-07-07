@@ -28,5 +28,13 @@ namespace Educational.Dto.MaterialRecordsDtos
 		/// 变动类型
 		/// </summary>
         public ChangeEnum? ChangeType { get; set; }
-	}
+        /// <summary>
+        /// 开始时间
+        /// </summary>
+        public string? startTime { get; set; }
+        /// <summary>
+        /// 结束时间
+        /// </summary>
+        public string? endTime { get; set; }
+    }
 }

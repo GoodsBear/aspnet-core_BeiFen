@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Educational.SalarySetting
+namespace Educational.Staffs.SalarySetting
 {
     public class SalarySeachDto:Seach
     {
-        public Guid? OrganizationId { get; set; }
-
+        /// <summary>
+        /// 组织机构Id
+        /// </summary>
+        public Guid? OrganizationId {  get; set; }
     }
 }
