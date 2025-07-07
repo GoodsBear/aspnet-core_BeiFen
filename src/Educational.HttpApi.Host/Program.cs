@@ -49,6 +49,8 @@ public class Program
            
             var app = builder.Build();
 
+            app.UseCors(a=>a.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
             await app.InitializeApplicationAsync();
             await app.RunAsync();
 

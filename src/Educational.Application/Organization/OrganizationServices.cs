@@ -28,6 +28,35 @@ namespace Educational.Organization
             _organizationLevelRepository = organizationLevelRepository;
             this.logger = logger;
         }
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="ids">批删数组</param>
+        /// <returns>返回受影响行数</returns>
+        [HttpDelete]
+        public async Task<ApiResult> BatchDelete(List<Guid> ids)
+        {
+            try
+            {
+                foreach (var item in ids)
+                {
+                    var organization = await _organizationRepository.GetAsync(item);
+                    if (organization == null)
+                    {
+                        return ApiResult.Fail(ResultCode.Fail, "组织不存在！");
+                    }
+                    await _organizationRepository.DeleteAsync(organization);
+
+                }
+                return ApiResult.Success(ResultCode.Ok);
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("组织批量删除出错！" + ex.Message);
+                throw;
+            }
+        }
 
         /// <summary>
         /// 创建组织机构
@@ -367,6 +396,59 @@ namespace Educational.Organization
             return ApiResult<List<OrganizationTreeDto>>.Success(ResultCode.Ok, tree);
         }
 
+
+
+        /// <summary>
+        /// 获取机构树
+        /// </summary>
+        /// <returns></returns>
+		public async Task<ApiResult<List<SysOreanzationDto>>> GetOrganzationTree()
+		{
+            try
+            {
+                //获取所有机构
+                var organzation=await _organizationRepository.GetListAsync();
+                //实体转Dto
+                var dtolist=organzation.Select(a=>new SysOreanzationDto
+                {
+                    Id=a.Id,
+                    Name=a.Name,
+                    LevelId=a.LevelId,
+                    PartentedId=a.PartentedId,
+                    ShortName=a.ShortName,
+                    ContactPerson=a.ContactPerson,
+                    Phone=a.Phone,
+                    Fax=a.Fax,
+                    Email=a.Email,
+                    SortOrder=a.SortOrder,
+                    IsActive=a.IsActive,
+                    Description=a.Description,
+                    Children=new List<SysOreanzationDto>()
+                }).ToList();
+
+                var dtoOrganzation = dtolist.ToDictionary(x => x.Id, x => x);
+                //构建树形结构
+                List<SysOreanzationDto> roots = new();
+                foreach (var item in dtolist)
+                {
+                    if (item.Id == Guid.Empty || !dtoOrganzation.ContainsKey(item.PartentedId))
+                    {
+                        roots.Add(item);
+                    }
+                    else
+                    {
+                        dtoOrganzation[item.PartentedId].Children.Add(item);
+                    }
+                }
+                return new ApiResult<List<SysOreanzationDto>>(true, ResultCode.Ok, "成功", roots);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+		}
+
         private OrganizationTreeDto MapToTreeNode(OrganizationModel entity)
         {
             return new OrganizationTreeDto
@@ -389,4 +471,5 @@ namespace Educational.Organization
             }).ToList();
         }
     }
+
 }

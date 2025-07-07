@@ -36,13 +36,13 @@ namespace Educational.StudentsAndParends.Parents
 		/// 关联学生
 		/// </summary>
 		[MaxLength(10000)]
-		public List<Guid> Studentlist { get; set; }
+		public List<Guid>? Studentlist { get; set; }
 		/// <summary>
 		/// 微信昵称
 		/// </summary>
 		[Required(ErrorMessage = "微信昵称不能为空")]
 		[MaxLength(20)]
-		public string NickName { get; set; }
+		public string? NickName { get; set; }
 		/// <summary>
 		/// 登录次数
 		/// </summary>

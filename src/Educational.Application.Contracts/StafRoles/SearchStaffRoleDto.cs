@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Educational.SalarySetting
+namespace Educational.StafRoles
 {
-    public class SalarySeachDto:Seach
+    public class SearchStaffRoleDto : Seach
     {
-        public Guid? OrganizationId { get; set; }
-
+        public Guid RoleId { get; set; }
     }
 }

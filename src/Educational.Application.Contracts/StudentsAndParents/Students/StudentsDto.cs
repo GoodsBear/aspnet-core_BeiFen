@@ -66,11 +66,11 @@ namespace Educational.StudentsAndParents.Students
         /// <summary>
         /// 顾问
         /// </summary>
-        public Guid Consultant { get; set; }
+        public Guid? Consultant { get; set; }
         /// <summary>
         /// 课时数
         /// </summary>
-        public int LessonNums { get; set; }
+        public int? LessonNums { get; set; }
         /// </summary>
         /// <summary>
         /// 年龄
