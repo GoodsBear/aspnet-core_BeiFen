@@ -83,7 +83,7 @@ namespace Educational.Organization
         /// </summary>
         [Required]
         [Display(Name = "×´Ì¬")]
-        public SwitchEnum IsActive { get; set; } = SwitchEnum.ÆôÓÃ;
+        public SwitchEnum IsActive { get; set; }=0;
 
         /// <summary>
         /// ËµÃ÷

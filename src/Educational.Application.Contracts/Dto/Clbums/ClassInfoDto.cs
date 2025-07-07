@@ -67,6 +67,6 @@ namespace Educational.Dto.Clbums
         /// <summary>
         /// 班级状态
         /// </summary>
-        public LessonStateEnum ClassStatus { get; set; } = LessonStateEnum.未排课;
+        public LessonStateEnum ClassStatus { get; set; } = 0;
     }
 }

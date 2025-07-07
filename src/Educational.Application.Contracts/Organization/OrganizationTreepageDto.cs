@@ -1,5 +1,4 @@
-﻿using Abp.Domain.Entities.Auditing;
-using Educational.Enmu;
+﻿using Educational.Enmu;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -60,7 +59,7 @@ namespace Educational.Organization
         /// <summary>
         /// 状态
         /// </summary>
-        public SwitchEnum IsActive { get; set; } = SwitchEnum.启用;
+        public SwitchEnum IsActive { get; set; } = 0;
 
         /// <summary>
         /// 说明

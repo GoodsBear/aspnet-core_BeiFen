@@ -71,6 +71,6 @@ namespace Educational.Dto.Clbums
         /// </summary>
         [Required(ErrorMessage = "班级状态不能为空")]
         [Range(0, 10000, ErrorMessage = "班级状态不能小于0或大于10000")]
-        public LessonStateEnum ClassStatus { get; set; } = LessonStateEnum.未排课;
+        public LessonStateEnum ClassStatus { get; set; } =0;
     }
 }
