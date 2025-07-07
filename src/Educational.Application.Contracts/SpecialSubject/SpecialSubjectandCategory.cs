@@ -39,5 +39,7 @@ namespace Educational.SpecialSubject
 
         [Column(TypeName = "text")]
         public string? AchievementDisplay { get; set; } // 教学成果展示（富文本HTML内容）
+        public DateTime CreationTime { get; set; }//创建时间
+        public DateTime? LastModificationTime { get; set; }//修改时间
     }
 }

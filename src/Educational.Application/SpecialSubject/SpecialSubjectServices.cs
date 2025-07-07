@@ -67,7 +67,7 @@ namespace Educational.SpecialSubject
                     return ApiResult<SpecialSubjectDto>.Fail(ResultCode.Fail, "专题名已存在");
                 }
                 //创建专题
-                var organization = ObjectMapper.Map<UpdateSpecialSubjectDto, SpecialSubjectModel>(input);
+                var organization = ObjectMapper.Map<UpdateSpecialSubjectDto, SpecialSubjectModel>(input); 
                 //插入数据库
                 var organizationDto = await _specialSubjectRepository.InsertAsync(organization);
                 //映射
@@ -160,16 +160,16 @@ namespace Educational.SpecialSubject
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<ApiResult<List<CategoryModelDto>>> GetCategoryAsync()
+        public async Task<ApiResult<List<XiAsepecialSubjectDto>>> GetCategoryAsync()
         {
             try
             {
                 // 正确获取可查询接口
                 var queryable = await _categoryRepository.GetListAsync();
                 // 正确映射集合类型
-                var results = ObjectMapper.Map<List<CategoryModel>, List<CategoryModelDto>>(queryable);
+                var results = ObjectMapper.Map<List<CategoryModel>, List<XiAsepecialSubjectDto>>(queryable);
                 //  返回成功结果
-                return ApiResult<List<CategoryModelDto>>.Success(ResultCode.Ok, results);
+                return ApiResult<List<XiAsepecialSubjectDto>>.Success(ResultCode.Ok, results);
             }
             catch (Exception ex)
             {
@@ -216,8 +216,10 @@ namespace Educational.SpecialSubject
                                Teacher=org.Teacher,
                                Brief=org.Brief,
                                Details=org.Details,
-                               AchievementDisplay=org.AchievementDisplay
-                           };
+                               AchievementDisplay=org.AchievementDisplay,
+                               CreationTime=org.CreationTime,
+                               LastModificationTime = org.LastModificationTime
+                           }; 
                 // 使用ABP自带分页方法 
                 var page = existingSub.PageResult(search.PageIndex, search.PageSize);
                 // 映射

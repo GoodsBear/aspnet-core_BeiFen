@@ -44,7 +44,9 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
+        //专题
         
+        CreateMap<CategoryModel, XiAsepecialSubjectDto>().ReverseMap();
         //薪资
         CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
         //排课  

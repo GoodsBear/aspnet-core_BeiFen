@@ -40,7 +40,7 @@ namespace Educational.Organization
         public int SortOrder { get; set; } = 1;
 
        
-        public SwitchEnum IsActive { get; set; } = SwitchEnum.����;
+        public SwitchEnum IsActive { get; set; } = SwitchEnum.启用;
 
         
         public string? Description { get; set; }

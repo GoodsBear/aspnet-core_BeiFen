@@ -44,7 +44,7 @@ namespace Educational.SpecialSubject
         /// <summary>
         /// 级别下拉表
         /// </summary> 
-        Task<ApiResult<List<CategoryModelDto>>> GetCategoryAsync();
+        Task<ApiResult<List<XiAsepecialSubjectDto>>> GetCategoryAsync();
         /// <summary>
         /// 级别添加
         /// </summary>  
