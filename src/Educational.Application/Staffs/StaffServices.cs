@@ -49,11 +49,8 @@ namespace Educational.Staffs
         private readonly IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository;
         ILogger<StaffServices> logger;
         private readonly ICaptcha captcha;
-        
-        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository,
-            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Educational.RBAC.Permissions, Guid> permissionrepository,IRepository<Educational.Menu.Menu,Guid> menuRepository)
-            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Educational.RBAC.Permissions, Guid> permissionrepository,
-            IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository)
+
+        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository, IRepository<SalarySettingModel, Guid> salarySettingRepository, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Permissions, Guid> permissionrepository, IRepository<Menu.Menu, Guid> menuRepository, IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository, ILogger<StaffServices> logger, ICaptcha captcha)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
@@ -62,14 +59,16 @@ namespace Educational.Staffs
             this.typeRep = typeRep;
             this.organizationRepository = organizationRepository;
             this.salarySettingRepository = salarySettingRepository;
-            this.logger = logger;
-            this.captcha = captcha;
             this.staffrolerepository = staffrolerepository;
             this.rolepermissionrepository = rolepermissionrepository;
             this.permissionrepository = permissionrepository;
             this.menuRepository = menuRepository;
             this.classHourFeeSettingRepository = classHourFeeSettingRepository;
+            this.logger = logger;
+            this.captcha = captcha;
         }
+
+
         /// <summary>
         /// 获取成员列表下拉框
         /// </summary>
