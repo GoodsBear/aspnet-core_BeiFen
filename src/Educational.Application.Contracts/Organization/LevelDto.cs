@@ -77,7 +77,7 @@ namespace Educational.Organization
         /// </summary>
         [Required]
         [Display(Name = "状态")]
-        public SwitchEnum IsActive { get; set; } = SwitchEnum.启用;
+        public SwitchEnum IsActive { get; set; } = 0;
         /// <summary>
         /// 说明
         /// </summary>

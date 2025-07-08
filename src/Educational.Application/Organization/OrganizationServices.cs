@@ -326,7 +326,7 @@ namespace Educational.Organization
         private void BuildTree2(OrganizationTreepageDto dto, ILookup<Guid?, OrganizationModel> lookup)
         {
             var children = lookup[dto.Id].OrderBy(x => x.SortOrder).ToList();
-            dto.Chlidren = children.Select(entity =>
+            dto.Children = children.Select(entity =>
             {
                 var childDto = ObjectMapper.Map<OrganizationModel, OrganizationTreepageDto>(entity);
                 BuildTree2(childDto,lookup); // 递归调用
@@ -336,7 +336,7 @@ namespace Educational.Organization
         private OrganizationTreepageDto MapToTreeDto2(OrganizationModel entity)
         {
             var dto = ObjectMapper.Map<OrganizationModel, OrganizationTreepageDto>(entity);
-            dto.Chlidren = new List<OrganizationTreepageDto>(); // 初始化
+            dto.Children = new List<OrganizationTreepageDto>(); // 初始化
             return dto;
         }
 
