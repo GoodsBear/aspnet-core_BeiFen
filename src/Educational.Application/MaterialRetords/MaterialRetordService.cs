@@ -76,7 +76,7 @@ namespace Educational.MaterialRetords
 			{
 				item.MaterialName = material.Where(x => x.Id == item.MaterialId).ToList().FirstOrDefault().MaterialName;
 				item.StaffName = staffinfo.Where(x => x.Id == item.StaffId).ToList().FirstOrDefault().StaffName;
-				item.StudentName = student.Where(x => x.Id == item.StudentId).ToList().FirstOrDefault().Name;
+				//item.StudentName = student.Where(x => x.Id == item.StudentId).ToList().FirstOrDefault().Name;
 				item.ChangeTypeName = Enum.GetName(typeof(ChangeEnum), item.ChangeType);
 
             }

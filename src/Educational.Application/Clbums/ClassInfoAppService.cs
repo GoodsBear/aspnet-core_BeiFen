@@ -24,14 +24,14 @@ namespace Educational.Clbums
     public class ClassInfoAppService : ApplicationService, IClassInfoAppService
     {
         IRepository<ClassInfo, Guid> classinfoRep;
-        IRepository<ClassRoom, Guid> classRoomRep;
+        IRepository<Educational.Classgrade.ClassRoom, Guid> classRoomRep;
         IRepository<Grade, Guid> gradeRep;
         IRepository<StaffInfo, Guid> stafffoRep;
         IRepository<OrganizationModel, Guid> organizationRep;
         IRepository<Course, Guid> courseRep;
         ILogger<ClassInfoAppService> logger;
 
-        public ClassInfoAppService(IRepository<ClassInfo, Guid> classinfoRep, IRepository<ClassRoom, Guid> classRoomRep, IRepository<Grade, Guid> gradeRep, IRepository<StaffInfo, Guid> stafffoRep, IRepository<OrganizationModel, Guid> organizationRep, IRepository<Course, Guid> courseRep, ILogger<ClassInfoAppService> logger)
+        public ClassInfoAppService(IRepository<ClassInfo, Guid> classinfoRep, IRepository<Educational.Classgrade.ClassRoom, Guid> classRoomRep, IRepository<Grade, Guid> gradeRep, IRepository<StaffInfo, Guid> stafffoRep, IRepository<OrganizationModel, Guid> organizationRep, IRepository<Course, Guid> courseRep, ILogger<ClassInfoAppService> logger)
         {
             this.classinfoRep = classinfoRep;
             this.classRoomRep = classRoomRep;
