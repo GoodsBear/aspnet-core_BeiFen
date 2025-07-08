@@ -10,6 +10,7 @@ namespace Educational.Organization
 {
     public class OrganizationLevelDto
     {
+        public Guid Id { get; set; }
         /// <summary>
         /// 机构级别
         /// </summary> 

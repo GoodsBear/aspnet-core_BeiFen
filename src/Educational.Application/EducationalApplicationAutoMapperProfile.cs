@@ -7,6 +7,7 @@ using Educational.Classgrade;
 using Educational.ClassSchedule;
 using Educational.ClassSchedule.DTO;
 using Educational.ClassSchedule.Update;
+using Educational.Courses;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
 using Educational.Dto.ClassRooms;
@@ -15,6 +16,7 @@ using Educational.Dto.Grades;
 using Educational.Dto.MaterialDtos;
 using Educational.Dto.Positions;
 using Educational.Materials;
+using Educational.Menu;
 using Educational.Menu;
 using Educational.Organization;
 using Educational.Positions;
@@ -37,9 +39,12 @@ using Educational.StudentsAndParends.Students.Follow;
 using Educational.StudentsAndParends.Students.Store;
 using Educational.StudentsAndParents.Stores;
 using Educational.StudentsAndParents.StudentFollow;
+using Educational.StudentsAndParents.StudentFollow;
+using Educational.StudentsAndParents.Students;
 using Educational.StudentsAndParents.Students;
 using Educational.StudentsAndParents.StudentStore;
 using Educational.StudentsAndParends.Students;
+using Educational.Subject;
 using Educational.Subject;
 
 namespace Educational;
@@ -48,6 +53,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
+        //专题
+        CreateMap<CategoryModel, XiAsepecialSubjectDto>().ReverseMap();
         //薪资
         CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
         //排课  

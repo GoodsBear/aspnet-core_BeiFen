@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Educational.Organization
 { 
-    public class OrganizationTreepageDto
+    public class OrganizationTreepageDto  
     {
         public Guid Id { get; set; }
         /// <summary>
