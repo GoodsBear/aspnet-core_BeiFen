@@ -19,14 +19,16 @@ namespace Educational.ClassRooms
     [ApiExplorerSettings(GroupName = "教室")]
     public class ClassRoomAppService : ApplicationService, IClassRoomAppService
     {
-        IRepository<ClassRoom, Guid> classRoomRep;
+        IRepository<Educational.Classgrade.ClassRoom, Guid> classRoomRep;
         ILogger<ClassRoomAppService> logger;
 
-        public ClassRoomAppService(IRepository<ClassRoom, Guid> classRoomRep, ILogger<ClassRoomAppService> logger)
+        public ClassRoomAppService(IRepository<Educational.Classgrade.ClassRoom, Guid> classRoomRep, ILogger<ClassRoomAppService> logger)
         {
             this.classRoomRep = classRoomRep;
             this.logger = logger;
         }
+
+
         /// <summary>
         /// 批量删除
         /// </summary>
