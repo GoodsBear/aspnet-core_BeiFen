@@ -2,14 +2,8 @@
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
-using Educational.Shared.Models;
-using Abp.Authorization;
-using Castle.Components.DictionaryAdapter;
-using Educational.Enmu;
-using Educational.Organization;
-using Educational.Positions;
-using Educational.RBAC;
 using Educational.SalarySetting;
+using Educational.Shared.Models;
 using Educational.StaffTypes;
 using Educational.Tools;
 using Lazy.Captcha.Core;
