@@ -2,6 +2,11 @@ using Educational.Enmu;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
+using Educational.Enmu;
+using Educational.Organization;
+using Educational.Positions;
+using Educational.RBAC;
+using Educational.Shared.Models;
 using Educational.SalarySetting;
 using Educational.Shared.Models;
 using Educational.StaffTypes;
@@ -43,8 +48,9 @@ namespace Educational.Staffs
         private readonly IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository;
         ILogger<StaffServices> logger;
         private readonly ICaptcha captcha;
-
-        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository, IRepository<SalarySettingModel, Guid> salarySettingRepository, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Permissions, Guid> permissionrepository, IRepository<Menu.Menu, Guid> menuRepository, IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository, ILogger<StaffServices> logger, ICaptcha captcha)
+        
+        public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository,
+            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Educational.RBAC.Permissions, Guid> permissionrepository, IRepository<Educational.Menu.Menu, Guid> menuRepository)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
@@ -680,7 +686,6 @@ namespace Educational.Staffs
             // 定义菜单类型的常量或枚举，请根据您的实际定义进行调整
             const int MenuType_Directory = 1; // 假设 1 代表目录
             const int MenuType_MenuItem = 2;  // 假设 2 代表菜单项
-                                              // const int MenuType_Button = 3; // 如果有按钮类型，可能不在此处处理
 
             // 1. 获取当前层级的所有菜单项，并按 MenuSort 排序
             var currentLevelMenus = allMenus

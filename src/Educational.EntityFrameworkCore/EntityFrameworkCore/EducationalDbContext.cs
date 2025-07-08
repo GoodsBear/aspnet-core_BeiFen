@@ -65,7 +65,8 @@ public class EducationalDbContext :
     public DbSet<Store>Store { get; set; } //学生积分变动记录表
     public DbSet<StudentStoreRelation> StudentStoreRelations { get; set; } //学生积分变动记录表中间表
     public DbSet<Parent> Parent { get; set; }//家长
-    public DbSet<ClassInfo> Class { get; set; }  //班级
+    public DbSet<ClassInfo> ClassInfo { get; set; }  //班级
+    public DbSet<ClassRoom> ClassRoom { get; set; } //教室信息表
     public DbSet<Grade> Grade { get; set; }   //年级
     public DbSet<Course> Course { get; set; } //课程信息表
 
