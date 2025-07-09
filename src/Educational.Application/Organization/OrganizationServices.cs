@@ -80,6 +80,7 @@ namespace Educational.Organization
                 var organizationDto = await _organizationRepository.InsertAsync(organization);
                 //映射
                 var result = ObjectMapper.Map<OrganizationModel,OrganizationDto>(organizationDto);
+                result.LevelName = (await _organizationLevelRepository.FirstOrDefaultAsync(x => x.Id == organizationDto.LevelId)).Name;
                 //返回
                 return ApiResult<OrganizationDto>.Success(ResultCode.Ok, result); 
             }
@@ -135,6 +136,7 @@ namespace Educational.Organization
                 }
 
                 var result = ObjectMapper.Map<OrganizationModel, OrganizationDto>(organization);
+                result.LevelName = (await _organizationLevelRepository.FirstOrDefaultAsync(x => x.Id == organization.LevelId)).Name;
                 return ApiResult<OrganizationDto>.Success(ResultCode.Ok, result);
             }
             catch (Exception ex)
@@ -202,7 +204,7 @@ namespace Educational.Organization
 		/// <param name="id">组织机构ID</param>
 		/// <param name="input">更新信息</param>
 		/// <returns>更新结果</returns>
-		public async Task<ApiResult<OrganizationDto>> UpdateAsync(Guid id, OrganizationDto input)
+		public async Task<ApiResult<OrganizationDto>> UpdateAsync(Guid id, CreateUpdateOrganizationDto input)
         {
             try
             {
@@ -248,6 +250,7 @@ namespace Educational.Organization
                 await _organizationRepository.UpdateAsync(organization);
                 // 返回更新后的组织机构信息
                 var result = ObjectMapper.Map<OrganizationModel, OrganizationDto>(organization);
+                result.LevelName = (await _organizationLevelRepository.FirstOrDefaultAsync(x => x.Id == organization.LevelId)).Name;
                 return ApiResult<OrganizationDto>.Success(ResultCode.Ok, result);
             }
             catch (Exception ex)
@@ -519,44 +522,6 @@ namespace Educational.Organization
 
                 return childDto;
             }).ToList();  // 立即执行（避免延迟执行导致多次查询）
-        }
-
-
-
-        /// <summary>
-        /// 更新组织状态（启用/禁用）
-        /// </summary>
-        /// <param name="Id">组织ID</param>
-        /// <param name="state">目标状态（SwitchEnum枚举：On/Off）</param>
-        /// <returns>返回操作结果ApiResult</returns>
-        public async Task<ApiResult> UpdateOrganzationState(Guid Id, [FromQuery]SwitchEnum state)
-        {
-            try
-            {
-                // 1. 根据ID查询组织实体
-                var organzation = await _organizationRepository.FirstOrDefaultAsync(x => x.Id == Id);
-
-                // 2. 验证实体是否存在（建议添加）
-                if (organzation == null)
-                {
-                    return ApiResult.Fail(ResultCode.Fail, "指定组织不存在");
-                }
-
-                // 3. 更新状态字段
-                organzation.IsActive = state;
-
-                // 4. 执行数据库更新
-                await _organizationRepository.UpdateAsync(organzation);
-
-                // 5. 返回成功响应
-                return ApiResult.Success(ResultCode.Ok);
-            }
-            catch (Exception ex)
-            {
-                // 6. 异常处理（当前直接抛出，建议记录日志）
-                // _logger.LogError(ex, "更新组织状态失败，ID：{Id}", Id);
-                throw; // 重新抛出原始异常（保持堆栈跟踪）
-            }
         }
     }
 
