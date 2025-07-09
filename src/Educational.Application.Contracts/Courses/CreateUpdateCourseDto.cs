@@ -75,7 +75,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 适用年级
 		/// </summary>
-		public Guid? GradeId { get; set; }
+		public Guid? GratorId { get; set; }
 		/// <summary>
 		/// 状态
 		/// </summary>
@@ -111,7 +111,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 详情介绍图集
 		/// </summary>
-		public string DetailImageList { get; set; }
+		public string? DetailImageList { get; set; }
 		/// <summary>
 		/// 师资说明
 		/// </summary>

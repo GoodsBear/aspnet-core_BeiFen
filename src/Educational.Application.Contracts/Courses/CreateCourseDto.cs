@@ -29,7 +29,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 适用年级
 		/// </summary>
-        public Guid GradeId { get; set; }
+        public Guid GratorId { get; set; }
 		///出售单位
         public string SellUnit { get; set; }
 
