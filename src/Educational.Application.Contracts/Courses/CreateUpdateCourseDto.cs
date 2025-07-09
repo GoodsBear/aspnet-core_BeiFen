@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 namespace Educational.Courses
 {
 	/// <summary>
-	/// 创建/修改课程de Dto
+	/// 创建/修改课程的 Dto
 	/// </summary>
 	public class CreateUpdateCourseDto
 	{
+		/// <summary>
+		/// 课程Id
+		/// </summary>
+		public Guid Id { get; set; }
 		/// <summary>
 		/// 课程名称
 		/// </summary>

@@ -181,6 +181,31 @@ namespace Educational.Courses
             }
         }
 
-
-    }
+		/// <summary>
+		/// 修改课程信息
+		/// </summary>
+		/// <param name="coursedto"></param>
+		/// <returns></returns>
+        [HttpPut("UpdateCourse")]
+		public async Task<ApiResult<CourseDto>> UpdateCourse(CreateUpdateCourseDto coursedto)
+		{
+			try
+			{
+				var course = await _courseRepository.GetAsync(coursedto.Id);
+				if (course == null)
+				{
+					return ApiResult<CourseDto>.Fail(ResultCode.Fail, "课程不存在，请检查！");
+				}
+				course = ObjectMapper.Map(coursedto, course);
+				var updatedCourse = await _courseRepository.UpdateAsync(course);
+				var result = ObjectMapper.Map<Course, CourseDto>(updatedCourse);
+				return ApiResult<CourseDto>.Success(ResultCode.Ok, result);
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex, "更新课程信息失败");
+				throw;
+			}
+		}
+	}
 }
