@@ -94,8 +94,7 @@ namespace Educational.Grades
             {
                 var list = await gradeRep.GetQueryableAsync();
                 list = list.WhereIf(!string.IsNullOrEmpty(searchDto.GradeName), x => x.GradeName.Contains(searchDto.GradeName));
-                list = list.WhereIf(!string.IsNullOrEmpty(searchDto.EnrollYear), x=>x.EnrollYear > DateTime.Parse(searchDto.EnrollYear));
-                list = list.WhereIf(!string.IsNullOrEmpty(searchDto.EnrollYear), x => x.EnrollYear <= DateTime.Parse(searchDto.EnrollYear));
+                list = list.WhereIf(!string.IsNullOrEmpty(searchDto.EnrollYear), x => x.EnrollYear.HasValue && x.EnrollYear.Value.Year.ToString() == searchDto.EnrollYear);
                 var page = list.PageResult(searchDto.PageIndex, searchDto.PageSize);
                 var gradeDto = ObjectMapper.Map<List<Grade>, List<GradeDto>>(page.Queryable.ToList());
                 var result = new ApiPaging<List<GradeDto>>

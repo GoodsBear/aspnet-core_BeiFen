@@ -47,7 +47,7 @@ namespace Educational.Menu
         /// <summary>
         /// 菜单权限标识
         /// </summary>
-        public string MenuPermission { get; set; }
+        public string MenuPermissionCode { get; set; }
 
         /// <summary>
         /// 菜单状态

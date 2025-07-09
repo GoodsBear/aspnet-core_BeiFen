@@ -14,25 +14,6 @@ namespace Educational.SpecialSubject
     /// </summary>
     public class SpecialSubjectModel : AuditedAggregateRoot<Guid>
     {
-        //// 构造函数
-        //public SpecialSubjectModel()
-        //{
-        //    // 初始化默认值
-        //    Details = string.Empty;
-        //    AchievementDisplay = string.Empty;
-        //}
-
-        //public SpecialSubjectModel(
-        //    string name,
-        //    int categoryId,
-        //    string teacher,
-        //    string brief = "")
-        //{
-        //    Name = name;
-        //    CategoryId = categoryId;
-        //    Teacher = teacher;
-        //    Brief = brief;
-        //}
         [Required]
         [StringLength(128)] 
         public string Name { get; set; } // 专题名称（如"大祥"）

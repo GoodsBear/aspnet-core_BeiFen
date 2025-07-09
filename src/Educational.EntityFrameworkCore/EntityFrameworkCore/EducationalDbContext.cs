@@ -3,6 +3,7 @@ using Educational.Classgrade;
 using Educational.ClassSchedule;
 using Educational.Courses;
 using Educational.Datadictionary;
+using Educational.Menu;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
@@ -64,7 +65,8 @@ public class EducationalDbContext :
     public DbSet<Store>Store { get; set; } //学生积分变动记录表
     public DbSet<StudentStoreRelation> StudentStoreRelations { get; set; } //学生积分变动记录表中间表
     public DbSet<Parent> Parent { get; set; }//家长
-    public DbSet<ClassInfo> Class { get; set; }  //班级
+    public DbSet<ClassInfo> ClassInfo { get; set; }  //班级
+    public DbSet<ClassRoom> ClassRoom { get; set; } //教室信息表
     public DbSet<Grade> Grade { get; set; }   //年级
     public DbSet<Course> Course { get; set; } //课程信息表
 
@@ -96,6 +98,8 @@ public class EducationalDbContext :
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
     public DbSet<StaffRole> StaffRole { get; set; } //员工角色中间表
     public DbSet<Role> Role { get; set; } //角色信息表
+
+    //public DbSet<MenuPermissionsRelation> MenuPermissionsRelation { get; set; } //权限菜单中间表
     public DbSet<Educational.RBAC.Permissions> Permissions { get; set; } //权限信息表
     public DbSet<RolePermission> RolePermision { get; set; } //角色权限中间表
     public DbSet<Announcement> announcements { get; set; } //公告信息表

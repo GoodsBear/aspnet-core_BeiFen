@@ -13,11 +13,15 @@ namespace Educational.Dto.ClassRooms
         /// <summary>
         /// 教室名称
         /// </summary>
-        public string ClassRoomName { get; set; }
+        public string ClassroomName { get; set; }
         /// <summary>
         /// 分校
         /// </summary>
         public Guid OrganizationModelId { get; set; }
+        /// <summary>
+        /// 分校名称
+        /// </summary>
+        public string OrganizatioName { get; set; }
         /// <summary>
         /// 地点
         /// </summary>

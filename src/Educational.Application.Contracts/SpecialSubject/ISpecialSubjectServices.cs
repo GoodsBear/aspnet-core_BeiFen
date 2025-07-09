@@ -18,7 +18,7 @@ namespace Educational.SpecialSubject
        /// </summary>
        /// <param name="id"></param>
        /// <returns></returns>
-        Task<ApiResult<SpecialSubjectModel>> GetAsync(Guid id);
+        Task<ApiResult<SpecialSubjectDto>> GetAsync(Guid id);//保留这个
         /// <summary>
         /// 通过表单查询
         /// </summary>
@@ -30,8 +30,7 @@ namespace Educational.SpecialSubject
         /// </summary>
         /// <param name="input">修改字段</param>
         /// <returns></returns>
-        Task<ApiResult<SpecialSubjectDto>> CreateAsync(UpdateSpecialSubjectDto input);
-
+        Task<ApiResult<SpecialSubjectDto>> CreateAsync(UpdateSpecialSubjectDto input); 
         /// <summary>
         /// 修改字段
         /// </summary>
@@ -45,7 +44,7 @@ namespace Educational.SpecialSubject
         /// <summary>
         /// 级别下拉表
         /// </summary> 
-        Task<ApiResult<List<CategoryModelDto>>> GetCategoryAsync();
+        Task<ApiResult<List<XiAsepecialSubjectDto>>> GetCategoryAsync();
         /// <summary>
         /// 级别添加
         /// </summary>  

@@ -87,13 +87,13 @@ namespace Educational.Courses
 				course= course.Where(x=>x.Status==seach.Status);
 			}
 			//获取科目
-			var subject= ObjectMapper.Map<List<SubjectModel>,List<SubjectDto>>((await subjectRepository.GetQueryableAsync()).ToList());
+			var subject = await subjectRepository.GetQueryableAsync();
 			//获取专题
-            var topic=ObjectMapper.Map<List<SpecialSubjectModel>,List<SpecialSubjectDto>>((await specialRepository.GetQueryableAsync()).ToList());
+            var topic=await specialRepository.GetQueryableAsync();
 			//获取机构
-            var organization=ObjectMapper.Map<List<OrganizationModel>,List<OrganizationDto>>((await organRepository.GetQueryableAsync()).ToList());
+            var organization=await organRepository.GetQueryableAsync();
 			//获取年级
-            var grade=ObjectMapper.Map<List<Grade>,List<GradeDto>>((await gradeRepository.GetQueryableAsync()).ToList());
+            var grade=await gradeRepository.GetQueryableAsync();
 
 			var coursepage= course.Page(seach.PageIndex,seach.PageSize);
 			var courselist=ObjectMapper.Map<List<Course>, List<CourseDto>>(coursepage.ToList());

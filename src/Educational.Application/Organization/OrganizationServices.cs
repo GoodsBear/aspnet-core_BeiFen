@@ -29,35 +29,7 @@ namespace Educational.Organization
             _organizationLevelRepository = organizationLevelRepository;
             this.logger = logger;
         }
-        /// <summary>
-        /// 批量删除
-        /// </summary>
-        /// <param name="ids">批删数组</param>
-        /// <returns>返回受影响行数</returns>
-        [HttpDelete]
-        public async Task<ApiResult> BatchDelete(List<Guid> ids)
-        {
-            try
-            {
-                foreach (var item in ids)
-                {
-                    var organization = await _organizationRepository.GetAsync(item);
-                    if (organization == null)
-                    {
-                        return ApiResult.Fail(ResultCode.Fail, "组织不存在！");
-                    }
-                    await _organizationRepository.DeleteAsync(organization);
-
-                }
-                return ApiResult.Success(ResultCode.Ok);
-
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("组织批量删除出错！" + ex.Message);
-                throw;
-            }
-        }
+        
 
         /// <summary>
         /// 创建组织机构
@@ -88,7 +60,64 @@ namespace Educational.Organization
             {
                 return ApiResult<OrganizationDto>.Fail(ResultCode.Fail, $"创建组织机构失败: {ex.Message}");
             }
-        } 
+        }
+        /// <summary>
+        /// 组织机构级别添加
+        /// </summary> 
+        public async Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto)
+        {
+            try
+            {
+                // 验证机构名是否已存在
+                var existingOrg = await _organizationLevelRepository.FirstOrDefaultAsync(x => x.Name == Dto.Name);
+                if (existingOrg != null)
+                {
+                    return ApiResult<OrganizationLevelDto>.Fail(ResultCode.Fail, "机构名已存在");
+                }
+                //创建机构 
+                var organization = ObjectMapper.Map<CreateUpdateOrganizationLevel, OrganizationLevel>(Dto);
+                //插入数据库
+                var organizationDto = await _organizationLevelRepository.InsertAsync(organization);
+                //映射
+                var result = ObjectMapper.Map<OrganizationLevel, OrganizationLevelDto>(organizationDto);
+                //返回
+                return ApiResult<OrganizationLevelDto>.Success(ResultCode.Ok, result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("组织机构级别add失败" + ex.Message);
+                return ApiResult<OrganizationLevelDto>.Fail(ResultCode.Fail, $"组织机构级别add失败: {ex.Message}");
+            }
+        }
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="ids">批删数组</param>
+        /// <returns>返回受影响行数</returns>
+        [HttpDelete]
+        public async Task<ApiResult> BatchDelete(List<Guid> ids)
+        {
+            try
+            {
+                foreach (var item in ids)
+                {
+                    var organization = await _organizationRepository.GetAsync(item);
+                    if (organization == null)
+                    {
+                        return ApiResult.Fail(ResultCode.Fail, "组织不存在！");
+                    }
+                    await _organizationRepository.DeleteAsync(organization);
+
+                }
+                return ApiResult.Success(ResultCode.Ok);
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("组织批量删除出错！" + ex.Message);
+                throw;
+            }
+        }
         /// <summary>
         /// 删除组织机构
         /// </summary>
@@ -119,7 +148,6 @@ namespace Educational.Organization
                 return ApiResult.Fail(ResultCode.Fail, $"删除组织机构失败: {ex.Message}");
             }
         }
-
         /// <summary>
         /// 根据ID获取组织机构--反填
         /// </summary>
@@ -173,9 +201,7 @@ namespace Educational.Organization
                                Email=   org.Email,
                                SortOrder=org.SortOrder,
                                IsActive=org.IsActive,
-                               Description=org.Description,
-                               DeleterId=org.DeleterId,
-                               DeletionTime=org.DeletionTime
+                               Description=org.Description
                            };
                 //按照权重进行排序
                 linq = linq.OrderByDescending(x=>x.SortOrder);
@@ -347,35 +373,12 @@ namespace Educational.Organization
             return dto;
         }
 
+       
         /// <summary>
-        /// 组织机构级别添加
-        /// </summary> 
-        public async Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto)
-        {
-            try
-            {
-                // 验证机构名是否已存在
-                var existingOrg = await _organizationLevelRepository.FirstOrDefaultAsync(x => x.Name == Dto.Name);
-                if (existingOrg != null)
-                {
-                    return ApiResult<OrganizationLevelDto>.Fail(ResultCode.Fail, "机构名已存在");
-                }
-                //创建机构 
-                var organization = ObjectMapper.Map<CreateUpdateOrganizationLevel, OrganizationLevel>(Dto);
-                //插入数据库
-                var organizationDto = await _organizationLevelRepository.InsertAsync(organization);
-                //映射
-                var result = ObjectMapper.Map<OrganizationLevel, OrganizationLevelDto>(organizationDto);
-                //返回
-                return ApiResult<OrganizationLevelDto>.Success(ResultCode.Ok, result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError("组织机构级别add失败" + ex.Message);
-                return ApiResult<OrganizationLevelDto>.Fail(ResultCode.Fail, $"组织机构级别add失败: {ex.Message}");
-            }
-        }
-
+        /// 机构树形结构
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         public async Task<ApiResult<List<OrganizationTreeDto>>> GetTreeAsync(
             [DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId)
         {

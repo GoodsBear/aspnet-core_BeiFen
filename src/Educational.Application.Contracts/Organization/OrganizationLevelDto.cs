@@ -8,8 +8,9 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.Organization
 {
-    public class OrganizationLevelDto : FullAuditedAggregateRoot<Guid>
+    public class OrganizationLevelDto
     {
+        public Guid Id { get; set; }
         /// <summary>
         /// 机构级别
         /// </summary> 

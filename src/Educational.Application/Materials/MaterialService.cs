@@ -147,13 +147,13 @@ namespace Educational.Materials
 		{
 			try
 			{
-				
 				var material=await _materialRepository.GetAsync(id);
 				Material mater=new Material
 				{
 					 StockSum=material.StockSum+quantity,
 				};
 				var result=await _materialRepository.UpdateAsync(mater);
+
                 return ApiResult<CreateUpdateMaterialDto>.Success(ResultCode.Ok, ObjectMapper.Map<Material, CreateUpdateMaterialDto>(result));
 			}
 			catch (Exception ex)
@@ -180,6 +180,7 @@ namespace Educational.Materials
 					 StockSum=material.StockSum-quantity,
 				};
                 var result=await _materialRepository.UpdateAsync(mater);
+
                 return ApiResult<CreateUpdateMaterialDto>.Success(ResultCode.Ok, ObjectMapper.Map<Material, CreateUpdateMaterialDto>(result));
 			}
 			catch (Exception ex)

@@ -17,7 +17,7 @@ namespace Educational.Subject
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<ApiResult<Educational.Subject.SubjectModel>> GetOneAsync(Guid id);
+        Task<ApiResult<SubjectDto>> GetOneAsync(Guid id);////保留这个
         /// <summary>
         /// 通过表单查询
         /// </summary>

@@ -9,6 +9,6 @@ namespace Educational.SpecialSubject
     public class XiAsepecialSubjectDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string CategoryName { get; set; }
     }
 }

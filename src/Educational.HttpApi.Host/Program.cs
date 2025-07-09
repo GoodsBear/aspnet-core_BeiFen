@@ -1,16 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json.Serialization;
 using Serilog;
 using Serilog.Events;
 using System;
-using Microsoft.OpenApi.Models;
-using Serilog;
-using Serilog.Events;
-using System;
-using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Educational;
@@ -20,11 +13,7 @@ public class Program
     public async static Task<int> Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
-#if DEBUG
             .MinimumLevel.Debug()
-#else
-            .MinimumLevel.Information()
-#endif
             .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
             .Enrich.FromLogContext()
@@ -34,10 +23,10 @@ public class Program
 
         try
         {
-           //Services.AddMvc().AddJsonOptions(options =>
-           // {
-           //     options.SerializerSettings.ContractResolver = new DefaultContractResolver(); // 保留原名[6](@ref)
-           // });
+            //Services.AddMvc().AddJsonOptions(options =>
+            // {
+            //     options.SerializerSettings.ContractResolver = new DefaultContractResolver(); // 保留原名[6](@ref)
+            // });
 
             Log.Information("Starting Educational.HttpApi.Host.");
             var builder = WebApplication.CreateBuilder(args);
@@ -46,10 +35,10 @@ public class Program
                 .UseSerilog();
             await builder.AddApplicationAsync<EducationalHttpApiHostModule>();
 
-           
+
             var app = builder.Build();
 
-            app.UseCors(a=>a.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(a => a.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             await app.InitializeApplicationAsync();
             await app.RunAsync();

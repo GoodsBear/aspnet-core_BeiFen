@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.Internal.Mappers;
 using Educational.Courses;
 using Educational.Organization;
 using Educational.Announcements;
@@ -16,31 +15,25 @@ using Educational.Dto.MaterialDtos;
 using Educational.Dto.Positions;
 using Educational.Materials;
 using Educational.Menu;
-using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
 using Educational.RolePerssions;
-using Educational.SalarySetting;
 using Educational.SpecialSubject;
 using Educational.Staffs;
 using Educational.Staffs.SalarySetting;
 using Educational.StaffTypes;
 using Educational.StafRoles;
 using Educational.Subject;
-using Educational.Menu;
 using Educational.StudentsAndParents.Students;
 using Educational.Dto.MaterialRecordsDtos;
 using Educational.StudentsAndParents.StudentFollow;
 using Educational.StudentsAndParends.Students.Follow;
 using Educational.StudentsAndParends.Students.Store;
 using Educational.StudentsAndParents.Stores;
-using Educational.StudentsAndParents.StudentFollow;
-using Educational.StudentsAndParents.Students;
 using Educational.StudentsAndParents.StudentStore;
 using Educational.StudentsAndParends.Students;
-using Educational.Subject;
 
 namespace Educational;
 
@@ -48,6 +41,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
+        //专题
+        CreateMap<CategoryModel, XiAsepecialSubjectDto>().ReverseMap();
         //薪资
         CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
         //排课  
@@ -61,24 +56,18 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<UpdateCategoryDto, CategoryModel>().ReverseMap();
         CreateMap<CategoryModel, CategoryModelDto>().ReverseMap();
         CreateMap<SpecialSubjectModel, XiAsepecialSubjectDto>().ReverseMap();
-         
-            
+        // 组织机构映射
         CreateMap<CreateUpdateOrganizationLevel, OrganizationLevel>();
         CreateMap<OrganizationLevel, OrganizationLevelDto>();
-        // 添加从 CreateUpdateOrganizationDto 到 OrganizationModel 的映射
-        
         CreateMap<OrganizationModel, OrganizationTreepageDto>();
-        // 组织机构映射
         CreateMap<CreateUpdateOrganizationDto, OrganizationModel>();
         CreateMap<OrganizationModel, OrganizationDto>();
         CreateMap<OrganizationModel, OrganizationTreeDto>().ReverseMap();
         CreateMap<OrganizationLevel, XialaLevelDto>().ReverseMap();
         CreateMap<OrganizationModel, OrganizationSelectDto>().ReverseMap();
         CreateMap<XialaLevelDto, OrganizationLevel>().ReverseMap();
-        //   CreateMap<OrganizationLevel, XialaLevelDto>() .ForMember(dest => dest.LevelNameDto, opt => opt.MapFrom(src => src.Name));
        //成员
-        CreateMap<AddorUpdStaffDTO, StaffInfo>()
-            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<AddorUpdStaffDTO, StaffInfo>() .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
         CreateMap<ShowStaffDTO, StaffInfo>().ReverseMap();
         CreateMap<StaffInfo, LoginReturnDTO>().ReverseMap();
         CreateMap<StaffTypeInfo, ShowStaffTypeDTO>().ReverseMap(); 
@@ -118,9 +107,9 @@ public class EducationalApplicationAutoMapperProfile : Profile
         // 字典类型映射
         CreateMap<DictTypeDto, DictType>().ReverseMap();
         // 教室映射
-        CreateMap<ClassRoom, ClassRoomDto>().ReverseMap();
-        CreateMap<ClassRoom, ClassRoomSelectDto>().ReverseMap();
-        CreateMap<CreateUpdateClassRoomDto, ClassRoom>().ReverseMap();
+        CreateMap<Educational.Classgrade.ClassRoom, ClassRoomDto>().ReverseMap();
+        CreateMap<Educational.Classgrade.ClassRoom, ClassRoomSelectDto>().ReverseMap();
+        CreateMap<CreateUpdateClassRoomDto, Educational.Classgrade.ClassRoom>().ReverseMap();
         // 班级映射
         CreateMap<ClassInfo, ClassInfoDto>().ReverseMap();
         CreateMap<ClassInfo, CreateUpdateClassDto>().ReverseMap();
@@ -135,6 +124,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
 		CreateMap<Material, MaterialDto>().ReverseMap();
 		CreateMap<CreateUpdateMaterialDto,Material>().ReverseMap();
         CreateMap<Material, MaterialSelectDto>().ReverseMap();
+        CreateMap<MaterialRecords,CreateMaterialRecordDto>().ReverseMap();
         //出入库
         CreateMap<MaterialRecords, MaterialRecordsDto>().ReverseMap();
         CreateMap<CreateUpdateMaterialRecordsDto, MaterialRecords>().ReverseMap();
@@ -142,6 +132,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         //动态菜单
         CreateMap<CreateUpdateMenuDto,Educational.Menu.Menu>().ReverseMap();
         CreateMap<Educational.Menu.Menu, MenuDto>().ReverseMap();
+        CreateMap<Educational.Menu.Menu, Educational.Shared.Models.MenuInfo>().ReverseMap();
 
         //学员
         CreateMap<CreateUpdateStudentDto, Educational.StudentsAndParends.Students.Student>().ReverseMap();

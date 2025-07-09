@@ -12,7 +12,7 @@ namespace Educational.Dto.Clbums
         /// <summary>
         /// 班级名称
         /// </summary>
-        public string ClassName { get; set; } = string.Empty;
+        public string? ClassName { get; set; }
         /// <summary>
         /// 分校
         /// </summary>
@@ -36,6 +36,6 @@ namespace Educational.Dto.Clbums
         /// <summary>
         /// 班级状态
         /// </summary>
-        public int ClassStatus { get; set; }
+        public int? ClassStatus { get; set; }
     }
 }

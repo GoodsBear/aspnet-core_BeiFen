@@ -65,7 +65,7 @@ namespace Educational.Menu
         /// 菜单权限标识
         /// </summary>
         [StringLength(100, ErrorMessage = "菜单权限标识长度不能超过100个字符。")]
-        public string MenuPermission { get; set; }
+        public string MenuPermissionCode { get; set; }
 
         /// <summary>
         /// 菜单状态
