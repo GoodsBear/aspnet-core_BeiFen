@@ -37,6 +37,7 @@ using Educational.StudentsAndParents.Students;
 using Educational.StudentsAndParents.StudentStore;
 using Educational.Subject;
 using Educational.Subject;
+using System.Text.Json;
 
 namespace Educational;
 
@@ -44,10 +45,11 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
-        //专题
-        
-        CreateMap<CategoryModel, XiAsepecialSubjectDto>().ReverseMap();
+    //专题
+
+    CreateMap<CategoryModel, XiAsepecialSubjectDto>().ReverseMap();
         //薪资
+        CreateMap<UpdateSalaryDto, ClassHourFeeSetting>().ReverseMap();
         CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
         //排课  
         CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
@@ -155,5 +157,5 @@ public class EducationalApplicationAutoMapperProfile : Profile
         //薪资
         CreateMap<SalarySettingModel, SalarySettingDto>().ReverseMap();
        
-    }
+    } 
 } 

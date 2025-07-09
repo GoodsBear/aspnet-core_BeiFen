@@ -1,4 +1,5 @@
 ﻿using Educational.Enums;
+using Educational.SalarySetting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -38,24 +39,24 @@ namespace Educational.Staffs.SalarySetting
         /// 90 300 75
         /// 120 400 100
         /// </summary>
-        public string? ClassHourFeeSettings { get; set; }
+        public List<UpdateSalaryDto>? ClassHourFeeSettings { get; set; }
 
         /// <summary>
         /// 组织机构 
         /// </summary>
-        public Guid? OrganizationId { get; set; }  
+        public Guid? OrganizationId { get; set; }
         /// <summary>
         /// 课时时长（分钟）
         /// </summary>
-        public int ClassHourDuration { get; set; }
+        public int ClassHourDuration { get; set; } = 0;
         /// <summary>
         /// 课时费（元）
         /// </summary>
-        public decimal ClassHourFee { get; set; }
+        public decimal ClassHourFee { get; set; } = 0;
 
         /// <summary>
         /// 助教费（元）
         /// </summary>
-        public decimal AssistantFee { get; set; }
+        public decimal AssistantFee { get; set; } = 0;
     }
 }

@@ -268,8 +268,7 @@ namespace Educational.Organization
         /// 字段全显示树形组织机构表
         /// </summary>
         /// <param name="parentId"></param>
-        /// <returns></returns>
-
+        /// <returns></returns> 
         public async Task<List<OrganizationTreepageDto>> GetTreeAllAsync([DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId )
         {
             if (parentId == null)
