@@ -12,84 +12,84 @@ namespace Educational.Organization
     public class CreateUpdateOrganizationDto : AuditedEntityDto<Guid>
     { 
         /// <summary>
-        /// »ú¹¹Ãû
+        /// æœºæ„å
         /// </summary>
-        [Required(ErrorMessage = "»ú¹¹ÃûÊÇ±ØÌîÏî")]
-        [StringLength(100, ErrorMessage = "»ú¹¹Ãû³¤¶È²»ÄÜ³¬¹ı100×Ö·û")]
-        [Display(Name = "»ú¹¹Ãû")]
+        [Required(ErrorMessage = "æœºæ„åæ˜¯å¿…å¡«é¡¹")]
+        [StringLength(100, ErrorMessage = "æœºæ„åé•¿åº¦ä¸èƒ½è¶…è¿‡100å­—ç¬¦")]
+        [Display(Name = "æœºæ„å")]
         public string Name { get; set; }
 
         /// <summary>
-        /// ¼¶±ğ
+        /// çº§åˆ«
         /// </summary>
-        [Required(ErrorMessage = "¼¶±ğÊÇ±ØÌîÏî")]
-        [Display(Name = "¼¶±ğ")]
+        [Required(ErrorMessage = "çº§åˆ«æ˜¯å¿…å¡«é¡¹")]
+        [Display(Name = "çº§åˆ«")]
         public Guid LevelId { get; set; }
 
         /// <summary>
-        /// ÉÏ¼¶Ö÷¼ü
+        /// ä¸Šçº§ä¸»é”®
         /// </summary>
-        [Required(ErrorMessage = "ÉÏ¼¶»ú¹¹ÊÇ±ØÌîÏî")]
-        [Display(Name = "ÉÏ¼¶»ú¹¹")]
+        [Required(ErrorMessage = "ä¸Šçº§æœºæ„æ˜¯å¿…å¡«é¡¹")]
+        [Display(Name = "ä¸Šçº§æœºæ„")]
         public Guid PartentedId { get; set; }
 
         /// <summary>
-        /// ¼ò³Æ
+        /// ç®€ç§°
         /// </summary>
-        [StringLength(50, ErrorMessage = "¼ò³Æ³¤¶È²»ÄÜ³¬¹ı50×Ö·û")]
-        [Display(Name = "¼ò³Æ")]
+        [StringLength(50, ErrorMessage = "ç®€ç§°é•¿åº¦ä¸èƒ½è¶…è¿‡50å­—ç¬¦")]
+        [Display(Name = "ç®€ç§°")]
         public string? ShortName { get; set; }
 
         /// <summary>
-        /// ÁªÏµÈË
+        /// è”ç³»äºº
         /// </summary>
-        [StringLength(50, ErrorMessage = "ÁªÏµÈË³¤¶È²»ÄÜ³¬¹ı50×Ö·û")]
-        [Display(Name = "ÁªÏµÈË")]
+        [StringLength(50, ErrorMessage = "è”ç³»äººé•¿åº¦ä¸èƒ½è¶…è¿‡50å­—ç¬¦")]
+        [Display(Name = "è”ç³»äºº")]
         public string? ContactPerson { get; set; }
 
         /// <summary>
-        /// µç»°
+        /// ç”µè¯
         /// </summary> 
-        [StringLength(20, ErrorMessage = "µç»°³¤¶È²»ÄÜ³¬¹ı20×Ö·û")]
-        [Phone(ErrorMessage = "ÇëÊäÈëÓĞĞ§µÄµç»°ºÅÂë")]
-        [Display(Name = "µç»°")]
+        [StringLength(20, ErrorMessage = "ç”µè¯é•¿åº¦ä¸èƒ½è¶…è¿‡20å­—ç¬¦")]
+        [Phone(ErrorMessage = "è¯·è¾“å…¥æœ‰æ•ˆçš„ç”µè¯å·ç ")]
+        [Display(Name = "ç”µè¯")]
         public string? Phone { get; set; }
 
         /// <summary>
-        /// ´«Õæ
+        /// ä¼ çœŸ
         /// </summary>
-        [StringLength(20, ErrorMessage = "´«Õæ³¤¶È²»ÄÜ³¬¹ı20×Ö·û")]
-        [Display(Name = "´«Õæ")]
+        [StringLength(20, ErrorMessage = "ä¼ çœŸé•¿åº¦ä¸èƒ½è¶…è¿‡20å­—ç¬¦")]
+        [Display(Name = "ä¼ çœŸ")]
         public string? Fax { get; set; }
 
         /// <summary>
-        /// ÓÊÏä
+        /// é‚®ç®±
         /// </summary>
-        [StringLength(100, ErrorMessage = "ÓÊÏä³¤¶È²»ÄÜ³¬¹ı100×Ö·û")]
-        [EmailAddress(ErrorMessage = "ÇëÊäÈëÓĞĞ§µÄÓÊÏäµØÖ·")]
-        [Display(Name = "ÓÊÏä")]
+        [StringLength(100, ErrorMessage = "é‚®ç®±é•¿åº¦ä¸èƒ½è¶…è¿‡100å­—ç¬¦")]
+        [EmailAddress(ErrorMessage = "è¯·è¾“å…¥æœ‰æ•ˆçš„é‚®ç®±åœ°å€")]
+        [Display(Name = "é‚®ç®±")]
         public string? Email { get; set; }
 
         /// <summary>
-        /// ÅÅĞò
+        /// æ’åº
         /// </summary>
         [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "ÅÅĞòÖµ±ØĞë´óÓÚ0")]
-        [Display(Name = "ÅÅĞò")]
+        [Range(1, int.MaxValue, ErrorMessage = "æ’åºå€¼å¿…é¡»å¤§äº0")]
+        [Display(Name = "æ’åº")]
         public int SortOrder { get; set; } = 1;
 
         /// <summary>
-        /// ×´Ì¬
+        /// çŠ¶æ€
         /// </summary>
         [Required]
-        [Display(Name = "×´Ì¬")]
-        public SwitchEnum IsActive { get; set; } = SwitchEnum.ÆôÓÃ;
+        [Display(Name = "çŠ¶æ€")]
+        public SwitchEnum IsActive { get; set; } = SwitchEnum.å¯ç”¨;
 
         /// <summary>
-        /// ËµÃ÷
+        /// è¯´æ˜
         /// </summary>
-        [StringLength(500, ErrorMessage = "ËµÃ÷³¤¶È²»ÄÜ³¬¹ı500×Ö·û")]
-        [Display(Name = "ËµÃ÷")]
+        [StringLength(500, ErrorMessage = "è¯´æ˜é•¿åº¦ä¸èƒ½è¶…è¿‡500å­—ç¬¦")]
+        [Display(Name = "è¯´æ˜")]
         public string? Description { get; set; }
     }
 }

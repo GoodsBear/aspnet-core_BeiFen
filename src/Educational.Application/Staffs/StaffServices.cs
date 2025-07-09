@@ -486,7 +486,7 @@ namespace Educational.Staffs
         /// <param name="loginDTO">登录请求 DTO，包含账户和密码</param>
         /// <returns>返回登录结果</returns>
         [HttpPost]
-        public async Task<ApiResult<LoginReturnDTO>> Login([FromQuery] LoginDTO loginDTO)
+        public async Task<ApiResult<LoginReturnDTO>> Login(LoginDTO loginDTO)
         {
             try
             {

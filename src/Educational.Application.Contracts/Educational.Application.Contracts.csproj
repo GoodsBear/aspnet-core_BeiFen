@@ -14,7 +14,6 @@
   </ItemGroup> 
 	
   <ItemGroup>
-    <PackageReference Include="Abp.AutoMapper" Version="9.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.3.0" />
