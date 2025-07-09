@@ -5,11 +5,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.Dto.Clbums
 {
-    public class ClassInfoDto:AuditedAggregateRoot<Guid>
+    public class ClassInfoDto:AuditedEntityDto<Guid>
     {
         /// <summary>
         /// 班级名称
@@ -67,6 +68,7 @@ namespace Educational.Dto.Clbums
         /// <summary>
         /// 班级状态
         /// </summary>
-        public LessonStateEnum ClassStatus { get; set; } = 0;
+        public LessonStateEnum ClassStatus { get; set; }
+        public string ClassStatusName { get; set; }
     }
 }
