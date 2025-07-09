@@ -260,25 +260,25 @@ namespace Educational.Staffs
                 //var a=await salarySettingRepository.InsertAsync(salary); 
 
                 //添加职位表的同时添加薪资表
-                SalarySettingModel salary = new SalarySettingModel()
-                {
-                    StaffId = staffinfo.Id,
-                    StaffName = staffinfo.StaffName,
-                    OrganizationId = OrganizationId.Id
-                };
-                var a=await salarySettingRepository.InsertAsync(salary);
+                //SalarySettingModel salary = new SalarySettingModel()
+                //{
+                //    StaffId = staffinfo.Id,
+                //    StaffName = staffinfo.StaffName,
+                //    OrganizationId = OrganizationId.Id
+                //};
+                //var a=await salarySettingRepository.InsertAsync(salary);
 
-                if (a != null)
-                {  
-                    ClassHourFeeSetting money = new ClassHourFeeSetting()
-                    {
-                        SalarySettingId = a.Id,
-                        ClassHourDuration = 0,
-                        ClassHourFee = 0,
-                        AssistantFee = 0
-                    };
-                    await classHourFeeSettingRepository.InsertAsync(money);
-                }
+                //if (a != null)
+                //{  
+                //    ClassHourFeeSetting money = new ClassHourFeeSetting()
+                //    {
+                //        SalarySettingId = a.Id,
+                //        ClassHourDuration = 0,
+                //        ClassHourFee = 0,
+                //        AssistantFee = 0
+                //    };
+                //    await classHourFeeSettingRepository.InsertAsync(money);
+                //}
 
                 // 封装返回结果，状态码 OK，附带员工信息
                 return ApiResult<ShowStaffDTO>.Success(ResultCode.Ok, showstaffinfo);

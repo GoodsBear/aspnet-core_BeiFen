@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Educational.Enmu;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -301,7 +302,7 @@ namespace Educational.Organization
         /// <param name="parentId"></param>
         /// <returns></returns>
 
-        public async Task<List<OrganizationTreepageDto>> GetTreeAllAsync([DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId )
+        public async Task<ApiResult<List<OrganizationTreepageDto>>> GetTreeAllAsync([DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId )
         {
             if (parentId == null)
             {
@@ -318,9 +319,10 @@ namespace Educational.Organization
             // 递归构建子树
             foreach (var item in tree)
             {
+                item.LevelName=(await _organizationLevelRepository.GetAsync(item.LevelId)).Name;
                 BuildTree2(item, orgLookup);
             }
-            return tree;
+            return ApiResult<List<OrganizationTreepageDto>>.Success(ResultCode.Ok, tree);
         }
 
         private void BuildTree2(OrganizationTreepageDto dto, ILookup<Guid?, OrganizationModel> lookup)
@@ -329,6 +331,8 @@ namespace Educational.Organization
             dto.Children = children.Select(entity =>
             {
                 var childDto = ObjectMapper.Map<OrganizationModel, OrganizationTreepageDto>(entity);
+                // 递归赋值LevelName
+                childDto.LevelName = _organizationLevelRepository.GetAsync(entity.LevelId).Result?.Name;
                 BuildTree2(childDto,lookup); // 递归调用
                 return childDto;
             }).ToList();
@@ -399,76 +403,160 @@ namespace Educational.Organization
 
 
         /// <summary>
-        /// 获取机构树
+        /// 获取机构树形结构数据
         /// </summary>
-        /// <returns></returns>
-		public async Task<ApiResult<List<SysOreanzationDto>>> GetOrganzationTree()
-		{
+        /// <returns>
+        /// 返回ApiResult包含：
+        /// - 成功时：树形结构的根节点列表
+        /// - 失败时：异常信息
+        /// </returns>
+        public async Task<ApiResult<List<SysOreanzationDto>>> GetOrganzationTree()
+        {
             try
             {
-                //获取所有机构
-                var organzation=await _organizationRepository.GetListAsync();
-                //实体转Dto
-                var dtolist=organzation.Select(a=>new SysOreanzationDto
+                // 1. 获取所有机构数据（异步查询）
+                var organizations = await _organizationRepository.GetListAsync();
+
+                // 2. 实体映射为DTO（平铺结构）
+                var dtoList = organizations.Select(entity => new SysOreanzationDto
                 {
-                    Id=a.Id,
-                    Name=a.Name,
-                    LevelId=a.LevelId,
-                    PartentedId=a.PartentedId,
-                    ShortName=a.ShortName,
-                    ContactPerson=a.ContactPerson,
-                    Phone=a.Phone,
-                    Fax=a.Fax,
-                    Email=a.Email,
-                    SortOrder=a.SortOrder,
-                    IsActive=a.IsActive,
-                    Description=a.Description,
-                    Children=new List<SysOreanzationDto>()
+                    Id = entity.Id,
+                    Name = entity.Name,
+                    LevelId = entity.LevelId,
+                    PartentedId = entity.PartentedId,  // 注意：原代码拼写为PartentedId，建议统一命名
+                    ShortName = entity.ShortName,
+                    ContactPerson = entity.ContactPerson,
+                    Phone = entity.Phone,
+                    Fax = entity.Fax,
+                    Email = entity.Email,
+                    SortOrder = entity.SortOrder,
+                    IsActive = entity.IsActive,
+                    Description = entity.Description,
+                    Children = new List<SysOreanzationDto>()  // 初始化子节点集合
                 }).ToList();
 
-                var dtoOrganzation = dtolist.ToDictionary(x => x.Id, x => x);
-                //构建树形结构
-                List<SysOreanzationDto> roots = new();
-                foreach (var item in dtolist)
+                // 3. 构建字典加速查找（O(1)复杂度）
+                var dtoDictionary = dtoList.ToDictionary(x => x.Id);
+
+                // 4. 构建树形结构
+                List<SysOreanzationDto> rootNodes = new();
+                foreach (var item in dtoList)
                 {
-                    if (item.Id == Guid.Empty || !dtoOrganzation.ContainsKey(item.PartentedId))
+                    // 4.1 判断是否为根节点（父节点不存在或ID为空）
+                    if (item.PartentedId == Guid.Empty || !dtoDictionary.ContainsKey(item.PartentedId))
                     {
-                        roots.Add(item);
+                        rootNodes.Add(item);
                     }
                     else
                     {
-                        dtoOrganzation[item.PartentedId].Children.Add(item);
+                        // 4.2 将当前节点添加到父节点的Children集合
+                        dtoDictionary[item.PartentedId].Children.Add(item);
+
+                        // 可选：按SortOrder排序子节点
+                        // dtoDictionary[item.ParentedId].Children = 
+                        //     dtoDictionary[item.ParentedId].Children
+                        //         .OrderBy(x => x.SortOrder)
+                        //         .ToList();
                     }
                 }
-                return new ApiResult<List<SysOreanzationDto>>(true, ResultCode.Ok, "成功", roots);
+
+                // 5. 返回成功结果
+                return ApiResult<List<SysOreanzationDto>>.Success(ResultCode.Ok,rootNodes);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                // 6. 异常处理（建议记录日志）
+                // _logger.LogError(ex, "获取机构树失败");
+                throw;  // 重新抛出异常，由上层处理
             }
-		}
+        }
 
+        /// <summary>
+        /// 将组织实体映射为树节点DTO
+        /// </summary>
+        /// <param name="entity">组织实体对象</param>
+        /// <returns>树形结构节点DTO</returns>
+        /// <exception cref="ArgumentNullException">当entity参数为null时抛出</exception>
         private OrganizationTreeDto MapToTreeNode(OrganizationModel entity)
         {
+            // 参数校验（防御性编程）
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), "组织实体不能为null");
+            }
+
+            // 构建树节点DTO
             return new OrganizationTreeDto
             {
+                // 节点唯一标识（必填）
                 id = entity.Id,
-                label = entity.Name ?? entity.Name ?? "未命名组织", // 确保label不为null
-                                                                // 其他属性...
+
+                // 节点显示名称（多重保障不为null）
+                label = entity.Name?.Trim() ?? "未命名组织",  // 优于原写法 entity.Name ?? entity.Name ?? 
             };
         }
 
+        /// <summary>
+        /// 递归构建组织树形结构
+        /// </summary>
+        /// <param name="dto">当前节点DTO</param>
+        /// <param name="lookup">组织数据的查找表（按父ID分组）</param>
         private void BuildTree(OrganizationTreeDto dto, ILookup<Guid, OrganizationModel> lookup)
         {
-            var children = lookup[dto.id].OrderBy(o => o.SortOrder).ToList();
+            // 1. 获取当前节点的所有子节点（按SortOrder排序）
+            var children = lookup[dto.id]
+                .OrderBy(o => o.SortOrder)  // 按排序字段升序排列
+                .ToList();
 
+            // 2. 将子节点转换为DTO并递归构建子树
             dto.children = children.Select(entity =>
             {
+                // 2.1 将实体映射为树节点DTO
                 var childDto = MapToTreeNode(entity);
+
+                // 2.2 递归处理子节点
                 BuildTree(childDto, lookup);
+
                 return childDto;
-            }).ToList();
+            }).ToList();  // 立即执行（避免延迟执行导致多次查询）
+        }
+
+
+
+        /// <summary>
+        /// 更新组织状态（启用/禁用）
+        /// </summary>
+        /// <param name="Id">组织ID</param>
+        /// <param name="state">目标状态（SwitchEnum枚举：On/Off）</param>
+        /// <returns>返回操作结果ApiResult</returns>
+        public async Task<ApiResult> UpdateOrganzationState(Guid Id, [FromQuery]SwitchEnum state)
+        {
+            try
+            {
+                // 1. 根据ID查询组织实体
+                var organzation = await _organizationRepository.FirstOrDefaultAsync(x => x.Id == Id);
+
+                // 2. 验证实体是否存在（建议添加）
+                if (organzation == null)
+                {
+                    return ApiResult.Fail(ResultCode.Fail, "指定组织不存在");
+                }
+
+                // 3. 更新状态字段
+                organzation.IsActive = state;
+
+                // 4. 执行数据库更新
+                await _organizationRepository.UpdateAsync(organzation);
+
+                // 5. 返回成功响应
+                return ApiResult.Success(ResultCode.Ok);
+            }
+            catch (Exception ex)
+            {
+                // 6. 异常处理（当前直接抛出，建议记录日志）
+                // _logger.LogError(ex, "更新组织状态失败，ID：{Id}", Id);
+                throw; // 重新抛出原始异常（保持堆栈跟踪）
+            }
         }
     }
 
