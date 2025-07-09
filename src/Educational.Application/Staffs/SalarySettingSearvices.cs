@@ -49,7 +49,8 @@ namespace Educational.Staffs
                 // 获取薪资数据源
                 var staffinfo = await salarySettingRepository.GetQueryableAsync();
                 //OrganizationId
-                staffinfo=staffinfo.WhereIf(search.OrganizationId != null, x => x.OrganizationId.Equals(search.OrganizationId));
+                staffinfo=staffinfo.WhereIf(search.OrganizationId != null, x => x.OrganizationId.Equals(search.OrganizationId))
+                    .OrderByDescending(x=>x.LastModificationTime);
                 //根据反填的员工id查找员工姓名// staffinfo.StaffName
                 var staff = await staffInfoRepository.GetQueryableAsync();
 
@@ -126,7 +127,6 @@ namespace Educational.Staffs
                 {
                     return ApiResult.Fail(ResultCode.Fail, "薪资设置不存在");
                 }
-
                 // 查询关联的课时费设置
                 var hoursSettings = await classHourFeeSettingRepository.GetQueryableAsync();
                 hoursSettings = hoursSettings.Where(x => x.SalarySettingId == id);
