@@ -21,6 +21,7 @@ namespace Educational.Organization
         /// 级别
         /// </summary>
         public Guid LevelId { get; set; }
+        public string LevelName { get; set; }
 
         /// <summary>
         /// 上级主键

@@ -155,6 +155,24 @@ namespace Educational.Positions
                 throw;
             }
         }
+        /// <summary>
+        /// 获取职位下拉列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ApiResult<List<PositionsDto>>> GetPosition()
+        {
+            try
+            {
+                var list = await positionRep.GetListAsync();
+                var stafflist=ObjectMapper.Map<List<Position>, List<PositionsDto>>(list);
+                return ApiResult<List<PositionsDto>>.Success(ResultCode.Ok, stafflist);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
 
