@@ -102,6 +102,16 @@ namespace Educational.Staffs
                     staffinfo = staffinfo.Where(s => s.Status == search.Status);
                 }
 
+                if (search.OrganizationId != null)
+                {
+                    var organizationname = (await organizationRepository.FirstOrDefaultAsync(x => x.Id == search.OrganizationId)).Name;
+                    if (staffinfo != null)
+                    {
+                        // 筛选包含该机构名称的员工记录
+                        staffinfo = staffinfo.Where(s => s.Organization.Contains(organizationname));
+                    }
+                }
+
                 // 分页处理
                 var stafflist = staffinfo.Page(search.PageIndex, search.PageSize);
 
