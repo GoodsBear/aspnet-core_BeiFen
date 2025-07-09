@@ -111,108 +111,61 @@ namespace Educational.Staffs
         /// <param name="input"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-
         public async Task<ApiResult> UpdateAsync(Guid id, SalarySettingDto input)
         {
             if (input == null)
             {
                 return ApiResult<SalarySettingModel>.Fail(ResultCode.Fail, "输入参数无效");
             }
+
             try
             {
-                //查询
-                var salarySetting = await  salarySettingRepository.FirstOrDefaultAsync(x => x.Id == id);
-                //查询数据全部课时费表
-                var hoursmoeny = await classHourFeeSettingRepository.GetQueryableAsync();
-                hoursmoeny = hoursmoeny.Where(x => x.SalarySettingId == id);
-                //将input中传递的ClassHourFeeSettings进行拆分
-                List<ClassHourFeeSetting> updateDto = new List<ClassHourFeeSetting>();
-             
-                //批量删除--删除掉关于薪资所有的课时表，重新添加
-                List<Guid> ids = new List<Guid>();
-                ids = hoursmoeny.Select(x => x.Id).ToList();
-                if (ids != null)
+                // 查询薪资设置
+                var salarySetting = await salarySettingRepository.FirstOrDefaultAsync(x => x.Id == id);
+                if (salarySetting == null)
                 {
-                    foreach (var item in ids)
-                    {
-                        var hours = await classHourFeeSettingRepository.FirstOrDefaultAsync(x => x.Id == item);
-                       await  classHourFeeSettingRepository.DeleteAsync(hours);
-                    }
+                    return ApiResult.Fail(ResultCode.Fail, "薪资设置不存在");
                 }
-                //映射
-                //ClassHourFeeSettings 数据库是string，
-                //input中ClassHourFeeSettings是 List<ClassHourFeeSetting> 
-                salarySetting.ClassHourFeeSettings = JsonSerializer.Serialize(input);
-                SalarySettingModel salarymapper = new SalarySettingModel()
-                { 
-                    StaffId = salarySetting.StaffId,
-                    StaffName = salarySetting.StaffName,
-                    BasicSalary = salarySetting.BasicSalary,
-                    BasicSalaryType = salarySetting.BasicSalaryType,
-                    ClassHourFeeSettings = input.ClassHourFeeSettings.ToString(),
-                    QualifiedClassHours = salarySetting.QualifiedClassHours,
-                    OrganizationId = salarySetting.OrganizationId   
-                };
-                ObjectMapper.Map(salarymapper, salarySetting); 
-                //修改薪资表信息
-                await salarySettingRepository.UpdateAsync(salarymapper);
 
-                ////非底薪模式，清空底薪模式下的数据
-                //salarymapper.BasicSalary = null;
-                //salarymapper.QualifiedClassHours = null;
-                //课时表修改信息
-                //映射课时表
+                // 查询关联的课时费设置
+                var hoursSettings = await classHourFeeSettingRepository.GetQueryableAsync();
+                hoursSettings = hoursSettings.Where(x => x.SalarySettingId == id);
 
-                //批量删除所有课程表信息DeleteAsync--150行 
-                //映射课时表
-                updateDto = ObjectMapper.Map<List<UpdateSalaryDto>, List<ClassHourFeeSetting>>(input.ClassHourFeeSettings);
-               // ObjectMapper.Map(updateDto, hoursmoeny);
-                    //添加课时表信息
-                     int x = 0;
-                    foreach (var item in updateDto)
+                // 批量删除旧的课时费设置
+                await classHourFeeSettingRepository.DeleteManyAsync(hoursSettings);
+
+                // 更新薪资设置中的课时费设置字段（JSON 序列化）
+                salarySetting.ClassHourFeeSettings = JsonSerializer.Serialize(input.ClassHourFeeSettings);
+
+                // 映射其他属性（从 DTO 到实体）
+                ObjectMapper.Map(input, salarySetting);
+
+                // 更新薪资设置
+                await salarySettingRepository.UpdateAsync(salarySetting);
+
+                // 插入新的课时费设置
+                if (input.ClassHourFeeSettings != null && input.ClassHourFeeSettings.Any())
+                {
+                    // 正确映射类型
+                    //   var newHourSettings = ObjectMapper.Map<List<ClassHourFeeSetting>>(input.ClassHourFeeSettings);
+                    var newHourSettings = ObjectMapper.Map<List<UpdateSalaryDto>, List<ClassHourFeeSetting>>(input.ClassHourFeeSettings);
+                    // 设置关联 ID
+                    foreach (var item in newHourSettings)
                     {
+                        item.SalarySettingId = id; // 确保关联到当前薪资设置
                         await classHourFeeSettingRepository.InsertAsync(item);
-                        x++;
-                        if (x == updateDto.Count)
-                        {
-                            break;
-                        }
                     }
-                if (x != 0)
-                {
-                    return ApiResult.Success(ResultCode.Ok);
                 }
-                else
-                {
-                    return ApiResult.Fail(ResultCode.Fail,"修改失败");
-                }
-            }
 
+                return ApiResult.Success(ResultCode.Ok);
+            }
             catch (Exception ex)
             {
-                logger.LogError(ex, " 修改薪资信息 失败");
-                return ApiResult.Fail(ResultCode.Fail, $" 修改薪资信息 失败: {ex.Message}");
-            } 
+                logger.LogError(ex, "修改薪资信息失败");
+                return ApiResult.Fail(ResultCode.Fail, $"修改薪资信息失败: {ex.Message}");
+            }
         }
-
-
-        //public async Task<ApiResult> UpdateSalaryAsync(Guid id, UpdateSalaryDto input) 
-        //{
-        //    if (input == null)
-        //    {
-        //        return ApiResult<SalarySettingModel>.Fail(ResultCode.Fail, "输入参数无效");
-        //    }
-        //    try
-        //    {
-
-        //        return ApiResult.Success(ResultCode.Ok);
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        throw;
-        //    }
-        //}
+     
         //上课时间表
         public async Task<ApiResult<List<HourDto>>> GetClassHourFeeSettingAsync(Guid SalarySettingId)
         { 
