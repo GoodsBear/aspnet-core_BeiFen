@@ -9,6 +9,7 @@ namespace Educational.Courses
 {
 	public class CreateCourseDto
 	{
+		public Guid? Id { get; set; }
 		/// <summary>
 		/// 课程名称
 		/// </summary>
@@ -28,7 +29,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 适用年级
 		/// </summary>
-        public Guid GradeId { get; set; }
+        public Guid GratorId { get; set; }
 		///出售单位
         public string SellUnit { get; set; }
 
@@ -84,7 +85,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 课程封面图
 		/// </summary>
-		public string CoverImage { get; set; }
+		public string? CoverImage { get; set; }
 		/// <summary>
 		/// 开启推荐
 		/// </summary>
@@ -92,7 +93,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 班级群二维码
 		/// </summary>
-		public string ClassQrCode { get; set; }
+		public string? ClassQrCode { get; set; }
 		/// <summary>
 		/// 库存量
 		/// </summary>
@@ -104,7 +105,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 详情介绍图集
 		/// </summary>
-		public string DetailImageList { get; set; }
+		public string? DetailImageList { get; set; }
 		/// <summary>
 		/// 师资说明
 		/// </summary>
