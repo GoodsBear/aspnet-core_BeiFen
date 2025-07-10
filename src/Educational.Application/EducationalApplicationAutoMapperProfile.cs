@@ -94,6 +94,8 @@ public class EducationalApplicationAutoMapperProfile : Profile
             .ForMember(dest=>dest.CourseName,pot=>pot.MapFrom(src=>src.CourseName)).ReverseMap();
         CreateMap<Course, CourseSelectDto>(MemberList.Source)
             .ForMember(dest=>dest.CourseName,pot=>pot.MapFrom(src=>src.CourseName)).ReverseMap();
+        CreateMap<Course, CreateUpdateCourseDto>(MemberList.Source)
+            .ForMember(dest=>dest.CourseName,pot=>pot.MapFrom(src=>src.CourseName)).ReverseMap();
         //课程关联映射规则
         CreateMap<ReletedCourse, ReletedCourseDto>(MemberList.Source);
         CreateMap<ReletedCourse, SearchReletedCourseDto>(MemberList.Source);

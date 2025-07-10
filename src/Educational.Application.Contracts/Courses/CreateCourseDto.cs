@@ -9,7 +9,7 @@ namespace Educational.Courses
 {
 	public class CreateCourseDto
 	{
-		public Guid Id { get; set; }
+		public Guid? Id { get; set; }
 		/// <summary>
 		/// 课程名称
 		/// </summary>

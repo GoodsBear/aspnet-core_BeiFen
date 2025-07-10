@@ -191,19 +191,18 @@ namespace Educational.Courses
 		/// <param name="coursedto"></param>
 		/// <returns></returns>
         [HttpPut("UpdateCourse")]
-		public async Task<ApiResult<CourseDto>> UpdateCourse(CreateUpdateCourseDto coursedto)
+		public async Task<ApiResult<Course>> UpdateCourse(CreateUpdateCourseDto coursedto)
 		{
 			try
 			{
 				var course = await _courseRepository.GetAsync(coursedto.Id);
 				if (course == null)
 				{
-					return ApiResult<CourseDto>.Fail(ResultCode.Fail, "课程不存在，请检查！");
+					return ApiResult<Course>.Fail(ResultCode.Fail, "课程不存在，请检查！");
 				}
-				course = ObjectMapper.Map(coursedto, course);
-				var updatedCourse = await _courseRepository.UpdateAsync(course);
-				var result = ObjectMapper.Map<Course, CourseDto>(updatedCourse);
-				return ApiResult<CourseDto>.Success(ResultCode.Ok, result);
+				var result = ObjectMapper.Map(coursedto, course);
+				await _courseRepository.UpdateAsync(result);
+				return ApiResult<Course>.Success(ResultCode.Ok, result);
 			}
 			catch (Exception ex)
 			{
@@ -324,9 +323,16 @@ namespace Educational.Courses
 		/// <param name="id"></param>
 		/// <returns></returns>
 		/// <exception cref="NotImplementedException"></exception>
-		public Task<ApiResult> RemoveReletedCourse(Guid guid, Guid id)
+		public async Task<ApiResult> RemoveReletedCourse(Guid guid, Guid id)
 		{
-			throw new NotImplementedException();
+			// 1. 查找关联关系
+			var relation = await courseRelationRepository.FirstOrDefaultAsync(x=>x.Course1Id==id&&x.Course2Id==guid);
+			if (relation == null)
+				return ApiResult.Success(ResultCode.Ok);
+			// 3. 移除
+			await courseRelationRepository.DeleteAsync(relation);
+			// 4. 返回
+			return ApiResult.Success(ResultCode.Ok);
 		}
 	}
 

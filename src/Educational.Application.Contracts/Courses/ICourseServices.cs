@@ -22,7 +22,7 @@ namespace Educational.Courses
 		// 获取课程下拉框
 		Task<ApiResult<List<CourseSelectDto>>> GetCourseAsync();
 		//修改课程信息
-        Task<ApiResult<CourseDto>> UpdateCourse(CreateUpdateCourseDto coursedto);
+        Task<ApiResult<Course>> UpdateCourse(CreateUpdateCourseDto coursedto);
 
 
 		/// <summary>
@@ -43,8 +43,8 @@ namespace Educational.Courses
 		/// <summary>
 		/// 移除关联课程
 		/// </summary>
-		/// <param name="guid">课程id</param>
-		/// <param name="id">要移除的课程id</param>
+		/// <param name="guid">关联课程id</param>
+		/// <param name="id">主课程id</param>
 		/// <returns></returns>
         Task<ApiResult> RemoveReletedCourse(Guid guid, Guid id);
 
