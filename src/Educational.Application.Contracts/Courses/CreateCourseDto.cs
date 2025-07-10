@@ -9,6 +9,7 @@ namespace Educational.Courses
 {
 	public class CreateCourseDto
 	{
+		public Guid Id { get; set; }
 		/// <summary>
 		/// 课程名称
 		/// </summary>
@@ -26,13 +27,16 @@ namespace Educational.Courses
 		/// </summary>
 		public Guid TopicId { get; set; }
 		/// <summary>
-		/// 课型
+		/// 适用年级
+		/// </summary>
+        public Guid GratorId { get; set; }
+		///出售单位
+        public string SellUnit { get; set; }
+
+		/// <summary>
+		/// 课堂类型
 		/// </summary>
 		public CourseType CourseTypeId { get; set; }
-		/// <summary>
-		/// 单价
-		/// </summary>
-		public decimal Price { get; set; }
 		/// <summary>
 		/// 总价
 		/// </summary>
@@ -65,12 +69,14 @@ namespace Educational.Courses
 		/// 上课时长
 		/// </summary>
 		public int LessonDuration { get; set; }
-		/// <summary>
-		/// 状态
-		/// </summary>
+		//状态
 		public bool Status { get; set; }
 
-		///在线购课报名设置
+
+		//						***************************	
+		//							在线购课报名设置
+		//						***************************	
+
 
 		/// <summary>
 		/// 是否上架
@@ -79,7 +85,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 课程封面图
 		/// </summary>
-		public string CoverImage { get; set; }
+		public string? CoverImage { get; set; }
 		/// <summary>
 		/// 开启推荐
 		/// </summary>
@@ -87,7 +93,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 班级群二维码
 		/// </summary>
-		public string ClassQrCode { get; set; }
+		public string? ClassQrCode { get; set; }
 		/// <summary>
 		/// 库存量
 		/// </summary>
@@ -99,7 +105,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 详情介绍图集
 		/// </summary>
-		public string DetailImageList { get; set; }
+		public string? DetailImageList { get; set; }
 		/// <summary>
 		/// 师资说明
 		/// </summary>

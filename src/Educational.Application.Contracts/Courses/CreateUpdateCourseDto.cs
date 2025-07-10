@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 namespace Educational.Courses
 {
 	/// <summary>
-	/// 创建/修改课程de Dto
+	/// 创建/修改课程的 Dto
 	/// </summary>
 	public class CreateUpdateCourseDto
 	{
+		/// <summary>
+		/// 课程Id
+		/// </summary>
+		public Guid Id { get; set; }
 		/// <summary>
 		/// 课程名称
 		/// </summary>
@@ -71,7 +75,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 适用年级
 		/// </summary>
-		public Guid? GradeId { get; set; }
+		public Guid? GratorId { get; set; }
 		/// <summary>
 		/// 状态
 		/// </summary>
@@ -107,7 +111,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 详情介绍图集
 		/// </summary>
-		public string DetailImageList { get; set; }
+		public string? DetailImageList { get; set; }
 		/// <summary>
 		/// 师资说明
 		/// </summary>

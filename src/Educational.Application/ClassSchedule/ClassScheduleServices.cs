@@ -2,7 +2,9 @@
 using Educational.ClassSchedule.DTO;
 using Educational.ClassSchedule.Update;
 using Educational.Courses;
+using Educational.Enums;
 using Educational.Organization;
+using Educational.SalarySetting;
 using Educational.Staffs;
 using Educational.StudentsAndParends.Students;
 using Educational.Subject;
@@ -26,6 +28,8 @@ namespace Educational.ClassSchedule
     [ApiExplorerSettings(GroupName = "排课")]
     public class ClassScheduleServices : ApplicationService, IClassScheduleServices
     {
+        IRepository<ClassHourFeeSetting, Guid> _classHourFeeSettingRepository;//上课薪资设置
+        IRepository<SalarySettingModel, Guid> _salarySettingRepository;//薪资
         IRepository<ClassSchedule, Guid> _classScheduleRepository;//排课
         IRepository<ScheduleTime, Guid> _scheduleTimeRepository;//上课时间
         IRepository<ConflictModel, Guid> _conflictModelRepository;//冲突
@@ -38,8 +42,8 @@ namespace Educational.ClassSchedule
        //职工薪资表--是否分配
        //职工课时表--是否够时间
         ILogger<ClassScheduleServices> _logger;
-        
-        public ClassScheduleServices(IRepository<ClassSchedule, Guid> classScheduleRepository, IRepository<ScheduleTime, Guid> scheduleTimeRepository, IRepository<ConflictModel, Guid> conflictModelRepository, IRepository<ClassInfo, Guid> classInfoRepository, IRepository<Course, Guid> courseRepository, IRepository<StaffInfo, Guid> staffInfoRepository, IRepository<OrganizationModel, Guid> organizationRepository,ILogger<ClassScheduleServices> logger, IRepository<Student, Guid> studentRepository)
+
+        public ClassScheduleServices(IRepository<ClassSchedule, Guid> classScheduleRepository, IRepository<ScheduleTime, Guid> scheduleTimeRepository, IRepository<ConflictModel, Guid> conflictModelRepository, IRepository<ClassInfo, Guid> classInfoRepository, IRepository<Course, Guid> courseRepository, IRepository<StaffInfo, Guid> staffInfoRepository, IRepository<OrganizationModel, Guid> organizationRepository, ILogger<ClassScheduleServices> logger, IRepository<Student, Guid> studentRepository, IRepository<SalarySettingModel, Guid> salarySettingRepository, IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository)
         {
             _organizationRepository = organizationRepository;
             _classScheduleRepository = classScheduleRepository;
@@ -50,6 +54,8 @@ namespace Educational.ClassSchedule
             _staffInfoRepository = staffInfoRepository;
             _studentRepository = studentRepository;
             _logger = logger;
+            _salarySettingRepository = salarySettingRepository;
+            _classHourFeeSettingRepository = classHourFeeSettingRepository;
         }
 
         //显示冲突表
@@ -78,8 +84,12 @@ namespace Educational.ClassSchedule
             }
         }
         //逻辑删除
-        //添加排课表--职工薪资表+老师课长表
-        public async  Task<ApiResult<ClassScheduleDto>> CreateClassScheduleAsync(UpdateClassScheduleDto input)
+        /// <summary>
+        /// 添加排课表--职工薪资表+老师课长表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async  Task<ApiResult> CreateClassScheduleAsync(UpdateClassScheduleDto input)
         {
             try
             {
@@ -99,20 +109,90 @@ namespace Educational.ClassSchedule
                         return ApiResult<ClassScheduleDto>.Fail(ResultCode.Fail, "上课老师和助教老师不能重复");
                     }
                 }
-                //上课老师和助教老师未匹配薪资，课程时长50分钟 
-                var course = await _courseRepository.FirstOrDefaultAsync(x=>x.Id==input.CourseId);
-                //maxSchedules最大排课数量根据符合条件的天数，条数进行安排， 
-                //上课时间
-                //根据上课时间生成课表
-                //导入课表--批量导出
-                
+                //老师集合name
+                List<string> Teachers=  new List<string>();
+                Teachers.AddRange(input.MainTeacher);
+                input.AssistantTeacher?.AddRange(Teachers);
 
-                //检查冲突
-                //如果有冲突
-                //修改冲突字段
-                //导入冲突表批量导入
-
+                //上课老师和助教老师未匹配薪资，课程时长不匹配
+                int itemcount = 0;
+                foreach (var item in Teachers)
+                {
+                    
+                    //查询薪资表中老师的薪资
+                     var staffname = await _salarySettingRepository.FirstOrDefaultAsync(x => x.StaffName == item);
                 
+                    //查询薪资表中的课程时长
+                    var hours = await _classHourFeeSettingRepository.GetQueryableAsync();
+                    hours=hours.Where(x => x.SalarySettingId == staffname.Id);
+                     
+                    //该老师没有课程时长，未分配薪资。
+                    if (staffname.BasicSalaryType == SalaryType.底薪模式 && staffname.BasicSalary == 0)
+                    {
+                        return ApiResult<ClassScheduleDto>.Fail(ResultCode.Fail, $"{item}未分配薪资，无法选择。");
+                    }
+                    else if (staffname.BasicSalaryType == SalaryType.非底薪模式)
+                    { 
+                        if (hours.FirstOrDefault().ClassHourDuration == 0)
+                        {
+                            return ApiResult<ClassScheduleDto>.Fail(ResultCode.Fail, $"{item}未分配薪资，无法选择。");
+                        } 
+                    }
+                                         
+                    //老师的课时时长不对。
+                    //获取老师所有的课时
+                    List<int> lists=hours.Select(x => x.ClassHourDuration).ToList();
+                    //现排课老师的课时时长 
+                   List<int> nows=input.ScheduleTimes.Select(x =>(x.EndTime- x.StartTime).Minutes).ToList();
+                    int tcount=0;
+                    foreach (var t in nows)
+                    {
+                        if (!lists.Contains(t))
+                        {
+                            return ApiResult<ClassScheduleDto>.Fail(ResultCode.Fail, $"{item}上课时间不匹配。");
+                        }
+                        itemcount++;
+                        if (nows.Count == itemcount)
+                        {
+                            break;
+                        }
+                    }
+                    itemcount++;
+                    if (Teachers.Count == itemcount)
+                    {
+                        break;
+                    }
+                }
+
+                //开始添加 排课表 
+                var Campus= await _organizationRepository.FirstOrDefaultAsync(x => x.Id == input.CampusId);//组织
+                var Class= await _classInfoRepository.FirstOrDefaultAsync(x => x.Id == input.ClassId);//班级
+                var Course= await _courseRepository.FirstOrDefaultAsync(x => x.Id == input.CourseId);//课程  
+                //老师list<string> 
+                ClassSchedule ClassSchedules = new ClassSchedule()
+                {
+                    OrganizationId = Campus.Id,
+                    OrganizationName = Campus.Name,
+                    ClassId = Class.Id,
+                    ClassName = Class.ClassName,
+                    CourseId = Course.Id,
+                    CourseName = Course.CourseName,
+                    MainTeacher = input.MainTeacher,
+                    AssistantTeacher = input.AssistantTeacher,
+                    StartDate = input.StartDate,
+                    EndDate = input.EndDate,
+                    ConsumptionBase = input.ConsumptionBase,
+                    MaxAttendees = input.MaxAttendees,
+                    MaxSchedules = input.MaxSchedules,
+                    SkipHolidays=input.SkipHolidays
+                };
+                var schedule=await _classScheduleRepository.InsertAsync(ClassSchedules);
+                //上课时间表
+                var map = ObjectMapper.Map<List<UpdateScheduleTime>, List<ScheduleTime>>(input.ScheduleTimes);
+                //给List<ScheduleTime>中的每个ScheduleTime设置ClassScheduleId
+                map.ForEach(time => time.ClassScheduleId = schedule.Id);
+                await _scheduleTimeRepository.InsertManyAsync(map); 
+
                 //创建机构 
                 var classSchedule = ObjectMapper.Map<UpdateClassScheduleDto, ClassSchedule>(input);
                 //插入数据库
@@ -120,11 +200,11 @@ namespace Educational.ClassSchedule
                 //映射
                 var result = ObjectMapper.Map<ClassSchedule, ClassScheduleDto>(classScheduleDto);
                 //返回
-                return ApiResult<ClassScheduleDto>.Success(ResultCode.Ok, result);
+                return ApiResult.Success(ResultCode.Ok);
             }
             catch (Exception ex)
             {
-                return ApiResult<ClassScheduleDto>.Fail(ResultCode.Fail, $"创建排课失败: {ex.Message}");
+                return ApiResult.Fail(ResultCode.Fail, $"创建排课失败: {ex.Message}");
             }
         }  
         //分页查询排课表

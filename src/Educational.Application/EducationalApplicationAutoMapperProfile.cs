@@ -45,15 +45,15 @@ public class EducationalApplicationAutoMapperProfile : Profile
 {
     public EducationalApplicationAutoMapperProfile()
     {
-    //专题
-
-    CreateMap<CategoryModel, XiAsepecialSubjectDto>().ReverseMap();
+        //专题 
+        CreateMap<CategoryModel, XiAsepecialSubjectDto>().ReverseMap();
         //薪资
         CreateMap<UpdateSalaryDto, ClassHourFeeSetting>().ReverseMap();
         CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
-        //排课  
+        //排课   
         CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
         CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
+        CreateMap<UpdateScheduleTime, ScheduleTime>().ReverseMap();
         CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
         CreateMap<UpdateClassScheduleDto, Educational.ClassSchedule.ClassSchedule>().ReverseMap();
         //专题一套

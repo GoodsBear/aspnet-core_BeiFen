@@ -256,7 +256,6 @@ namespace Educational.Staffs
                 //获取机构主键
                 var OrganizationId = await organizationRepository.FirstOrDefaultAsync(x => x.Name == staffinfo.Organization);
 
-
                 //添加职位表的同时添加薪资表
                 SalarySettingModel salary = new SalarySettingModel()
                 {

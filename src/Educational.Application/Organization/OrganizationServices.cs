@@ -262,8 +262,6 @@ namespace Educational.Organization
                 throw;
             }
         }
-
-
         /// <summary>
         /// 字段全显示树形组织机构表
         /// </summary>
@@ -336,7 +334,11 @@ namespace Educational.Organization
                 return ApiResult<OrganizationLevelDto>.Fail(ResultCode.Fail, $"组织机构级别add失败: {ex.Message}");
             }
         }
-
+        /// <summary>
+        /// 获取组织机构树形（id+name）
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         public async Task<ApiResult<List<OrganizationTreeDto>>> GetTreeAsync(
             [DefaultValue("00000000-0000-0000-0000-000000000000")] Guid parentId)
         {
@@ -360,7 +362,6 @@ namespace Educational.Organization
             {
                 BuildTree(item, orgLookup);
             }
-
             return ApiResult<List<OrganizationTreeDto>>.Success(ResultCode.Ok, tree);
         }
 

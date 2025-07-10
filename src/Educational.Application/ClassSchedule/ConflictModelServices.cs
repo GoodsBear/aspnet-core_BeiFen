@@ -15,6 +15,9 @@ using Volo.Abp.ObjectMapping;
 
 namespace Educational.ClassSchedule
 {
+    /// <summary>
+    /// 冲突检测表
+    /// </summary>
     public class ConflictModelServices : ApplicationService, IConflictModelServices
     {
         ILogger<ConflictModelServices> _logger;

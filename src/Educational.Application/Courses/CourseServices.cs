@@ -72,8 +72,7 @@ namespace Educational.Courses
 			if (seach.Status != null)
 			{
 				course= course.Where(x=>x.Status==seach.Status);
-			}
-
+			} 
 			var coursepage= course.Page(seach.PageIndex,seach.PageSize);
 			var courselist=ObjectMapper.Map<List<Course>, List<CourseDto>>(coursepage.ToList());
 			ApiPaging<List<CourseDto>> paging=new ApiPaging<List<CourseDto>>
