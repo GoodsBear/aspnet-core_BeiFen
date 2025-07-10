@@ -52,5 +52,11 @@ namespace Educational.Materials
 		/// </summary>
 		[Required(ErrorMessage = "必须指定物料状态")]
 		public bool Status { get; set; }
+		/// <summary>
+		/// 物料说明
+		/// </summary>
+		[StringLength(500, MinimumLength = 2, ErrorMessage = "描述长度需在2-500个字符之间")]
+		[MaxLength(500, ErrorMessage = "描述长度不能超过500字符")]
+		public string MterialDescription { get; set; }
 	}
 }

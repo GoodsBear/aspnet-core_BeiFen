@@ -1,4 +1,7 @@
 using AutoMapper;
+using AutoMapper.Internal.Mappers;
+using Educational.Courses;
+using Educational.Organization;
 using Educational.Announcements;
 using Educational.Classgrade;
 using Educational.ClassSchedule;
@@ -14,7 +17,6 @@ using Educational.Dto.MaterialDtos;
 using Educational.Dto.Positions;
 using Educational.Materials;
 using Educational.Menu;
-using Educational.Menu;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
@@ -26,16 +28,16 @@ using Educational.SpecialSubject;
 using Educational.Staffs;
 using Educational.Staffs.SalarySetting;
 using Educational.StaffTypes;
-using Educational.StafRoles;
+using Educational.StafRoles; 
+using Educational.Menu;
+using Educational.StudentsAndParents.Students;
+using Educational.Dto.MaterialRecordsDtos;
+using Educational.StudentsAndParents.StudentFollow;
 using Educational.StudentsAndParends.Students.Follow;
 using Educational.StudentsAndParends.Students.Store;
-using Educational.StudentsAndParents.Stores;
-using Educational.StudentsAndParents.StudentFollow;
-using Educational.StudentsAndParents.StudentFollow;
-using Educational.StudentsAndParents.Students;
-using Educational.StudentsAndParents.Students;
+using Educational.StudentsAndParents.Stores; 
 using Educational.StudentsAndParents.StudentStore;
-using Educational.Subject;
+using Educational.StudentsAndParends.Students;
 using Educational.Subject;
 using System.Text.Json;
 
@@ -50,7 +52,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         //薪资
         CreateMap<UpdateSalaryDto, ClassHourFeeSetting>().ReverseMap();
         CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
-        //排课   
+        //排课  
         CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
         CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
         CreateMap<UpdateScheduleTime, ScheduleTime>().ReverseMap();
@@ -135,7 +137,11 @@ public class EducationalApplicationAutoMapperProfile : Profile
 		//物料
 		CreateMap<Material, MaterialDto>().ReverseMap();
 		CreateMap<CreateUpdateMaterialDto,Material>().ReverseMap();
-
+        CreateMap<Material, MaterialSelectDto>().ReverseMap();
+        //出入库
+        CreateMap<MaterialRecords, MaterialRecordsDto>().ReverseMap();
+        CreateMap<CreateUpdateMaterialRecordsDto, MaterialRecords>().ReverseMap();
+        
         //动态菜单
         CreateMap<CreateUpdateMenuDto,Educational.Menu.Menu>().ReverseMap();
         CreateMap<Educational.Menu.Menu, MenuDto>().ReverseMap();
@@ -143,7 +149,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         //学员
         CreateMap<CreateUpdateStudentDto, Educational.StudentsAndParends.Students.Student>().ReverseMap();
         CreateMap<Educational.StudentsAndParends.Students.Student, StudentsDto>().ReverseMap();
-
+        CreateMap<Student, StudentSelectDto>().ReverseMap();
         //学员跟进
         CreateMap<CreateUpdateFollowDto,Follow>().ReverseMap();
         CreateMap<Follow, FollowDto>();

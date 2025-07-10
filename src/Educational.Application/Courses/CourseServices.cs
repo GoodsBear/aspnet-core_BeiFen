@@ -1,4 +1,7 @@
-﻿using Educational.Organization;
+using Educational.Enums;
+using Educational.Organization;
+using Educational.SpecialSubject;
+using Educational.Subject;
 using Educational.Staffs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,6 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Educational.Classgrade;
+using Educational.Dto.Grades;
 
 namespace Educational.Courses
 {
@@ -18,11 +23,19 @@ namespace Educational.Courses
 	{
 		IRepository<Course, Guid> _courseRepository;
 		IRepository<OrganizationModel, Guid> organiRepository;
+		IRepository<SubjectModel, Guid> subjectRepository;
+		IRepository<SpecialSubjectModel, Guid> specialRepository;
+		IRepository<OrganizationModel, Guid> organRepository;
+		IRepository<Grade, Guid> gradeRepository;
 
-		public CourseServices(IRepository<Course, Guid> courseRepository, IRepository<OrganizationModel, Guid> organiRepository)
+		public CourseServices(IRepository<Course, Guid> courseRepository, IRepository<OrganizationModel, Guid> organiRepository, IRepository<SpecialSubjectModel, Guid> specialRepository, IRepository<SubjectModel, Guid> subjectRepository, IRepository<OrganizationModel, Guid> organRepository, IRepository<Grade, Guid> gradeRepository)
 		{
 			_courseRepository = courseRepository;
 			this.organiRepository = organiRepository;
+			this.specialRepository = specialRepository;
+			this.subjectRepository = subjectRepository;
+			this.organRepository = organRepository;
+			this.gradeRepository = gradeRepository;
 		}
 
 		/// <summary>
@@ -72,9 +85,28 @@ namespace Educational.Courses
 			if (seach.Status != null)
 			{
 				course= course.Where(x=>x.Status==seach.Status);
-			} 
+			}  
+			//获取科目
+			var subject= ObjectMapper.Map<List<SubjectModel>,List<SubjectDto>>((await subjectRepository.GetQueryableAsync()).ToList());
+			//获取专题
+            var topic=ObjectMapper.Map<List<SpecialSubjectModel>,List<SpecialSubjectDto>>((await specialRepository.GetQueryableAsync()).ToList());
+			//获取机构
+            var organization=ObjectMapper.Map<List<OrganizationModel>,List<OrganizationDto>>((await organRepository.GetQueryableAsync()).ToList());
+			//获取年级
+            var grade=ObjectMapper.Map<List<Grade>,List<GradeDto>>((await gradeRepository.GetQueryableAsync()).ToList());
+
 			var coursepage= course.Page(seach.PageIndex,seach.PageSize);
 			var courselist=ObjectMapper.Map<List<Course>, List<CourseDto>>(coursepage.ToList());
+			foreach (var item in courselist)
+			{ 
+				item.CampusName= organization.FirstOrDefault(x=>x.Id==item.CampusId)?.Name;
+				item.SubjectName=subject.FirstOrDefault(x=>x.Id==item.SubjectId)?.SubjectName;
+                item.TopicName=topic.FirstOrDefault(x=>x.Id==item.TopicId)?.Name;
+				item.GratorName=grade.FirstOrDefault(x=>x.Id==item.GratorId)?.GradeName;
+				CourseType type1 = (CourseType)item.CourseTypeId;
+				item.CourseTypeName = type1.ToString();
+				
+			}
 			ApiPaging<List<CourseDto>> paging=new ApiPaging<List<CourseDto>>
 			{
 				TotleCount= course.Count(),
@@ -85,7 +117,7 @@ namespace Educational.Courses
 		}
 
 		/// <summary>
-		/// 批量修改课程状态
+		/// 批量操作课程状态(上下架,启用禁用,删除)
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="status"></param>
@@ -94,22 +126,39 @@ namespace Educational.Courses
 		public async Task<ApiResult> UpdateCourseStatus(List<Guid> guids, bool status ,int type)
 		{
 			Guid[] ids= guids.ToArray();
-			foreach(var id in ids)
+			if (type == 0)
 			{
-				var course = await _courseRepository.FirstOrDefaultAsync(x=>x.Id==id);
-				if (type>0)
+				//批量修改课程状态
+				foreach(var id in ids)
 				{
-					//修改课程状态
+					
+					var course = await _courseRepository.FirstOrDefaultAsync(x => x.Id == id);
 					course.Status = status;
+					await _courseRepository.UpdateAsync(course);
 				}
-				else
+				return ApiResult.Success(ResultCode.Ok);
+			}else if (type == 1)
+			{
+				//批量上下架课程
+				foreach (var id in ids)
 				{
-					//修改课程是否上架
+					var course = await _courseRepository.FirstOrDefaultAsync(x => x.Id == id);
 					course.IsOnlineSale = status;
+					await _courseRepository.UpdateAsync(course);
 				}
-				await _courseRepository.UpdateAsync(course);
+				return ApiResult.Success(ResultCode.Ok);
 			}
-			return ApiResult.Success(ResultCode.Ok);
+			else 
+			{
+				//批量删除课程
+				foreach (var id in ids)
+				{
+					var course = await _courseRepository.FirstOrDefaultAsync(x => x.Id == id);
+					course.IsDeleted = status;
+					await _courseRepository.DeleteAsync(course);
+				}
+				return ApiResult.Success(ResultCode.Ok);
+			}
 		}
 
         /// <summary>
@@ -132,6 +181,39 @@ namespace Educational.Courses
             }
         }
 
+		/// <summary>
+		/// 修改课程信息
+		/// </summary>
+		/// <param name="coursedto"></param>
+		/// <returns></returns>
+        [HttpPut("UpdateCourse")]
+		public async Task<ApiResult<CourseDto>> UpdateCourse(CreateUpdateCourseDto coursedto)
+		{
+			try
+			{
+				var course = await _courseRepository.GetAsync(coursedto.Id);
+				if (course == null)
+				{
+					return ApiResult<CourseDto>.Fail(ResultCode.Fail, "课程不存在，请检查！");
+				}
+				course = ObjectMapper.Map(coursedto, course);
+				var updatedCourse = await _courseRepository.UpdateAsync(course);
+				var result = ObjectMapper.Map<Course, CourseDto>(updatedCourse);
+				return ApiResult<CourseDto>.Success(ResultCode.Ok, result);
+			}
+			catch (Exception ex)
+			{
+				Logger.LogError(ex, "更新课程信息失败");
+				throw;
+			}
+		}
+	}
 
-    }
+
+
+
+
+
+
+
 }

@@ -1,5 +1,5 @@
-using Castle.Components.DictionaryAdapter;
 using Abp.Authorization;
+using Castle.Components.DictionaryAdapter;
 using Educational.Enmu;
 using Educational.Organization;
 using Educational.Positions;
@@ -43,11 +43,10 @@ namespace Educational.Staffs
         private readonly IRepository<Permissions, Guid> permissionrepository; //权限表
         ILogger<StaffServices> logger;
         private readonly ICaptcha captcha;
-
-
+        
         public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository,
-            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository,ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository,
-             IRepository<Educational.RBAC.Permissions, Guid> permissionrepository)
+            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Educational.RBAC.Permissions, Guid> permissionrepository,
+            IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
@@ -61,7 +60,7 @@ namespace Educational.Staffs
             this.captcha = captcha;
             this.staffrolerepository = staffrolerepository;
             this.rolepermissionrepository = rolepermissionrepository;
-            this.permissionrepository = permissionrepository;
+            this.permissionrepository = permissionrepository; 
         }
         /// <summary>
         /// 获取成员列表下拉框
@@ -276,12 +275,6 @@ namespace Educational.Staffs
                     };
                     await classHourFeeSettingRepository.InsertAsync(money);
                 }
-                ////添加职位表的同时添加薪资表
-                //SalarySettingModel salary = new SalarySettingModel() {
-                //    StaffId = staffinfo.Id,
-                //    OrganizationId= OrganizationId.Id
-                //};
-                //var a=await salarySettingRepository.InsertAsync(salary); 
 
                 // 封装返回结果，状态码 OK，附带员工信息
                 return ApiResult<ShowStaffDTO>.Success(ResultCode.Ok, showstaffinfo);

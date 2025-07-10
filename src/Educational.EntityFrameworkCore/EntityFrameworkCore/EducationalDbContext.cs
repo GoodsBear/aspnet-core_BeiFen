@@ -56,7 +56,7 @@ public class EducationalDbContext :
     }
     public DbSet<Educational.Menu.Menu>Menu { get; set; } //动态菜单表
 
-    //#region 学生和家长相关表
+    #region 学生和家长相关表
     public DbSet<Student> Student { get; set; } //学生
     public DbSet<EnrollmentRecord> EnrollmentRecord { get; set; } //学生报名记录表
     public DbSet<Follow> Follow { get; set; } //学生跟进记录表
@@ -67,13 +67,13 @@ public class EducationalDbContext :
     public DbSet<ClassInfo> Class { get; set; }  //班级
     public DbSet<Grade> Grade { get; set; }   //年级
     public DbSet<Course> Course { get; set; } //课程信息表
-
-    // #endregion
-
-
+	public DbSet<ReletedCourse> ReletedCourse { get; set; } //课程关联表
+	#endregion
 
 
-    public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
+
+
+	public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
     public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
     public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
     public DbSet<Educational.Subject.SubjectModel> SubjectModel { get; set; }//科目表
@@ -85,13 +85,15 @@ public class EducationalDbContext :
     public DbSet<ScheduleTime> ScheduleTime { get; set; }//排课子表--上课时间表
     public DbSet<ConflictModel> ConflictModel { get; set; }//排课子表--冲突表
 
-   //#region 组织管理
+   #region 组织管理
     public DbSet<OrganizationModel> OrganizationModels { get; set; }//组织信息表
     public DbSet<OrganizationLevel> OrganizationLevels { get; set; }//组织级别表
     public DbSet<Position> positions { get; set; }//职位信息表
 
-    //#endregion
-    //#region 系统管理
+    #endregion
+
+
+   #region 系统管理
 
     public DbSet<StaffInfo> staffInfos { get; set; }//员工信息表
     public DbSet<StaffRole> StaffRole { get; set; } //员工角色中间表
@@ -102,7 +104,11 @@ public class EducationalDbContext :
 
     public DbSet<SalarySettingModel> SalarySettingModel { get; set; } //薪资表
 
-    //#endregion
+    #endregion
+
+
+
+
 
     public DbSet<ClassHourFeeSetting> ClassHourFeeSetting { get; set; }//上课时间表
 
@@ -210,7 +216,7 @@ public class EducationalDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });
-    
+        
 
         /// <summary>
         /// 人员类型信息表
@@ -252,36 +258,41 @@ public class EducationalDbContext :
         });
 
         /* Configure your own tables/entities inside here */
-
+        //学生表
         builder.Entity<Student>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "Student", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.Name).IsRequired().HasMaxLength(50);
         });
+        //班级表
         builder.Entity<ClassInfo>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "ClassInfo", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.ClassName).IsRequired().HasMaxLength(50);
         });
+        //年级表
         builder.Entity<Grade>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "Grade", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.GradeName).IsRequired().HasMaxLength(50);
         });
+        //家长表
         builder.Entity<Parent>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "Parent", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.PardentName).IsRequired().HasMaxLength(50);
         });
+        //课程表
         builder.Entity<Course>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "Course", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.CourseName).IsRequired().HasMaxLength(50);
         });
+      
     }
 }

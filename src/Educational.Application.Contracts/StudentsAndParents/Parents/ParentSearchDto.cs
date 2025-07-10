@@ -12,10 +12,10 @@ namespace Educational.StudentsAndParents.Parents
         /// <summary>
         /// 手机号
         /// </summary>
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
         /// <summary>
         /// 微信昵称
         /// </summary>
-        public string NickName { get; set; }
+        public string? NickName { get; set; }
     }
 }
