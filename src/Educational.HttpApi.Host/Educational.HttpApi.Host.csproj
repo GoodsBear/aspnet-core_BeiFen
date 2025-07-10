@@ -11,6 +11,8 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<!-- 确保这行存在并为 true -->
 		<NoWarn>$(NoWarn);1591</NoWarn>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>..\..</DockerfileContext>
 		<!-- 确保 1591 没有被单独添加在这里，如果存在，移除 1591 -->
 	</PropertyGroup>
 
