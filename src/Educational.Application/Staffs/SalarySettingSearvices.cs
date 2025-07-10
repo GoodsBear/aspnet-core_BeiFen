@@ -49,8 +49,8 @@ namespace Educational.Staffs
                 // 获取薪资数据源
                 var staffinfo = await salarySettingRepository.GetQueryableAsync();
                 //OrganizationId
-                staffinfo=staffinfo.WhereIf(search.OrganizationId != null, x => x.OrganizationId.Equals(search.OrganizationId))
-                    .OrderByDescending(x=>x.LastModificationTime);
+                staffinfo = staffinfo.WhereIf(search.OrganizationId != null, x => x.OrganizationId.Equals(search.OrganizationId))
+                    .OrderByDescending(x => x.LastModificationTime);
                 //根据反填的员工id查找员工姓名// staffinfo.StaffName
                 var staff = await staffInfoRepository.GetQueryableAsync();
 
@@ -66,8 +66,8 @@ namespace Educational.Staffs
                            join sta in staff
                            on salary.StaffId equals sta.Id
                            join moeny in hoursmoeny
-                           on salary.Id  equals moeny.SalarySettingId
-                           select new  SalarySettingDto
+                           on salary.Id equals moeny.SalarySettingId
+                           select new SalarySettingDto
                            {
                                Id = salary.Id,
                                StaffId = sta.Id,
@@ -76,7 +76,7 @@ namespace Educational.Staffs
                                BasicSalary = salary.BasicSalary,
                                QualifiedClassHours = salary.QualifiedClassHours,
                                OrganizationId = salary.OrganizationId,
-                               ClassHourDuration= moeny.ClassHourDuration,
+                               ClassHourDuration = moeny.ClassHourDuration,
                                ClassHourFee = moeny.ClassHourFee,
                                AssistantFee = moeny.AssistantFee
                            };
@@ -85,7 +85,7 @@ namespace Educational.Staffs
                 var page = staffinfo.PageResult(search.PageIndex, search.PageSize);
                 // 映射 
                 //var salaryDto = ObjectMapper.Map<List<SalarySettingModel>, List<SalarySettingDto>>(page.Queryable.ToList());
-               
+
 
                 // 封装分页数据
                 var result = new ApiPaging<List<SalarySettingDto>>
@@ -165,16 +165,16 @@ namespace Educational.Staffs
                 return ApiResult.Fail(ResultCode.Fail, $"修改薪资信息失败: {ex.Message}");
             }
         }
-     
+
         //上课时间表
         public async Task<ApiResult<List<HourDto>>> GetClassHourFeeSettingAsync(Guid SalarySettingId)
-        { 
+        {
             try
             {
                 var list = await classHourFeeSettingRepository.GetQueryableAsync();
                 list = list.Where(x => x.SalarySettingId == SalarySettingId);
                 var result = list.Select(x => new HourDto
-                { 
+                {
                     ClassHourDuration = x.ClassHourDuration,
                     ClassHourFee = x.ClassHourFee,
                     AssistantFee = x.AssistantFee
@@ -187,6 +187,6 @@ namespace Educational.Staffs
                 return ApiResult<List<HourDto>>.Fail(ResultCode.Fail, $" 获取课时费信息 列表失败: {ex.Message}");
             }
         }
-         
+
     }
 }
