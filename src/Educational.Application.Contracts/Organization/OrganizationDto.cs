@@ -9,7 +9,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.Organization
 {
-    public class OrganizationDto  
+    public class OrganizationDto: AuditedEntity<Guid>
     { 
         /// <summary>
         /// 机构名

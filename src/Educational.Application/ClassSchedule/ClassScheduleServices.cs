@@ -39,9 +39,9 @@ namespace Educational.ClassSchedule
         IRepository<StaffInfo, Guid> _staffInfoRepository;//职工
         IRepository<OrganizationModel, Guid> _organizationRepository;//组织机构
         IRepository<Student, Guid> _studentRepository;//学生表
-       //学员表机构--关联学院的消课基数添加的，多上了不得负数啊
-       //职工薪资表--是否分配
-       //职工课时表--是否够时间
+                                                      //学员表机构--关联学院的消课基数添加的，多上了不得负数啊
+                                                      //职工薪资表--是否分配
+                                                      //职工课时表--是否够时间
         ILogger<ClassScheduleServices> _logger;
 
         public ClassScheduleServices(IRepository<ClassSchedule, Guid> classScheduleRepository, IRepository<ScheduleTime, Guid> scheduleTimeRepository, IRepository<ConflictModel, Guid> conflictModelRepository, IRepository<ClassInfo, Guid> classInfoRepository, IRepository<Course, Guid> courseRepository, IRepository<StaffInfo, Guid> staffInfoRepository, IRepository<OrganizationModel, Guid> organizationRepository, ILogger<ClassScheduleServices> logger, IRepository<Student, Guid> studentRepository, IRepository<SalarySettingModel, Guid> salarySettingRepository, IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository, IRepository<ClassRoom, Guid> classRoomRepository)
@@ -66,11 +66,11 @@ namespace Educational.ClassSchedule
             try
             {
                 // 构建查询
-                var conflictlist = await _conflictModelRepository.GetQueryableAsync();  
+                var conflictlist = await _conflictModelRepository.GetQueryableAsync();
                 // 使用ABP自带分页方法 
                 var page = conflictlist.PageResult(search.PageIndex, search.PageSize);
                 // 映射 
-                 var linq = ObjectMapper.Map<List<ConflictModel>, List<ConflictModelDto>>(page.Queryable.ToList());
+                var linq = ObjectMapper.Map<List<ConflictModel>, List<ConflictModelDto>>(page.Queryable.ToList());
                 var result = new ApiPaging<List<ConflictModelDto>>
                 {
                     TotleCount = page.RowCount,
@@ -91,45 +91,45 @@ namespace Educational.ClassSchedule
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async  Task<ApiResult> CreateClassScheduleAsync(UpdateClassScheduleDto input)
+        public async Task<ApiResult> CreateClassScheduleAsync(UpdateClassScheduleDto input)
         {
             //添加检查
-           await AddCheck(input);
+            await AddCheck(input);
             try
-            { 
+            {
                 //开始添加 排课表 
-                var Campus= await _organizationRepository.FirstOrDefaultAsync(x => x.Id == input.CampusId);//组织
+                var Campus = await _organizationRepository.FirstOrDefaultAsync(x => x.Id == input.CampusId);//组织
                 if (Campus == null)
                 {
                     return ApiResult.Fail(ResultCode.Fail, "未找到指定的校区");
                 }
-                var Class= await _classInfoRepository.FirstOrDefaultAsync(x => x.Id == input.ClassId);//班级
+                var Class = await _classInfoRepository.FirstOrDefaultAsync(x => x.Id == input.ClassId);//班级
                 if (Class == null)
                 {
                     return ApiResult.Fail(ResultCode.Fail, "未找到指定的班级");
-                } 
-                var Course= await _courseRepository.FirstOrDefaultAsync(x => x.Id == input.CourseId);//课程   
+                }
+                var Course = await _courseRepository.FirstOrDefaultAsync(x => x.Id == input.CourseId);//课程   
                 if (Course == null)
                 {
                     return ApiResult.Fail(ResultCode.Fail, "未找到指定的课程");
                 }
                 //老师list<string> 
-               var ClassSchedules  = ObjectMapper.Map<UpdateClassScheduleDto, Educational.ClassSchedule.ClassSchedule>(input);
-                ClassSchedules.ClassName= Class.ClassName;
-                ClassSchedules.OrganizationName= Campus.Name;
-                ClassSchedules.CourseName=Course.CourseName; 
-                var schedule=await _classScheduleRepository.InsertAsync(ClassSchedules);
+                var ClassSchedules = ObjectMapper.Map<UpdateClassScheduleDto, Educational.ClassSchedule.ClassSchedule>(input);
+                ClassSchedules.ClassName = Class.ClassName;
+                ClassSchedules.OrganizationName = Campus.Name;
+                ClassSchedules.CourseName = Course.CourseName;
+                var schedule = await _classScheduleRepository.InsertAsync(ClassSchedules);
                 //上课时间表
                 var map = ObjectMapper.Map<List<UpdateScheduleTime>, List<ScheduleTime>>(input.ScheduleTimes);
                 //给List<ScheduleTime>中的每个ScheduleTime设置ClassScheduleId
                 map.ForEach(time => time.ClassScheduleId = schedule.Id);
-                var classroom = await _classInfoRepository.GetQueryableAsync();
+                var classroom = await _classRoomRepository.GetQueryableAsync();
                 foreach (var item in map)
                 {
-                    classroom = classroom.Where(x=>x.Id==item.ClassroomId);
-                    item.ClassroomName= classroom.FirstOrDefault().ClassName;
-                } 
-                await _scheduleTimeRepository.InsertManyAsync(map); 
+                    classroom = classroom.Where(x => x.Id == item.ClassroomId);
+                    item.ClassroomName = classroom.FirstOrDefault().ClassRoomName;
+                }
+                await _scheduleTimeRepository.InsertManyAsync(map);
                 //返回
                 return ApiResult.Success(ResultCode.Ok);
             }
@@ -137,12 +137,12 @@ namespace Educational.ClassSchedule
             {
                 return ApiResult.Fail(ResultCode.Fail, $"创建排课失败: {ex.Message}");
             }
-        }  
+        }
         //分页查询排课表
-        public async  Task<ApiResult<ApiPaging<List<ClassScheduleDto>>>> GetListAsync([FromQuery] ClassScheduleSearchDto search)
+        public async Task<ApiResult<ApiPaging<List<ClassScheduleDto>>>> GetListAsync([FromQuery] ClassScheduleSearchDto search)
         {
             try
-            {               
+            {
                 // 构建查询
                 var classSchedulelist = await _classScheduleRepository.GetQueryableAsync();
                 var scheduleTimeSub = await _scheduleTimeRepository.GetQueryableAsync();
@@ -152,7 +152,7 @@ namespace Educational.ClassSchedule
                 var conflictlist = await _conflictModelRepository.GetQueryableAsync();
                 var courselist = await _courseRepository.GetQueryableAsync();
                 //  查询
-                 classSchedulelist = classSchedulelist.WhereIf(search.organizationId != null, x => x.OrganizationId.Equals(search.organizationId));
+                classSchedulelist = classSchedulelist.WhereIf(search.organizationId != null, x => x.OrganizationId.Equals(search.organizationId));
                 classSchedulelist = classSchedulelist.WhereIf(search.ClassId != null, x => x.ClassId.Equals(search.ClassId));
                 classSchedulelist = classSchedulelist.WhereIf(search.CourseName != null, x => x.CourseName.Equals(search.CourseName));
                 var linq = from s in classSchedulelist
@@ -234,7 +234,7 @@ namespace Educational.ClassSchedule
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"更新排课失败"+ex);
+                _logger.LogError(ex, $"更新排课失败" + ex);
                 return ApiResult<Educational.Subject.SubjectModel>.Fail(ResultCode.Fail, $"更新排课失败: {ex.Message}");
             }
         }
@@ -247,11 +247,11 @@ namespace Educational.ClassSchedule
 
                 foreach (var id in ids)
                 {
-                    var course =  await _classScheduleRepository.FirstOrDefaultAsync(x => x.Id == id); 
+                    var course = await _classScheduleRepository.FirstOrDefaultAsync(x => x.Id == id);
                     //删除
                     await _classScheduleRepository.DeleteAsync(course);
                 }
-                return ApiResult.Success(ResultCode.Ok); 
+                return ApiResult.Success(ResultCode.Ok);
             }
             catch (Exception ex)
             {
@@ -270,7 +270,7 @@ namespace Educational.ClassSchedule
         /// <param name="input"></param>
         /// <returns></returns>
         public async Task<ApiResult> AddCheck(UpdateClassScheduleDto input)
-        { 
+        {
             try
             {
                 //日期设置检查

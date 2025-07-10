@@ -73,6 +73,7 @@ public class EducationalDbContext :
 
 
 
+	public DbSet<ClassRoom> ClassRoom { get; set; }//教室表
 	public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
     public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
     public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
@@ -127,6 +128,12 @@ public class EducationalDbContext :
             b.ToTable(EducationalConsts.DbTablePrefix + "StaffInfo", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
+        });
+        //教室表
+        builder.Entity<ClassRoom>(b =>
+        {
+            b.ToTable(EducationalConsts.DbTablePrefix + "ClassRoom", EducationalConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
         });
         //薪资表
         // 配置SalarySetting聚合根

@@ -9,7 +9,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.SpecialSubject
 {
-    public class SpecialSubjectDto  
+    public class SpecialSubjectDto: AuditedEntity<Guid>
     { 
         [Required]
         [StringLength(128)]
