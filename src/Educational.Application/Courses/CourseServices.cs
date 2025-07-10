@@ -1,11 +1,15 @@
+using Educational.Classgrade;
+using Educational.Courses.ReletedCoursedtos;
+using Educational.Dto.Grades;
 using Educational.Enums;
 using Educational.Organization;
 using Educational.SpecialSubject;
-using Educational.Subject;
 using Educational.Staffs;
+using Educational.Subject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -13,8 +17,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
-using Educational.Classgrade;
-using Educational.Dto.Grades;
 
 namespace Educational.Courses
 {
@@ -27,8 +29,9 @@ namespace Educational.Courses
 		IRepository<SpecialSubjectModel, Guid> specialRepository;
 		IRepository<OrganizationModel, Guid> organRepository;
 		IRepository<Grade, Guid> gradeRepository;
+		IRepository<ReletedCourse, Guid> courseRelationRepository;
 
-		public CourseServices(IRepository<Course, Guid> courseRepository, IRepository<OrganizationModel, Guid> organiRepository, IRepository<SpecialSubjectModel, Guid> specialRepository, IRepository<SubjectModel, Guid> subjectRepository, IRepository<OrganizationModel, Guid> organRepository, IRepository<Grade, Guid> gradeRepository)
+		public CourseServices(IRepository<Course, Guid> courseRepository, IRepository<OrganizationModel, Guid> organiRepository, IRepository<SpecialSubjectModel, Guid> specialRepository, IRepository<SubjectModel, Guid> subjectRepository, IRepository<OrganizationModel, Guid> organRepository, IRepository<Grade, Guid> gradeRepository, IRepository<ReletedCourse, Guid> courseRelationRepository)
 		{
 			_courseRepository = courseRepository;
 			this.organiRepository = organiRepository;
@@ -36,6 +39,7 @@ namespace Educational.Courses
 			this.subjectRepository = subjectRepository;
 			this.organRepository = organRepository;
 			this.gradeRepository = gradeRepository;
+			this.courseRelationRepository = courseRelationRepository;
 		}
 
 		/// <summary>
@@ -207,13 +211,123 @@ namespace Educational.Courses
 				throw;
 			}
 		}
+
+		/// <summary>
+		/// 批量添加课程关联
+		/// </summary>
+		/// <param name="dto"></param>
+		/// <returns></returns>
+		/// <exception cref="NotImplementedException"></exception>
+		public async Task<ApiResult> AddReletedCourse(ReletedCourseDto dto)
+		{
+			if (dto == null || dto.CourseId == Guid.Empty || dto.Guids == null || !dto.Guids.Any())
+			{
+				return ApiResult.Fail(ResultCode.Fail, "参数无效");
+			}
+
+			// 查询当前课程已有关联
+			var existingRelations = await _courseRepository.GetListAsync(x => x.Id == dto.CourseId);
+			var existingRelatedIds = existingRelations.Select(x => x.Id).ToHashSet();
+
+			// 过滤掉已存在的关联课程ID，只添加新的
+			var newRelatedIds = dto.Guids.Where(id => !existingRelatedIds.Contains(id)).ToList();
+
+			if (newRelatedIds.Count == 0)
+			{
+				return ApiResult.Success(ResultCode.Ok); // 全部已存在，视为成功
+			}
+			// 创建新的关联课程
+			var newRelations = newRelatedIds.Select(relatedId => new ReletedCourse
+			{
+				Course1Id = dto.CourseId,
+				Course2Id = relatedId
+			}).ToList();
+
+			await courseRelationRepository.InsertManyAsync(newRelations, autoSave: true);
+
+			return ApiResult.Success(ResultCode.Ok);
+		}
+		/// <summary>
+		/// 获取课程关联
+		/// </summary>
+		/// <param name="guid"></param>
+		/// <returns></returns>
+		/// <exception cref="NotImplementedException"></exception>
+		public async Task<ApiResult<ApiPaging<List<CourseDto>>>> GetReletedCourse(SearchReletedCourseDto search)
+		{
+			if (search == null || search.Id == Guid.Empty)
+				return ApiResult<ApiPaging<List<CourseDto>>>.Fail(ResultCode.Fail, "参数无效");
+
+			// 1. 查找所有与选中课程有关联的课程
+			var relations = await courseRelationRepository.GetListAsync(
+				x => x.Course1Id == search.Id || x.Course2Id == search.Id
+			);
+			if (relations.Count == 0)
+				return ApiResult<ApiPaging<List<CourseDto>>>.Success(ResultCode.Ok, new ApiPaging<List<CourseDto>>
+				{
+					TotleCount = 0,
+					Data = new List<CourseDto>(),
+					TotlePage = 0
+				});
+
+			// 2. 提取所有关联课程ID（去重，排除自身）
+			var relatedCourseIds = relations
+				.Select(r => r.Course1Id == search.Id ? r.Course2Id : r.Course1Id)
+				.Where(id => id != search.Id)
+				.ToHashSet();
+
+			// 3. 查找这些课程的详细信息
+			var relatedCourses = await _courseRepository.GetListAsync(x => relatedCourseIds.Contains(x.Id));
+
+			// 4. 映射为CourseDto
+			var result = relatedCourses.Select(x => ObjectMapper.Map<Course, CourseDto>(x)).ToList();
+			//获取科目
+			var subject = ObjectMapper.Map<List<SubjectModel>, List<SubjectDto>>((await subjectRepository.GetQueryableAsync()).ToList());
+			//获取专题
+			var topic = ObjectMapper.Map<List<SpecialSubjectModel>, List<SpecialSubjectDto>>((await specialRepository.GetQueryableAsync()).ToList());
+			//获取机构
+			var organization = ObjectMapper.Map<List<OrganizationModel>, List<OrganizationDto>>((await organRepository.GetQueryableAsync()).ToList());
+			//获取年级
+			var grade = ObjectMapper.Map<List<Grade>, List<GradeDto>>((await gradeRepository.GetQueryableAsync()).ToList());
+
+
+
+			// 5. 分页
+			int totalCount = result.Count;
+			int pageIndex = search.PageIndex > 0 ? search.PageIndex : 1;
+			int pageSize = search.PageSize > 0 ? search.PageSize : 10;
+			var pageData = result.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+			int totalPage = (int)Math.Ceiling(totalCount * 1.0 / pageSize);
+			foreach (var item in pageData)
+			{
+				item.CampusName = organization.FirstOrDefault(x => x.Id == item.CampusId)?.Name;
+				item.SubjectName = subject.FirstOrDefault(x => x.Id == item.SubjectId)?.SubjectName;
+				item.TopicName = topic.FirstOrDefault(x => x.Id == item.TopicId)?.Name;
+				item.GratorName = grade.FirstOrDefault(x => x.Id == item.GratorId)?.GradeName;
+				CourseType type1 = (CourseType)item.CourseTypeId;
+				item.CourseTypeName = type1.ToString();
+
+			}
+			var paging = new ApiPaging<List<CourseDto>>
+			{
+				TotleCount = totalCount,
+				Data = pageData,
+				TotlePage = totalPage
+			};
+
+			return ApiResult<ApiPaging<List<CourseDto>>>.Success(ResultCode.Ok, paging);
+		}
+		/// <summary>
+		/// 移除课程关联
+		/// </summary>
+		/// <param name="guid"></param>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		/// <exception cref="NotImplementedException"></exception>
+		public Task<ApiResult> RemoveReletedCourse(Guid guid, Guid id)
+		{
+			throw new NotImplementedException();
+		}
 	}
-
-
-
-
-
-
-
 
 }

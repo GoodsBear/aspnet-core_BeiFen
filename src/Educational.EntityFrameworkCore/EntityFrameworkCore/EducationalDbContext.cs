@@ -216,7 +216,7 @@ public class EducationalDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });
-    
+        
 
         /// <summary>
         /// 人员类型信息表
@@ -258,36 +258,41 @@ public class EducationalDbContext :
         });
 
         /* Configure your own tables/entities inside here */
-
+        //学生表
         builder.Entity<Student>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "Student", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.Name).IsRequired().HasMaxLength(50);
         });
+        //班级表
         builder.Entity<ClassInfo>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "ClassInfo", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.ClassName).IsRequired().HasMaxLength(50);
         });
+        //年级表
         builder.Entity<Grade>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "Grade", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.GradeName).IsRequired().HasMaxLength(50);
         });
+        //家长表
         builder.Entity<Parent>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "Parent", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.PardentName).IsRequired().HasMaxLength(50);
         });
+        //课程表
         builder.Entity<Course>(b =>
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "Course", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.CourseName).IsRequired().HasMaxLength(50);
         });
+      
     }
 }

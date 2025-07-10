@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Educational.Courses.ReletedCoursedtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -23,5 +24,35 @@ namespace Educational.Courses
 		//修改课程信息
         Task<ApiResult<CourseDto>> UpdateCourse(CreateUpdateCourseDto coursedto);
 
-    }
+
+		/// <summary>
+		/// 添加关联课程
+		/// </summary>
+		/// <param name="guid">课程id</param>
+		/// <param name="ids">要关联的课程id数组</param>
+		/// <returns></returns>
+		Task<ApiResult> AddReletedCourse(ReletedCourseDto dto);
+
+		/// <summary>
+		/// 获取关联课程
+		/// </summary>
+		/// <param name="guid">课程id</param>
+		/// <returns></returns>
+		Task<ApiResult<ApiPaging<List<CourseDto>>>> GetReletedCourse(SearchReletedCourseDto search);
+
+		/// <summary>
+		/// 移除关联课程
+		/// </summary>
+		/// <param name="guid">课程id</param>
+		/// <param name="id">要移除的课程id</param>
+		/// <returns></returns>
+        Task<ApiResult> RemoveReletedCourse(Guid guid, Guid id);
+
+
+
+
+
+
+
+	}
 }
