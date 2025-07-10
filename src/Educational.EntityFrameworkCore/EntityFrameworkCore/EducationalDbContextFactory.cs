@@ -17,7 +17,8 @@ public class EducationalDbContextFactory : IDesignTimeDbContextFactory<Education
         var configuration = BuildConfiguration();
 
         var builder = new DbContextOptionsBuilder<EducationalDbContext>()
-            .UseMySql(configuration.GetConnectionString("Default"),ServerVersion.Parse("5.7.22-mysql"));
+            .UseMySql(configuration.GetConnectionString("Default"),ServerVersion.Parse("5.7.22-mysql")); //mysql
+            
 
         return new EducationalDbContext(builder.Options);
     }
