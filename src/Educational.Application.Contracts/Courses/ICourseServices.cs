@@ -21,6 +21,6 @@ namespace Educational.Courses
 		// 获取课程下拉框
 		Task<ApiResult<List<CourseSelectDto>>> GetCourseAsync();
 
-
+        Task<ApiResult<List<CourseDto>>> FTCouser();
     }
 }

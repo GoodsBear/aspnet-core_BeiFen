@@ -29,7 +29,7 @@ namespace Educational.Courses
 		/// <summary>
 		/// 科目
 		/// </summary>
-        public Guid? SubjectId { get; set; }
+        public Guid SubjectId { get; set; }
 		/// <summary>
 		/// 专题
 		/// </summary>

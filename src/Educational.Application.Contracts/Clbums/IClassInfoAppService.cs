@@ -20,5 +20,6 @@ namespace Educational.Clbums
         Task<ApiResult<List<ClassSelectDto>>> GetClassAsync();
         Task<ApiResult> BatchUpdateClassStatus(List<Guid> ids);
         //Task<ApiResult> UpdateClassStatus(Guid id, int Status);
+        Task<ApiResult<ClassInfoDto>> FTClassInfo(Guid id);
     }
 }
