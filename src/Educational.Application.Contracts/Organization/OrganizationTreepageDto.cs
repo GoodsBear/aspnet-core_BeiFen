@@ -3,13 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
+using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.Organization
 { 
-    public class OrganizationTreepageDto  
+    public class OrganizationTreepageDto : FullAuditedEntityDto<Guid>
     {
         public Guid Id { get; set; }
         /// <summary>

@@ -1,8 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using EFCore.NamingConventions.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata; // Npgsql 驱动自身的元数据命名空间
+using System;
+using System.IO;
 
 namespace Educational.EntityFrameworkCore;
 
@@ -17,7 +19,15 @@ public class EducationalDbContextFactory : IDesignTimeDbContextFactory<Education
         var configuration = BuildConfiguration();
 
         var builder = new DbContextOptionsBuilder<EducationalDbContext>()
-            .UseMySql(configuration.GetConnectionString("Default"),ServerVersion.Parse("5.7.22-mysql"));
+            .UseMySql(configuration.GetConnectionString("Default"),ServerVersion.Parse("5.7.22-mysql")); //mysql
+
+            //.UseNpgsql(configuration.GetConnectionString("Default"));
+
+            //builder.UseNpgsql(configuration.GetConnectionString("Default"), options =>
+            //{
+            //    options.MigrationsHistoryTable("__EFMigrationsHistory");
+            //})
+            //.UseSnakeCaseNamingConvention();
 
         return new EducationalDbContext(builder.Options);
     }

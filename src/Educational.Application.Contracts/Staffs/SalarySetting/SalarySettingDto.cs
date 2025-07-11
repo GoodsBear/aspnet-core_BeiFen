@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.Staffs.SalarySetting
-{ 
-     public class SalarySettingDto 
+{
+    public class SalarySettingDto
     {
-        public  Guid Id { get; set; }
+        public Guid Id { get; set; }
         /// <summary>
         /// 员工姓名
         /// </summary>
         [Required]
         public Guid StaffId { get; set; }
         public string StaffName { get; set; }
-        
+
         // <summary>
         ///基本工资--模式
         /// </summary>

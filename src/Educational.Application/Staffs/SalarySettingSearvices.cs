@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
 
 namespace Educational.Staffs
 {
