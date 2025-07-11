@@ -301,7 +301,7 @@ namespace Educational.Courses
 			{
 				item.CampusName = organization.FirstOrDefault(x => x.Id == item.CampusId)?.Name;
 				item.SubjectName = subject.FirstOrDefault(x => x.Id == item.SubjectId)?.SubjectName;
-				item.TopicName = topic.FirstOrDefault(x => x.Id == item.TopicId)?.Name;
+				//item.TopicName = topic.FirstOrDefault(x => x.Id == item.TopicId)?.Name;
 				item.GratorName = grade.FirstOrDefault(x => x.Id == item.GratorId)?.GradeName;
 				CourseType type1 = (CourseType)item.CourseTypeId;
 				item.CourseTypeName = type1.ToString();
