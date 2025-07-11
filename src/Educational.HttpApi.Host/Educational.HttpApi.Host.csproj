@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <Import Project="..\..\common.props" />
+	<Import Project="..\..\common.props" />
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -11,6 +11,8 @@
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	<!-- 确保这行存在并为 true -->
 	<NoWarn>$(NoWarn);1591</NoWarn>
+	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	<DockerfileContext>..\..</DockerfileContext>
 	<!-- 确保 1591 没有被单独添加在这里，如果存在，移除 1591 -->
   </PropertyGroup>
 
@@ -22,6 +24,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.12.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="9.0.0" />
@@ -29,27 +32,25 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
     <PackageReference Include="Volo.Abp.Autofac" Version="9.2.0" />
     <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="9.2.0" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore.PostgreSql" Version="9.2.0" />
+    <PackageReference Include="Volo.Abp.OpenIddict.AspNetCore" Version="9.2.1" />
     <PackageReference Include="Volo.Abp.Swashbuckle" Version="9.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite" Version="4.1.0-preview*" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Educational.Application\Educational.Application.csproj" />
+		<ProjectReference Include="..\Educational.EntityFrameworkCore\Educational.EntityFrameworkCore.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Educational.Application\Educational.Application.csproj" />
-    <ProjectReference Include="..\Educational.EntityFrameworkCore\Educational.EntityFrameworkCore.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Logs\**" />
+		<Content Remove="Logs\**" />
+		<EmbeddedResource Remove="Logs\**" />
+		<None Remove="Logs\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Logs\**" />
-    <Content Remove="Logs\**" />
-    <EmbeddedResource Remove="Logs\**" />
-    <None Remove="Logs\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\Uploads\images\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="wwwroot\Uploads\images\" />
+	</ItemGroup>
 
 </Project>

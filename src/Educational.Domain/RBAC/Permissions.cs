@@ -8,7 +8,7 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.RBAC
 {
-    public class Permissions:FullAuditedAggregateRoot<Guid>
+    public class Permissions : FullAuditedAggregateRoot<Guid>
     {
         /// <summary>
         /// 权限名称
@@ -28,5 +28,14 @@ namespace Educational.RBAC
         /// </summary>
         [Required(ErrorMessage = "父级ID不能为空。")]
         public Guid ParentId { get; set; } // 父级ID，默认为0表示顶级权限
+
+        /// <summary>
+        /// 权限唯一标识符
+        /// </summary>
+        public string PermissionCode { get; set; }
+        /// <summary>
+        /// 权限类型 "Menu" "button" 等
+        /// </summary>
+        public string PermissionType { get; set; } = string.Empty;
     }
 }

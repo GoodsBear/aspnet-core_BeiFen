@@ -5,11 +5,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.Organization
 {
-    public class OrganizationDto : FullAuditedAggregateRoot<Guid>
+    public class OrganizationDto :AuditedEntity<Guid>
     { 
         /// <summary>
         /// 机构名
@@ -25,12 +26,13 @@ namespace Educational.Organization
         [Required(ErrorMessage = "级别是必填项")]
         [Display(Name = "级别")]
         public Guid LevelId { get; set; }
+        public string LevelName { get; set; }=string.Empty;
 
         /// <summary>
         /// 上级主键
         /// </summary>
-        [Required(ErrorMessage = "级别是必填项")]
-        [Display(Name = "级别")]
+        [Required(ErrorMessage = "上级机构是必填项")]
+        [Display(Name = "上级机构")]
         public Guid PartentedId { get; set; }
 
         /// <summary>
@@ -82,7 +84,7 @@ namespace Educational.Organization
         /// </summary>
         [Required]
         [Display(Name = "状态")]
-        public SwitchEnum IsActive { get; set; } = SwitchEnum.启用;
+        public SwitchEnum IsActive { get; set; } = 0;
 
         /// <summary>
         /// 说明

@@ -86,17 +86,18 @@ namespace Educational.Subject
         /// 反填---科目名称
         /// </summary> 
 
-        public async Task<ApiResult<Educational.Subject.SubjectModel>> GetOneAsync(Guid id)
+        public async Task<ApiResult<SubjectDto>> GetOneAsync(Guid id)
         {
             try
             {  
              var course =  await _subjectRepository.FirstOrDefaultAsync(x => x.Id == id);
-                return ApiResult<Educational.Subject.SubjectModel>.Success(ResultCode.Ok, course);  
+                var result = ObjectMapper.Map<SubjectModel, SubjectDto>(course);
+                return ApiResult<SubjectDto>.Success(ResultCode.Ok, result);  
             }
             catch (Exception ex)
             {
                 logger.LogError("反填---科目名称失败" + ex);
-                return ApiResult<Educational.Subject.SubjectModel>.Fail(ResultCode.Fail, $"反填---科目名称异常: {ex.Message}");
+                return ApiResult<SubjectDto>.Fail(ResultCode.Fail, $"反填---科目名称异常: {ex.Message}");
             }
         }
         /// <summary>
@@ -111,7 +112,9 @@ namespace Educational.Subject
                 // 构建查询
                 var existingSub =  await _subjectRepository.GetQueryableAsync();
                 // 职位名称查询
-                existingSub = existingSub.WhereIf(!string.IsNullOrEmpty(search.SubjectName), x => x.SubjectName.Contains(search.SubjectName));
+                existingSub = existingSub
+                    .WhereIf(!string.IsNullOrEmpty(search.SubjectName), x => x.SubjectName.Contains(search.SubjectName))
+                    .OrderBy(x=>x.SortWeight);
                 // 使用ABP自带分页方法 
                 var page = existingSub.PageResult(search.PageIndex, search.PageSize);
                 // 映射 

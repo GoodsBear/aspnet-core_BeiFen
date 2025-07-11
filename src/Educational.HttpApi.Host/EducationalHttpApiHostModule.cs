@@ -8,23 +8,29 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog; // Added for console output, can be removed after debugging
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims; // 新增命名空间
 using System.Text;
+using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc;
-using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
+using Volo.Abp.AspNetCore.Mvc.AntiForgery;
+
+//using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
+//using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.Modularity;
+//using Volo.Abp.OpenIddict; // 移除此命名空间，如果不再使用 OpenIddict
+using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
@@ -37,27 +43,28 @@ namespace Educational;
     typeof(AbpAspNetCoreMultiTenancyModule),
     typeof(EducationalApplicationModule),
     typeof(EducationalEntityFrameworkCoreModule),
-    typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
+    //typeof(AbpAspNetCoreMvcUiLeptonXLiteThemeModule),
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule)
+// 移除此处对 typeof(AbpOpenIddictAspNetCoreModule) 的依赖
 )]
 public class EducationalHttpApiHostModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
-        //PreConfigure<OpenIddictBuilder>(builder =>
-        //{
-        //    builder.AddValidation(options =>
-        //    {
-        //        options.AddAudiences("Educational");
-        //        options.UseLocalServer();
-        //        options.UseAspNetCore();
-        //    });
-        //});
+        // 此处不再需要任何 OpenIddict 相关的预配置
     }
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+
+        Configure<AbpAntiForgeryOptions>(options =>
+        {
+            options.TokenCookie.Expiration = TimeSpan.FromDays(365);
+            options.AutoValidate = false;
+        });
+
+
         // 配置认证
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
@@ -66,8 +73,8 @@ public class EducationalHttpApiHostModule : AbpModule
 
 
         ConfigureAuthentication(context, configuration);
-        ConfigureAuthentication(context);
-        ConfigureBundles();
+        //ConfigureAuthentication(context); // 避免重复调用
+        //ConfigureBundles(); // 保持注释，如果您不需要 Bundles 配置
         ConfigureUrls(configuration);
         ConfigureConventionalControllers();
         ConfigureVirtualFileSystem(context);
@@ -77,50 +84,146 @@ public class EducationalHttpApiHostModule : AbpModule
 
     private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
     {
-        // 配置JWT Bearer认证
         context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,                     // 验证签发方
-                    ValidIssuer = configuration["Jwt:Issuer"], // 合法签发方(取自配置)
+                    ValidateIssuer = true,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = configuration["Jwt:Audience"],
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(configuration["Jwt:SecurityKey"])),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
 
-                    ValidateAudience = true,                   // 验证接收方
-                    ValidAudience = configuration["Jwt:Audience"], // 合法接收方(取自配置)
+                // 【关键：在这里添加 Events 用于调试和 Claims 处理】
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        // 设置断点，查看 JWT 验证是否失败及原因
+                        Log.Error($"JWT 认证失败: {context.Exception?.Message}");
+                        return Task.CompletedTask;
+                    },
+                    OnTokenValidated = context =>
+                    {
+                        // 设置断点，查看 JWT Token 是否验证成功。
+                        // 如果进入这里，说明 Token 本身没问题，问题出在 Claims 处理上。
+                        Log.Information("JWT Token 验证成功！开始处理 Claims...");
 
-                    ValidateIssuerSigningKey = true,           // 验证签名密钥
-                    IssuerSigningKey = new SymmetricSecurityKey( // 签名密钥(取自配置)
-                        Encoding.UTF8.GetBytes(configuration["Jwt:SecurityKey"]))
+                        var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+                        if (claimsIdentity != null)
+                        {
+                            // 原始 JWT Token 中的 Claims (根据您的截图进行映射)
+                            var originalIdClaim = claimsIdentity.FindFirst("Id"); // JWT Payload 中的 "Id"
+                            var originalStaffAccountClaim = claimsIdentity.FindFirst("StaffAccount"); // JWT Payload 中的 "StaffAccount"
+                            var originalRolesClaim = claimsIdentity.FindFirst("Roles"); // JWT Payload 中的 "Roles"
+                            var originalPermsClaim = claimsIdentity.FindFirst("Perms"); // JWT Payload 中的 "Perms"
+
+                            // 1. 添加 UserId (对应 Id)
+                            if (originalIdClaim != null && !string.IsNullOrWhiteSpace(originalIdClaim.Value))
+                            {
+                                // 添加标准 NameIdentifier
+                                if (!claimsIdentity.HasClaim(ClaimTypes.NameIdentifier, originalIdClaim.Value))
+                                {
+                                    claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, originalIdClaim.Value));
+                                }
+                                // 添加 AbpUserId
+                                if (!claimsIdentity.HasClaim(AbpClaimTypes.UserId, originalIdClaim.Value))
+                                {
+                                    claimsIdentity.AddClaim(new Claim(AbpClaimTypes.UserId, originalIdClaim.Value));
+                                }
+                            }
+
+                            // 2. 添加 UserName (对应 StaffAccount)
+                            if (originalStaffAccountClaim != null && !string.IsNullOrWhiteSpace(originalStaffAccountClaim.Value))
+                            {
+                                // 添加标准 Name Claim (如果需要)
+                                if (!claimsIdentity.HasClaim(ClaimTypes.Name, originalStaffAccountClaim.Value))
+                                {
+                                    claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, originalStaffAccountClaim.Value));
+                                }
+                                // 添加 AbpUserName
+                                if (!claimsIdentity.HasClaim(AbpClaimTypes.UserName, originalStaffAccountClaim.Value))
+                                {
+                                    claimsIdentity.AddClaim(new Claim(AbpClaimTypes.UserName, originalStaffAccountClaim.Value));
+                                }
+                            }
+
+                            // 3. 处理 Roles Claim (逗号分隔的字符串)
+                            if (originalRolesClaim != null && !string.IsNullOrWhiteSpace(originalRolesClaim.Value))
+                            {
+                                var roles = originalRolesClaim.Value.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                                          .Select(r => r.Trim())
+                                                          .Where(r => !string.IsNullOrWhiteSpace(r));
+                                foreach (var role in roles)
+                                {
+                                    if (!claimsIdentity.HasClaim(AbpClaimTypes.Role, role))
+                                    {
+                                        claimsIdentity.AddClaim(new Claim(AbpClaimTypes.Role, role));
+                                    }
+                                }
+                                // 移除原始的 "Roles" claim，因为它已被解析并添加为多个单独的 Claim
+                                claimsIdentity.RemoveClaim(originalRolesClaim);
+                            }
+
+                            // 4. 处理 Perms Claim (逗号分隔的字符串)
+                            if (originalPermsClaim != null && !string.IsNullOrWhiteSpace(originalPermsClaim.Value))
+                            {
+                                var permissions = originalPermsClaim.Value.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                                                 .Select(p => p.Trim())
+                                                                 .Where(p => !string.IsNullOrWhiteSpace(p));
+                                //foreach (var permission in permissions)
+                                //{
+                                //    if (!claimsIdentity.HasClaim(AbpClaimTypes.Permission, permission))
+                                //    {
+                                //        claimsIdentity.AddClaim(new Claim(AbpClaimTypes.Permission, permission));
+                                //    }
+                                //}
+                                // 移除原始的 "Perms" claim
+                                claimsIdentity.RemoveClaim(originalPermsClaim);
+                            }
+
+                            // 【重要：在这里设置断点！】
+                            // 检查 context.Principal.Identity.Claims 集合，
+                            // 确认 ClaimsTypes.NameIdentifier, AbpClaimTypes.UserId, AbpClaimTypes.UserName, AbpClaimTypes.Role, AbpClaimTypes.Permission 是否正确存在且值正确
+                            Log.Information("Claims 处理完成。当前 Principal 中的 Claims:");
+                            Log.Information($"ClaimsPrincipal 是否认证: {context.Principal.Identity.IsAuthenticated}");
+                            foreach (var claim in context.Principal.Claims)
+                            {
+                                Log.Information($"  Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+                            }
+
+                            // 将修改后的 ClaimsPrincipal 赋值回 context
+                            // 这一步确保后续中间件使用更新后的 Principal
+                            context.Principal = new ClaimsPrincipal(claimsIdentity);
+                        }
+                        return Task.CompletedTask;
+                    },
+                    OnMessageReceived = context =>
+                    {
+                        // 设置断点，检查 Token 是否被正确从请求中提取
+                        Log.Information($"收到 Token (部分): {context.Token?.Substring(0, Math.Min(context.Token.Length, 30))}...");
+                        return Task.CompletedTask;
+                    }
                 };
             });
-    }
 
-
-
-
-    private void ConfigureAuthentication(ServiceConfigurationContext context)
-    {
-        //context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
-        //context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
-        //{
-        //    options.IsDynamicClaimsEnabled = true;
-        //});
-    }
-
-    private void ConfigureBundles()
-    {
-        Configure<AbpBundlingOptions>(options =>
+        // Claims 映射配置 (保留，它仍然会被 AbpClaimsPrincipalFactory 和 UseDynamicClaims 利用)
+        Configure<AbpClaimsPrincipalFactoryOptions>(options =>
         {
-            options.StyleBundles.Configure(
-                LeptonXLiteThemeBundles.Styles.Global,
-                bundle =>
-                {
-                    bundle.AddFiles("/global-styles.css");
-                }
-            );
+            options.ClaimsMap[Volo.Abp.Security.Claims.AbpClaimTypes.UserId] = new List<string> { "Id" };
+            options.ClaimsMap[Volo.Abp.Security.Claims.AbpClaimTypes.UserName] = new List<string> { "StaffAccount" };
+            options.ClaimsMap[Volo.Abp.Security.Claims.AbpClaimTypes.Role] = new List<string> { "Roles" }; // 虽然我们在 OnTokenValidated 中处理了，但这里作为映射配置保留
+            //options.ClaimsMap[Volo.Abp.Security.Claims.AbpClaimTypes.Permission] = new List<string> { "Perms" }; // 同样保留映射
+            options.IsDynamicClaimsEnabled = true; // 确保动态 Claims 启用
         });
     }
+
 
     private void ConfigureUrls(IConfiguration configuration)
     {
@@ -235,7 +338,7 @@ public class EducationalHttpApiHostModule : AbpModule
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "JWT认证（直接输入Token，无需加'Bearer '前缀）", // 简化的中文描述
-                    Name = "Authorization",        // HTTP头部字段名
+                    Name = "Authorization",       // HTTP头部字段名
                     In = ParameterLocation.Header, // Token位置（请求头）
                     Type = SecuritySchemeType.Http,// 认证类型
                     Scheme = "bearer",            // 认证方案
@@ -303,19 +406,19 @@ public class EducationalHttpApiHostModule : AbpModule
         app.UseRouting();
         app.UseCors();
         app.UseAuthentication();
-        //app.UseAbpOpenIddictValidation();
+        // app.UseAbpOpenIddictValidation(); // 【重要：保持此行注释状态】
 
         //if (MultiTenancyConsts.IsEnabled)
         //{
         //    app.UseMultiTenancy();
         //}
+        app.UseDynamicClaims(); // 此中间件会处理 ClaimsPrincipal 并填充 ICurrentUser
 
         //雪花Id
         YitIdHelper.SetIdGenerator(new IdGeneratorOptions(1));
 
         app.UseUnitOfWork();
-        app.UseDynamicClaims();
-        app.UseAuthorization();
+        app.UseAuthorization(); // 必须在 UseDynamicClaims 之后，因为它依赖于填充好的 ICurrentUser
 
         app.UseSwagger();
         app.UseAbpSwaggerUI(c =>
@@ -337,11 +440,10 @@ public class EducationalHttpApiHostModule : AbpModule
             c.SwaggerEndpoint("/swagger/角色/swagger.json", "角色管理 v1");
             c.SwaggerEndpoint("/swagger/专题/swagger.json", "专题管理 v1");
             c.SwaggerEndpoint("/swagger/成员/swagger.json", "成员管理 v1");
-            c.SwaggerEndpoint("/swagger/科目管理/swagger.json", "科目管理 v1");
             c.SwaggerEndpoint("/swagger/薪资/swagger.json", "薪资管理 v1");
-            
+
             c.SwaggerEndpoint("/swagger/物料/swagger.json", "物料管理 v1");
-            c.SwaggerEndpoint("/swagger/成员分配角色/swagger.json", "成员分配角色管理 v1"); 
+            c.SwaggerEndpoint("/swagger/成员分配角色/swagger.json", "成员分配角色管理 v1");
             c.SwaggerEndpoint("/swagger/角色分配权限/swagger.json", "角色分配权限管理 v1");
             c.SwaggerEndpoint("/swagger/节假日/swagger.json", "节假日管理 v1");
             //设置模型（Model）在 Swagger UI 中默认展开的层级深度为1

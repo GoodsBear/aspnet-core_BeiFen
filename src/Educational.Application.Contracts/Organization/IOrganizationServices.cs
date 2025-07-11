@@ -1,3 +1,4 @@
+using Educational.Enmu;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace Educational.Organization
         /// </summary>
         /// <param name="input">修改字段</param>
         /// <returns></returns>
-        Task<ApiResult<OrganizationDto>> UpdateAsync(Guid id, OrganizationDto input);
+        Task<ApiResult<OrganizationDto>> UpdateAsync(Guid id, CreateUpdateOrganizationDto input);
         /// <summary>
         /// 批量删除
         /// </summary>
@@ -64,8 +65,6 @@ namespace Educational.Organization
         /// 组织机构级别添加
         /// </summary>  
         Task<ApiResult<OrganizationLevelDto>> CreateLevelAsync(CreateUpdateOrganizationLevel Dto);
-
-
-        Task<ApiResult<List<SysOreanzationDto>>> GetOrganzationTree();
+        Task<ApiResult<List<SysOreanzationDto>>> GetOrganzationTree(); 
     }
 } 

@@ -1,10 +1,14 @@
-﻿using Abp.Authorization;
-﻿using Castle.Components.DictionaryAdapter;
 using Educational.Enmu;
 using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
+using Educational.Enmu;
+using Educational.Organization;
+using Educational.Positions;
+using Educational.RBAC;
+using Educational.Shared.Models;
 using Educational.SalarySetting;
+using Educational.Shared.Models;
 using Educational.StaffTypes;
 using Educational.Tools;
 using Lazy.Captcha.Core;
@@ -40,13 +44,13 @@ namespace Educational.Staffs
         private readonly IRepository<StaffRole, Guid> staffrolerepository; //用户角色中间表
         private readonly IRepository<RolePermission, Guid> rolepermissionrepository; //角色权限中间表
         private readonly IRepository<Permissions, Guid> permissionrepository; //权限表
+        private readonly IRepository<Educational.Menu.Menu, Guid> menuRepository; //菜单
         private readonly IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository;
         ILogger<StaffServices> logger;
         private readonly ICaptcha captcha;
         
         public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository,
-            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Educational.RBAC.Permissions, Guid> permissionrepository,
-            IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository)
+            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Educational.RBAC.Permissions, Guid> permissionrepository, IRepository<Educational.Menu.Menu, Guid> menuRepository)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
@@ -55,13 +59,16 @@ namespace Educational.Staffs
             this.typeRep = typeRep;
             this.organizationRepository = organizationRepository;
             this.salarySettingRepository = salarySettingRepository;
-            this.logger = logger;
-            this.captcha = captcha;
             this.staffrolerepository = staffrolerepository;
             this.rolepermissionrepository = rolepermissionrepository;
             this.permissionrepository = permissionrepository;
+            this.menuRepository = menuRepository;
             this.classHourFeeSettingRepository = classHourFeeSettingRepository;
+            this.logger = logger;
+            this.captcha = captcha;
         }
+
+
         /// <summary>
         /// 获取成员列表下拉框
         /// </summary>
@@ -89,6 +96,7 @@ namespace Educational.Staffs
         {
             try
             {
+
                 // 获取员工数据源
                 var staffinfo = await basicRepository.GetQueryableAsync();
 
@@ -102,6 +110,16 @@ namespace Educational.Staffs
                 if (search.Status != null)
                 {
                     staffinfo = staffinfo.Where(s => s.Status == search.Status);
+                }
+
+                if (search.OrganizationId != null)
+                {
+                    var organizationname = (await organizationRepository.FirstOrDefaultAsync(x => x.Id == search.OrganizationId)).Name;
+                    if (staffinfo != null)
+                    {
+                        // 筛选包含该机构名称的员工记录
+                        staffinfo = staffinfo.Where(s => s.Organization.Contains(organizationname));
+                    }
                 }
 
                 // 分页处理
@@ -159,7 +177,7 @@ namespace Educational.Staffs
         /// <summary>
         /// 批量设置用户所属机构
         /// </summary>
-        /// <param name="userIds">要设置的用户ID集合</param>
+        /// <param name="Ids">要设置的用户ID集合</param>
         /// <param name="organizationIds">要设置的机构ID集合</param>
         /// <returns>操作结果</returns>
         [HttpPost]
@@ -262,25 +280,25 @@ namespace Educational.Staffs
                 //var a=await salarySettingRepository.InsertAsync(salary); 
 
                 //添加职位表的同时添加薪资表
-                SalarySettingModel salary = new SalarySettingModel()
-                {
-                    StaffId = staffinfo.Id,
-                    StaffName = staffinfo.StaffName,
-                    OrganizationId = OrganizationId.Id
-                };
-                var a=await salarySettingRepository.InsertAsync(salary);
+                //SalarySettingModel salary = new SalarySettingModel()
+                //{
+                //    StaffId = staffinfo.Id,
+                //    StaffName = staffinfo.StaffName,
+                //    OrganizationId = OrganizationId.Id
+                //};
+                //var a=await salarySettingRepository.InsertAsync(salary);
 
-                if (a != null)
-                {  
-                    ClassHourFeeSetting money = new ClassHourFeeSetting()
-                    {
-                        SalarySettingId = a.Id,
-                        ClassHourDuration = 0,
-                        ClassHourFee = 0,
-                        AssistantFee = 0
-                    };
-                    await classHourFeeSettingRepository.InsertAsync(money);
-                }
+                //if (a != null)
+                //{  
+                //    ClassHourFeeSetting money = new ClassHourFeeSetting()
+                //    {
+                //        SalarySettingId = a.Id,
+                //        ClassHourDuration = 0,
+                //        ClassHourFee = 0,
+                //        AssistantFee = 0
+                //    };
+                //    await classHourFeeSettingRepository.InsertAsync(money);
+                //}
 
                 // 封装返回结果，状态码 OK，附带员工信息
                 return ApiResult<ShowStaffDTO>.Success(ResultCode.Ok, showstaffinfo);
@@ -486,7 +504,7 @@ namespace Educational.Staffs
         /// <param name="loginDTO">登录请求 DTO，包含账户和密码</param>
         /// <returns>返回登录结果</returns>
         [HttpPost]
-        public async Task<ApiResult<LoginReturnDTO>> Login([FromQuery] LoginDTO loginDTO)
+        public async Task<ApiResult<LoginReturnDTO>> Login(LoginDTO loginDTO)
         {
             try
             {
@@ -536,40 +554,59 @@ namespace Educational.Staffs
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(configuration["Jwt:SecurityKey"]);
 
-            // 1. 获取用户所有角色Id
+            // --- 1. 获取用户所有角色 ---
             var staffRoles = await staffrolerepository.GetListAsync(x => x.StaffId == staff.Id);
             var roleIds = staffRoles.Select(sr => sr.RoleId).Distinct().ToList();
-
-            // 2. 获取所有角色名
             var roles = await roleRep.GetListAsync(r => roleIds.Contains(r.Id));
             var roleNames = roles.Select(r => r.RoleName).ToList();
 
-            // 3. 获取所有角色的权限Id
+            // --- 2. 获取用户所有权限Code ---
             var rolePermissions = await rolepermissionrepository.GetListAsync(rp => roleIds.Contains(rp.RoleId));
             var permissionIds = rolePermissions.Select(rp => rp.PermissionId).Distinct().ToList();
+            var userPermissions = await permissionrepository.GetListAsync(p => permissionIds.Contains(p.Id));
+            var userPermissionCodes = userPermissions.Select(p => p.PermissionCode).ToList();
 
-            // 4. 获取所有权限名
-            var permissions = await permissionrepository.GetListAsync(p => permissionIds.Contains(p.Id));
-            var permissionNames = permissions.Select(p => p.PermissionName).ToList();
 
-            // 5. 组装Claim
+            //// --- 3. 获取并过滤用户菜单树 ---
+            //// 步骤 3.1: 获取原始菜单数据 (假设返回 Educational.Educational.Menu.Menu 类型列表)
+            //var rawMenusFromRepo = await menuRepository.GetListAsync();
+
+            //// **步骤 3.2: 使用 AutoMapper 将原始菜单列表映射到共享的 MenuInfo 列表**
+            //// 目标类型 Educational.Shared.Models.MenuInfo
+            //// allMenus 现在是 List<Educational.Shared.Models.MenuInfo> 类型，与 FilterAndBuildMenuTree 兼容
+            //List<Educational.Shared.Models.MenuInfo> allMenus = ObjectMapper.Map<List<Educational.Menu.Menu>,List<Educational.Shared.Models.MenuInfo>>(rawMenusFromRepo);
+
+            //// 步骤 3.3: 使用 Guid.Empty 作为顶级菜单的父级ID，并调用 FilterAndBuildMenuTree
+            //var userOwnedMenuTree = FilterAndBuildMenuTree(allMenus, userPermissionCodes, Guid.Empty);
+
+
+            // --- 4. 组装 Claims ---
             var claims = new List<Claim>
-            {
-                new Claim("Id", staff.Id.ToString()),
-                new Claim("StaffName", staff.StaffName ?? string.Empty),
-                new Claim("StaffAccount", staff.StaffAccount ?? string.Empty),
-                new Claim("StaffPhone", staff.StaffPhone ?? string.Empty),
-                new Claim("StaffGender", staff.StaffGender ?? string.Empty),
-                new Claim("StaffTypeId", staff.StaffTypeId.ToString()),
-                new Claim("PositionId", staff.PositionId.ToString()),
-                new Claim("Organization", staff.Organization ?? string.Empty),
-                new Claim("StaffStatus", staff.Status.ToString()),
-                new Claim("PhotoUrl", staff.PhotoUrl ?? string.Empty),
-                new Claim("Birthday", staff.Birthday?.ToString("yyyy-MM-dd") ?? string.Empty),
-                new Claim("Roles", string.Join(",", roleNames)),
-                new Claim("Permissions", string.Join(",", permissionNames))
-            };
+        {
+            new Claim("Id", staff.Id.ToString()),
+            new Claim("StaffName", staff.StaffName ?? string.Empty),
+            new Claim("StaffAccount", staff.StaffAccount ?? string.Empty),
+            new Claim("StaffPhone", staff.StaffPhone ?? string.Empty),
+            new Claim("StaffGender", staff.StaffGender?.ToString() ?? string.Empty),
+            new Claim("StaffTypeId", staff.StaffTypeId.ToString()),
+            new Claim("PositionId", staff.PositionId.ToString()),
+            new Claim("Organization", staff.Organization ?? string.Empty),
+            new Claim("StaffStatus", staff.Status.ToString()),
+            new Claim("PhotoUrl", staff.PhotoUrl ?? string.Empty),
+            new Claim("Birthday", staff.Birthday?.ToString("yyyy-MM-dd") ?? string.Empty),
+            new Claim("Roles", string.Join(",", roleNames)),
+            new Claim("Permissions", string.Join(",", userPermissionCodes))
+        };
 
+            //// 菜单树信息 - 序列化为JSON字符串
+            //if (userOwnedMenuTree != null && userOwnedMenuTree.Any())
+            //{
+            //    var menuJson = JsonConvert.SerializeObject(userOwnedMenuTree);
+            //    claims.Add(new Claim("Menus", menuJson));
+            //}
+
+
+            // --- 5. 创建 SecurityTokenDescriptor 并生成 Token ---
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
@@ -604,6 +641,120 @@ namespace Educational.Staffs
 
                 return stringBuilder.ToString();
             }
+        }
+
+
+        public async Task<List<MenuInfo>> GetUserMenusAsync()
+        {
+            // 获取当前用户的 Id
+            // 假设您已经配置了 Abp 的 ICurrentUser 服务来获取当前登录用户的Id
+            // 或者从 HttpContext 中获取 Id (如果 Abp 框架没有自动注入)
+            // Abp 框架通常通过 CurrentUser.Id 获取
+            if (!CurrentUser.IsAuthenticated || CurrentUser.Id == null)
+            {
+                // 用户未登录或无法获取ID，返回空菜单或抛出异常
+                return new List<MenuInfo>();
+            }
+
+            var staffId = CurrentUser.Id.Value; // 获取当前登录用户的ID
+
+            // 1. 获取用户所有角色ID
+            var staffRoles = await staffrolerepository.GetListAsync(x => x.StaffId == staffId);
+            var roleIds = staffRoles.Select(sr => sr.RoleId).Distinct().ToList();
+
+            // 2. 获取用户所有权限Code
+            var rolePermissions = await rolepermissionrepository.GetListAsync(rp => roleIds.Contains(rp.RoleId));
+            var permissionIds = rolePermissions.Select(rp => rp.PermissionId).Distinct().ToList();
+            var userPermissions = await permissionrepository.GetListAsync(p => permissionIds.Contains(p.Id));
+            var userPermissionCodes = userPermissions.Select(p => p.PermissionCode).ToList();
+
+
+
+            // 3. 获取所有原始菜单数据
+            var rawMenusFromRepo = await menuRepository.GetListAsync();
+
+            // 4. 将原始菜单映射到共享的 MenuInfo 列表
+            List<MenuInfo> allMenus = ObjectMapper.Map<List<Educational.Menu.Menu>, List<MenuInfo>>(rawMenusFromRepo);
+            // 或者手动映射 (如果您之前决定不使用AutoMapper):
+            // List<MenuInfo> allMenus = rawMenusFromRepo.Select(src => new MenuInfo { ... }).ToList();
+
+            // 5. 过滤并构建用户有权访问的菜单树
+            var userOwnedMenuTree = FilterAndBuildMenuTree(allMenus, userPermissionCodes, Guid.Empty);
+
+            return userOwnedMenuTree;
+        }
+
+        /// <summary>
+        /// 递归过滤并构建用户有权访问的菜单树
+        /// </summary>
+        /// <param name="allMenus">所有菜单的扁平列表</param>
+        /// <param name="userPermissionCodes">用户拥有的权限Code列表 (从 PermissionInfo.PermissionCode 获取)</param>
+        /// <param name="parentId">当前处理的父菜单ID，默认为 Guid.Empty (表示顶级菜单)</param>
+        /// <returns>用户有权访问的菜单树</returns>
+        private List<MenuInfo> FilterAndBuildMenuTree(List<MenuInfo> allMenus, List<string> userPermissionCodes, Guid parentId)
+        {
+            // 定义菜单类型的常量或枚举，请根据您的实际定义进行调整
+            const int MenuType_Directory = 1; // 假设 1 代表目录
+            const int MenuType_MenuItem = 2;  // 假设 2 代表菜单项
+
+            // 1. 获取当前层级的所有菜单项，并按 MenuSort 排序
+            var currentLevelMenus = allMenus
+                .Where(m => m.ParentId == parentId)
+                .OrderBy(m => m.MenuSort)
+                .ToList();
+
+            var visibleMenus = new List<MenuInfo>();
+
+            foreach (var menu in currentLevelMenus)
+            {
+                // 2. 递归处理子菜单
+                // 注意：这里传递的是当前菜单的 Id 作为下一层级的 ParentId
+                var children = FilterAndBuildMenuTree(allMenus, userPermissionCodes, menu.Id);
+
+                // 3. 判断当前菜单节点是否应该显示
+                bool isCurrentMenuNodeVisible = false;
+
+                // a. 如果菜单没有明确的权限码（或权限码为空字符串/null）
+                // 这种菜单通常是纯目录，或者是不需要特定权限的公共菜单项（如仪表盘/首页）
+                if (string.IsNullOrWhiteSpace(menu.MenuPermissionCode))
+                {
+                    // 如果是目录类型菜单，它的可见性取决于其是否有任何可见的子菜单
+                    if (menu.MenuType == MenuType_Directory)
+                    {
+                        isCurrentMenuNodeVisible = children.Any();
+                    }
+                    // 如果是普通菜单项类型，且没有关联权限码，则默认可见
+                    else if (menu.MenuType == MenuType_MenuItem)
+                    {
+                        isCurrentMenuNodeVisible = true;
+                    }
+                    // 可以根据需要添加其他 MenuType 的默认可见性逻辑
+                    // 例如：如果 MenuType 既不是目录也不是菜单项，且没有权限码，则可能默认不可见
+                }
+                // b. 如果菜单有明确的权限码 (MenuPermissionCode)
+                else
+                {
+                    // 检查用户拥有的权限Code列表中是否包含该菜单所需的权限码
+                    isCurrentMenuNodeVisible = userPermissionCodes.Contains(menu.MenuPermissionCode);
+                }
+
+                // 4. 将可见的菜单节点添加到结果列表中
+                // 如果当前菜单节点自身可见，则添加到结果中
+                if (isCurrentMenuNodeVisible)
+                {
+                    menu.Children = children; // 将过滤后的子菜单添加到当前菜单对象
+                    visibleMenus.Add(menu);
+                }
+                // 特殊情况：如果当前菜单是目录类型，并且它自身可能没有直接的权限使其可见，
+                // 但它的子菜单中存在可见项，那么这个目录也应该被包含进来作为父节点。
+                // 这样做是为了保证菜单树的完整性，让前端能正确渲染层级。
+                else if (menu.MenuType == MenuType_Directory && children.Any())
+                {
+                    menu.Children = children; // 包含可见的子菜单
+                    visibleMenus.Add(menu);
+                }
+            }
+            return visibleMenus;
         }
     }
 }

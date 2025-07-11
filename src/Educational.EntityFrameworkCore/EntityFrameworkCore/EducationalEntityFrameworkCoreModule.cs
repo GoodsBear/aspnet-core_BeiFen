@@ -1,8 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AutoMapper;
+using EFCore.NamingConventions; // 这个是关键
+using Microsoft.EntityFrameworkCore; 
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
-using Volo.Abp.EntityFrameworkCore.MySQL;
+using Volo.Abp.EntityFrameworkCore.MySQL; //mysql
+//using Volo.Abp.EntityFrameworkCore.PostgreSql; //PostgreSql
 using Volo.Abp.Modularity;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 
@@ -14,6 +18,7 @@ namespace Educational.EntityFrameworkCore;
     typeof(AbpEntityFrameworkCoreMySQLModule),
     typeof(AbpBackgroundJobsEntityFrameworkCoreModule),
     typeof(AbpAuditLoggingEntityFrameworkCoreModule)
+    //typeof(AbpEntityFrameworkCorePostgreSqlModule) //PostgreSql
     )]
 public class EducationalEntityFrameworkCoreModule : AbpModule
 {
@@ -33,9 +38,13 @@ public class EducationalEntityFrameworkCoreModule : AbpModule
 
         Configure<AbpDbContextOptions>(options =>
         {
-                /* The main point to change your DBMS.
-                 * See also EducationalMigrationsDbContextFactory for EF Core tooling. */
-            options.UseMySQL();
+            /* The main point to change your DBMS.
+             * See also EducationalMigrationsDbContextFactory for EF Core tooling. */
+            options.UseMySQL(); //MySql
+            //options.UseNpgsql(); //Pgsql
+
+
+
         });
 
     }
