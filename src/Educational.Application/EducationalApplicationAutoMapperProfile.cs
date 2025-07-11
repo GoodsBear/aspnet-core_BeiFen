@@ -42,6 +42,8 @@ using Educational.StudentsAndParents.StudentStore;
 using Educational.StudentsAndParends.Students;
 using Educational.Subject;
 using Educational.Courses.ReletedCoursedtos;
+using Educational.Holidays.Dtos;
+using Educational.Holidays;
 
 namespace Educational;
 
@@ -166,6 +168,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
 
         //薪资
         CreateMap<SalarySettingModel, SalarySettingDto>().ReverseMap();
+        CreateMap<HolidayDto, Holiday>().ReverseMap();
        
     }
 } 

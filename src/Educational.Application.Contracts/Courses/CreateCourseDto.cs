@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace Educational.Courses
 {
+	/// <summary>
+	/// 添加课程参数dto
+	/// </summary>
 	public class CreateCourseDto
 	{
+		/// <summary>
+		/// 课程id
+		/// </summary>
 		public Guid? Id { get; set; }
 		/// <summary>
 		/// 课程名称
