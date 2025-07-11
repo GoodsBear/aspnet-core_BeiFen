@@ -8,11 +8,13 @@ using Educational.Enums;
 using Educational.Materials;
 using Educational.Organization;
 using Educational.Staffs;
+using Educational.Subject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NUglify.JavaScript.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Text;  
@@ -33,8 +35,8 @@ namespace Educational.Clbums
         IRepository<OrganizationModel, Guid> organizationRep;
         IRepository<Course, Guid> courseRep;
         ILogger<ClassInfoAppService> logger;
-
-        public ClassInfoAppService(IRepository<ClassInfo, Guid> classinfoRep, IRepository<Educational.Classgrade.ClassRoom, Guid> classRoomRep, IRepository<Grade, Guid> gradeRep, IRepository<StaffInfo, Guid> stafffoRep, IRepository<OrganizationModel, Guid> organizationRep, IRepository<Course, Guid> courseRep, ILogger<ClassInfoAppService> logger)
+        IRepository<SubjectModel,Guid> subjectModelRep;
+        public ClassInfoAppService(IRepository<ClassInfo, Guid> classinfoRep, IRepository<Educational.Classgrade.ClassRoom, Guid> classRoomRep, IRepository<Grade, Guid> gradeRep, IRepository<StaffInfo, Guid> stafffoRep, IRepository<OrganizationModel, Guid> organizationRep, IRepository<Course, Guid> courseRep, ILogger<ClassInfoAppService> logger, IRepository<SubjectModel, Guid> subjectModelRep)
         {
             this.classinfoRep = classinfoRep;
             this.classRoomRep = classRoomRep;
@@ -43,6 +45,7 @@ namespace Educational.Clbums
             this.organizationRep = organizationRep;
             this.courseRep = courseRep;
             this.logger = logger;
+            this.subjectModelRep = subjectModelRep;
         }
         /// <summary>
         /// 批量删除
@@ -126,6 +129,7 @@ namespace Educational.Clbums
                 var staffList = await stafffoRep.GetQueryableAsync();
                 var orgList = await organizationRep.GetQueryableAsync();
                 var courseList = await courseRep.GetQueryableAsync();
+                var subjectList = await subjectModelRep.GetQueryableAsync();
                 var classRoomList = await classRoomRep.GetQueryableAsync();
                 classList = classList.WhereIf(!string.IsNullOrEmpty(searchDto.ClassName), x => x.ClassName.Contains(searchDto.ClassName));
                 classList = classList.WhereIf(searchDto.CampusId != null, x => x.CampusId == searchDto.CampusId);
@@ -143,6 +147,9 @@ namespace Educational.Clbums
                     item.StaffName = staffList.FirstOrDefault(x => x.Id == item.ClassTeacherId).StaffName;
                     item.ClassRoomName = classRoomList.FirstOrDefault(x => x.Id == item.DefaultClassroomId).ClassRoomName;
                     item.CourseName = courseList.FirstOrDefault(x => x.Id == item.DefaultCourseId).CourseName;
+                    item.LessonNum = courseList.FirstOrDefault(x => x.Id == item.DefaultCourseId).LessonNum;
+                    item.SubjectId = courseList.FirstOrDefault(x => x.Id == item.DefaultCourseId).SubjectId;
+                    item.SubjectName = subjectList.FirstOrDefault(x => x.Id == item.SubjectId).SubjectName;
                     item.ClassStatusName = Enum.GetName(typeof(LessonStateEnum), item.ClassStatus);
                 }
                 var paging = new ApiPaging<List<ClassInfoDto>>
@@ -237,6 +244,43 @@ namespace Educational.Clbums
             catch (Exception ex)
             {
                 logger.LogError("批量修改班级状态出错！" + ex.Message);
+                throw;
+            }
+        }
+        /// <summary>
+        /// 班级反填
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ApiResult<ClassInfoDto>> FTClassInfo(Guid id)
+        {
+            try
+            {
+                var classList = await classinfoRep.GetQueryableAsync();
+                var gradeList = await gradeRep.GetQueryableAsync();
+                var staffList = await stafffoRep.GetQueryableAsync();
+                var orgList = await organizationRep.GetQueryableAsync();
+                var courseList = await courseRep.GetQueryableAsync();
+                var classRoomList = await classRoomRep.GetQueryableAsync();
+                var subjectList = await subjectModelRep.GetQueryableAsync();
+                var list = await classinfoRep.FirstOrDefaultAsync(x => x.Id == id);
+                var listdto = ObjectMapper.Map<ClassInfo, ClassInfoDto>(list);
+                listdto.Name = orgList.FirstOrDefault(x => x.Id == listdto.CampusId).Name;
+                listdto.GradeName = gradeList.FirstOrDefault(x => x.Id == listdto.GradeId).GradeName;
+                listdto.StaffName = staffList.FirstOrDefault(x => x.Id == listdto.ClassTeacherId).StaffName;
+                listdto.ClassRoomName = classRoomList.FirstOrDefault(x => x.Id == listdto.DefaultClassroomId).ClassRoomName;
+                listdto.CourseName = courseList.FirstOrDefault(x => x.Id == listdto.DefaultCourseId).CourseName;
+                listdto.LessonNum = courseList.FirstOrDefault(x => x.Id == listdto.DefaultCourseId).LessonNum;
+                listdto.SubjectId = courseList.FirstOrDefault(x => x.Id == listdto.DefaultCourseId).SubjectId;
+                listdto.SubjectName = subjectList.FirstOrDefault(x => x.Id == listdto.SubjectId).SubjectName;
+                listdto.ClassStatusName = Enum.GetName(typeof(LessonStateEnum), listdto.ClassStatus);
+            
+                return ApiResult<ClassInfoDto>.Success(ResultCode.Ok, listdto);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("获取班级信息出错！" + ex.Message);
                 throw;
             }
         }

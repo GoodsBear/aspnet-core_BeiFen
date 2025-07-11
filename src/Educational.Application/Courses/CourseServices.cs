@@ -1,5 +1,6 @@
 using Educational.Classgrade;
 using Educational.Courses.ReletedCoursedtos;
+using Educational.Dto.Clbums;
 using Educational.Dto.Grades;
 using Educational.Enums;
 using Educational.Organization;
@@ -17,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
 
 namespace Educational.Courses
 {
@@ -119,15 +121,47 @@ namespace Educational.Courses
 			};
 			return ApiResult<ApiPaging<List<CourseDto>>>.Success(ResultCode.Ok, paging);
 		}
-
-		/// <summary>
-		/// 批量操作课程状态(上下架,启用禁用,删除)
-		/// </summary>
-		/// <param name="id"></param>
-		/// <param name="status"></param>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
-		public async Task<ApiResult> UpdateCourseStatus(List<Guid> guids, bool status ,int type)
+        /// <summary>
+        /// 获取课程全下拉列表
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ApiResult<List<CourseDto>>> FTCouser()
+        {
+            try
+            {
+                var course = await _courseRepository.GetQueryableAsync();
+                var subject = await subjectRepository.GetQueryableAsync();
+                var topic = await specialRepository.GetQueryableAsync();
+                var organization = await organRepository.GetQueryableAsync();
+                var grade = await gradeRepository.GetQueryableAsync();
+				var list = course.ToList();
+                var listdto = ObjectMapper.Map<List<Course>, List<CourseDto>>(list);
+                foreach (var item in listdto)
+                {
+                    item.CampusName = organization.FirstOrDefault(x => x.Id == item.CampusId)?.Name;
+                    item.SubjectName = subject.FirstOrDefault(x => x.Id == item.SubjectId)?.SubjectName;
+                    item.TopicName = topic.FirstOrDefault(x => x.Id == item.TopicId)?.Name;
+                    item.GratorName = grade.FirstOrDefault(x => x.Id == item.GratorId)?.GradeName;
+                    CourseType type1 = (CourseType)item.CourseTypeId;
+                    item.CourseTypeName = type1.ToString();
+                }
+                return ApiResult<List<CourseDto>>.Success(ResultCode.Ok, listdto);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        /// <summary>
+        /// 批量操作课程状态(上下架,启用禁用,删除)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<ApiResult> UpdateCourseStatus(List<Guid> guids, bool status ,int type)
 		{
 			Guid[] ids= guids.ToArray();
 			if (type == 0)

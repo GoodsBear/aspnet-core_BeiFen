@@ -44,6 +44,9 @@ namespace Educational.Dto.Clbums
         /// </summary>
         public Guid DefaultCourseId { get; set; }
         public string CourseName { get; set; }
+        public Guid SubjectId {  get; set; }
+        public string SubjectName { get; set; }
+        public int LessonNum { get; set; }
         /// <summary>
         /// 默认教室
         /// </summary>

@@ -47,12 +47,12 @@ namespace Educational.Courses
 		/// <param name="id">主课程id</param>
 		/// <returns></returns>
         Task<ApiResult> RemoveReletedCourse(Guid guid, Guid id);
-
-
-
-
-
-
-
-	}
+		/// <summary>
+		/// 课程下拉
+		/// </summary>
+		/// <param name="guid">关联课程id</param>
+		/// <param name="id">主课程id</param>
+		/// <returns></returns>
+        Task<ApiResult<List<CourseDto>>> FTCouser();
+    }
 }
