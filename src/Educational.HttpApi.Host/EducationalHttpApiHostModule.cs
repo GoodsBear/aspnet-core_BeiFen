@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog; // Added for console output, can be removed after debugging
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
@@ -20,6 +21,8 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp.AspNetCore.Mvc.AntiForgery;
+
 //using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
 //using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
@@ -32,7 +35,6 @@ using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
 using Yitter.IdGenerator;
-using Serilog; // Added for console output, can be removed after debugging
 
 namespace Educational;
 
@@ -55,6 +57,14 @@ public class EducationalHttpApiHostModule : AbpModule
 
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
+
+        Configure<AbpAntiForgeryOptions>(options =>
+        {
+            options.TokenCookie.Expiration = TimeSpan.FromDays(365);
+            options.AutoValidate = false;
+        });
+
+
         // 配置认证
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();

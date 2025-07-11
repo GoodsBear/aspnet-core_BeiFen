@@ -112,7 +112,9 @@ namespace Educational.Subject
                 // 构建查询
                 var existingSub =  await _subjectRepository.GetQueryableAsync();
                 // 职位名称查询
-                existingSub = existingSub.WhereIf(!string.IsNullOrEmpty(search.SubjectName), x => x.SubjectName.Contains(search.SubjectName));
+                existingSub = existingSub
+                    .WhereIf(!string.IsNullOrEmpty(search.SubjectName), x => x.SubjectName.Contains(search.SubjectName))
+                    .OrderBy(x=>x.SortWeight);
                 // 使用ABP自带分页方法 
                 var page = existingSub.PageResult(search.PageIndex, search.PageSize);
                 // 映射 

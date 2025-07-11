@@ -1,39 +1,41 @@
 using AutoMapper;
-using Educational.Courses;
-using Educational.Organization;
 using Educational.Announcements;
 using Educational.Classgrade;
 using Educational.ClassSchedule;
 using Educational.ClassSchedule.DTO;
 using Educational.ClassSchedule.Update;
+using Educational.Courses;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
 using Educational.Dto.ClassRooms;
 using Educational.Dto.Clbums;
 using Educational.Dto.Grades;
 using Educational.Dto.MaterialDtos;
+using Educational.Dto.MaterialRecordsDtos;
 using Educational.Dto.Positions;
 using Educational.Materials;
 using Educational.Menu;
+using Educational.Organization;
 using Educational.Positions;
 using Educational.RBAC;
 using Educational.RBAC.PermissionsManager;
 using Educational.RBAC.RoleManager;
 using Educational.RolePerssions;
+using Educational.SalarySetting;
 using Educational.SpecialSubject;
 using Educational.Staffs;
 using Educational.Staffs.SalarySetting;
 using Educational.StaffTypes;
 using Educational.StafRoles;
-using Educational.Subject;
-using Educational.StudentsAndParents.Students;
-using Educational.Dto.MaterialRecordsDtos;
-using Educational.StudentsAndParents.StudentFollow;
+using Educational.StudentsAndParends.Students;
 using Educational.StudentsAndParends.Students.Follow;
 using Educational.StudentsAndParends.Students.Store;
 using Educational.StudentsAndParents.Stores;
+using Educational.StudentsAndParents.StudentFollow;
+using Educational.StudentsAndParents.Students;
 using Educational.StudentsAndParents.StudentStore;
-using Educational.StudentsAndParends.Students;
+using Educational.Subject;
+using Educational.Courses.ReletedCoursedtos;
 
 namespace Educational;
 
@@ -44,6 +46,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
         //专题
         CreateMap<CategoryModel, XiAsepecialSubjectDto>().ReverseMap();
         //薪资
+        CreateMap<UpdateSalaryDto, ClassHourFeeSetting>().ReverseMap();
         CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
         //排课  
         CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
@@ -82,6 +85,12 @@ public class EducationalApplicationAutoMapperProfile : Profile
             .ForMember(dest=>dest.CourseName,pot=>pot.MapFrom(src=>src.CourseName)).ReverseMap();
         CreateMap<Course, CourseSelectDto>(MemberList.Source)
             .ForMember(dest=>dest.CourseName,pot=>pot.MapFrom(src=>src.CourseName)).ReverseMap();
+        CreateMap<Course, CreateUpdateCourseDto>(MemberList.Source)
+            .ForMember(dest=>dest.CourseName,pot=>pot.MapFrom(src=>src.CourseName)).ReverseMap();
+        //课程关联映射规则
+        CreateMap<ReletedCourse, ReletedCourseDto>(MemberList.Source);
+        CreateMap<ReletedCourse, SearchReletedCourseDto>(MemberList.Source);
+
         // 职位映射
         CreateMap<Position, PositionsDto>().ReverseMap();
         CreateMap<CreateUpdatePositionDto, Position>().ReverseMap();
@@ -151,5 +160,5 @@ public class EducationalApplicationAutoMapperProfile : Profile
         //薪资
         CreateMap<SalarySettingModel, SalarySettingDto>().ReverseMap();
        
-    }
+    } 
 } 

@@ -112,6 +112,16 @@ namespace Educational.Staffs
                     staffinfo = staffinfo.Where(s => s.Status == search.Status);
                 }
 
+                if (search.OrganizationId != null)
+                {
+                    var organizationname = (await organizationRepository.FirstOrDefaultAsync(x => x.Id == search.OrganizationId)).Name;
+                    if (staffinfo != null)
+                    {
+                        // 筛选包含该机构名称的员工记录
+                        staffinfo = staffinfo.Where(s => s.Organization.Contains(organizationname));
+                    }
+                }
+
                 // 分页处理
                 var stafflist = staffinfo.Page(search.PageIndex, search.PageSize);
 
@@ -270,25 +280,25 @@ namespace Educational.Staffs
                 //var a=await salarySettingRepository.InsertAsync(salary); 
 
                 //添加职位表的同时添加薪资表
-                SalarySettingModel salary = new SalarySettingModel()
-                {
-                    StaffId = staffinfo.Id,
-                    StaffName = staffinfo.StaffName,
-                    OrganizationId = OrganizationId.Id
-                };
-                var a=await salarySettingRepository.InsertAsync(salary);
+                //SalarySettingModel salary = new SalarySettingModel()
+                //{
+                //    StaffId = staffinfo.Id,
+                //    StaffName = staffinfo.StaffName,
+                //    OrganizationId = OrganizationId.Id
+                //};
+                //var a=await salarySettingRepository.InsertAsync(salary);
 
-                if (a != null)
-                {  
-                    ClassHourFeeSetting money = new ClassHourFeeSetting()
-                    {
-                        SalarySettingId = a.Id,
-                        ClassHourDuration = 0,
-                        ClassHourFee = 0,
-                        AssistantFee = 0
-                    };
-                    await classHourFeeSettingRepository.InsertAsync(money);
-                }
+                //if (a != null)
+                //{  
+                //    ClassHourFeeSetting money = new ClassHourFeeSetting()
+                //    {
+                //        SalarySettingId = a.Id,
+                //        ClassHourDuration = 0,
+                //        ClassHourFee = 0,
+                //        AssistantFee = 0
+                //    };
+                //    await classHourFeeSettingRepository.InsertAsync(money);
+                //}
 
                 // 封装返回结果，状态码 OK，附带员工信息
                 return ApiResult<ShowStaffDTO>.Success(ResultCode.Ok, showstaffinfo);
@@ -494,7 +504,7 @@ namespace Educational.Staffs
         /// <param name="loginDTO">登录请求 DTO，包含账户和密码</param>
         /// <returns>返回登录结果</returns>
         [HttpPost]
-        public async Task<ApiResult<LoginReturnDTO>> Login([FromQuery] LoginDTO loginDTO)
+        public async Task<ApiResult<LoginReturnDTO>> Login(LoginDTO loginDTO)
         {
             try
             {

@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace Educational.Staffs.SalarySetting
 {
     public class HourDto
-    {
-        public Guid Id { get; set; }
+    { 
         /// <summary>
         /// 课时时长（分钟）
         /// </summary>
