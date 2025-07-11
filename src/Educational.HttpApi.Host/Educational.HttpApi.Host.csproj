@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <Import Project="..\..\common.props" />
+	<Import Project="..\..\common.props" />
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -37,20 +37,20 @@
     <PackageReference Include="Volo.Abp.Swashbuckle" Version="9.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Educational.Application\Educational.Application.csproj" />
-    <ProjectReference Include="..\Educational.EntityFrameworkCore\Educational.EntityFrameworkCore.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Educational.Application\Educational.Application.csproj" />
+		<ProjectReference Include="..\Educational.EntityFrameworkCore\Educational.EntityFrameworkCore.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Logs\**" />
-    <Content Remove="Logs\**" />
-    <EmbeddedResource Remove="Logs\**" />
-    <None Remove="Logs\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Logs\**" />
+		<Content Remove="Logs\**" />
+		<EmbeddedResource Remove="Logs\**" />
+		<None Remove="Logs\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\Uploads\images\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="wwwroot\Uploads\images\" />
+	</ItemGroup>
 
 </Project>

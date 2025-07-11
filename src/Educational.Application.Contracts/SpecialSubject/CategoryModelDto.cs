@@ -8,8 +8,8 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.SpecialSubject
 {
-    public class CategoryModelDto : AuditedAggregateRoot<Guid>
-    { 
+    public class CategoryModelDto 
+    {  
         /// <summary>
         /// 专题类别名称
         /// </summary>

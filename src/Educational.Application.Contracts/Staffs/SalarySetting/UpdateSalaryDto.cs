@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Educational.Staffs.SalarySetting
 {
     public class UpdateSalaryDto
-    {
+    { 
         /// <summary>
         /// 课时时长（分钟）
         /// </summary>

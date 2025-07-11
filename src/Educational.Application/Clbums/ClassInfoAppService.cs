@@ -1,9 +1,11 @@
 ﻿using Educational.Classgrade;
 using Educational.ClassRooms;
 using Educational.Courses;
+using Educational.Dto.ClassRooms;
 using Educational.Dto.Clbums;
 using Educational.Dto.Grades;
 using Educational.Enums;
+using Educational.Materials;
 using Educational.Organization;
 using Educational.Staffs;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.ObjectMapping;
 
 namespace Educational.Clbums
 {
@@ -79,7 +82,7 @@ namespace Educational.Clbums
         {
             try
             {
-
+                createUpdateClassDto.ClassStatus = LessonStateEnum.未排课;
                 var classInfo = ObjectMapper.Map<CreateUpdateClassDto, ClassInfo>(createUpdateClassDto);
                 var result = await classinfoRep.InsertAsync(classInfo);
                 var classInfodto = ObjectMapper.Map<ClassInfo, ClassInfoDto>(result);
@@ -118,58 +121,35 @@ namespace Educational.Clbums
         {
             try
             {
-                var classList = await classinfoRep.GetListAsync();
-                var gradeList = await gradeRep.GetListAsync();
-                var staffList = await stafffoRep.GetListAsync();
-                var orgList = await organizationRep.GetListAsync();
-                var courseList = await courseRep.GetListAsync();
-                var classRoomList = await classRoomRep.GetListAsync();
-                var queryable = classList.AsQueryable();
-                queryable = queryable.WhereIf(!string.IsNullOrEmpty(searchDto.ClassName), x => x.ClassName.Contains(searchDto.ClassName));
-                queryable = queryable.WhereIf(searchDto.CampusId != null, x => x.CampusId == searchDto.CampusId);
-                queryable = queryable.WhereIf(searchDto.DefaultCourseId != null, x => x.DefaultCourseId == searchDto.DefaultCourseId);
-                queryable = queryable.WhereIf(searchDto.DefaultClassroomId != null, x => x.DefaultClassroomId == searchDto.DefaultClassroomId);
-                queryable = queryable.WhereIf(searchDto.ClassTeacherId != null, x => x.ClassTeacherId == searchDto.ClassTeacherId);
-                queryable = queryable.WhereIf(searchDto.GradeId != null, x => x.GradeId == searchDto.GradeId);
-                queryable = queryable.WhereIf(searchDto.ClassStatus != null, x => x.ClassStatus == (LessonStateEnum)searchDto.ClassStatus);
-                // 联查
-                var list = (from classinfo in queryable
-                              join grade in gradeList on classinfo.GradeId equals grade.Id
-                              join staff in staffList on classinfo.ClassTeacherId equals staff.Id
-                              join organization in orgList on classinfo.CampusId equals organization.Id
-                              join course in courseList on classinfo.DefaultCourseId equals course.Id
-                              join classroom in classRoomList on classinfo.DefaultClassroomId equals classroom.Id
-                              select new ClassInfoDto
-                              {
-                                  ClassName = classinfo.ClassName,
-                                  CampusId = classinfo.CampusId,
-                                  Name = organization.Name,
-                                  GradeId = classinfo.GradeId,
-                                  GradeName = grade.GradeName,
-                                  ClassTeacherId = classinfo.ClassTeacherId,
-                                  StaffName = staff.StaffName,
-                                  PreNum = classinfo.PreNum,
-                                  PreCourseNum = classinfo.PreCourseNum,
-                                  DefaultCourseId = classinfo.DefaultCourseId,
-                                  CourseName = course.CourseName,
-                                  DefaultClassroomId = classinfo.DefaultClassroomId,
-                                  ClassRoomName = classroom.ClassRoomName,
-                                  PlanOpenDate = classinfo.PlanOpenDate,
-                                  PlanCloseDate = classinfo.PlanCloseDate,
-                                  ClassQrCode = classinfo.ClassQrCode,
-                                  CourseRemark = classinfo.CourseRemark,
-                                  ClassStatus = classinfo.ClassStatus,
-                              }).ToList();
-                int total = list.Count();
-                var pageList = list
-                    .Skip((searchDto.PageIndex - 1) * searchDto.PageSize)
-                    .Take(searchDto.PageSize)
-                    .ToList();
+                var classList = await classinfoRep.GetQueryableAsync();
+                var gradeList = await gradeRep.GetQueryableAsync();
+                var staffList = await stafffoRep.GetQueryableAsync();
+                var orgList = await organizationRep.GetQueryableAsync();
+                var courseList = await courseRep.GetQueryableAsync();
+                var classRoomList = await classRoomRep.GetQueryableAsync();
+                classList = classList.WhereIf(!string.IsNullOrEmpty(searchDto.ClassName), x => x.ClassName.Contains(searchDto.ClassName));
+                classList = classList.WhereIf(searchDto.CampusId != null, x => x.CampusId == searchDto.CampusId);
+                classList = classList.WhereIf(searchDto.DefaultCourseId != null, x => x.DefaultCourseId == searchDto.DefaultCourseId);
+                classList = classList.WhereIf(searchDto.DefaultClassroomId != null, x => x.DefaultClassroomId == searchDto.DefaultClassroomId);
+                classList = classList.WhereIf(searchDto.ClassTeacherId != null, x => x.ClassTeacherId == searchDto.ClassTeacherId);
+                classList = classList.WhereIf(searchDto.GradeId != null, x => x.GradeId == searchDto.GradeId);
+                classList = classList.WhereIf(searchDto.ClassStatus != null, x => x.ClassStatus == (LessonStateEnum)searchDto.ClassStatus);
+                var page = classList.PageResult(searchDto.PageIndex, searchDto.PageSize);
+                var classInfoDto = ObjectMapper.Map<List<ClassInfo>, List<ClassInfoDto>>(page.Queryable.ToList());
+                foreach (var item in classInfoDto)
+                {
+                    item.Name = orgList.FirstOrDefault(x => x.Id == item.CampusId).Name;
+                    item.GradeName = gradeList.FirstOrDefault(x => x.Id == item.GradeId).GradeName;
+                    item.StaffName = staffList.FirstOrDefault(x => x.Id == item.ClassTeacherId).StaffName;
+                    item.ClassRoomName = classRoomList.FirstOrDefault(x => x.Id == item.DefaultClassroomId).ClassRoomName;
+                    item.CourseName = courseList.FirstOrDefault(x => x.Id == item.DefaultCourseId).CourseName;
+                    item.ClassStatusName = Enum.GetName(typeof(LessonStateEnum), item.ClassStatus);
+                }
                 var paging = new ApiPaging<List<ClassInfoDto>>
                 {
-                    TotleCount = total,
-                    TotlePage = (int)Math.Ceiling(total * 1.0 / searchDto.PageSize),
-                    Data = pageList
+                    TotleCount = page.RowCount,
+                    TotlePage = (int)Math.Ceiling(page.RowCount * 1.0 / searchDto.PageSize),
+                    Data = classInfoDto
                 };
                 return ApiResult<ApiPaging<List<ClassInfoDto>>>.Success(ResultCode.Ok, paging);
             }

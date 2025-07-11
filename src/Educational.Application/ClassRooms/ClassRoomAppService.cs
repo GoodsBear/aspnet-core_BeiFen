@@ -19,14 +19,18 @@ namespace Educational.ClassRooms
     [ApiExplorerSettings(GroupName = "教室")]
     public class ClassRoomAppService : ApplicationService, IClassRoomAppService
     {
-        IRepository<ClassRoom, Guid> classRoomRep;
+        IRepository<Educational.Classgrade.ClassRoom, Guid> classRoomRep;
         ILogger<ClassRoomAppService> logger;
+        IRepository<OrganizationModel, Guid> organizationRep;
 
-        public ClassRoomAppService(IRepository<ClassRoom, Guid> classRoomRep, ILogger<ClassRoomAppService> logger)
+        public ClassRoomAppService(IRepository<Educational.Classgrade.ClassRoom, Guid> classRoomRep, ILogger<ClassRoomAppService> logger, IRepository<OrganizationModel, Guid> organizationRep = null)
         {
             this.classRoomRep = classRoomRep;
             this.logger = logger;
+            this.organizationRep = organizationRep;
         }
+
+
         /// <summary>
         /// 批量删除
         /// </summary>
@@ -105,9 +109,16 @@ namespace Educational.ClassRooms
             try
             {
                 var list = await classRoomRep.GetQueryableAsync();
+                var organization = await organizationRep.GetQueryableAsync();
                 list = list.WhereIf(!string.IsNullOrEmpty(searchDto.ClassRoomName), x => x.ClassRoomName.Contains(searchDto.ClassRoomName));
+                
+              
                 var page = list.PageResult(searchDto.PageIndex, searchDto.PageSize);
                 var classRoomDto = ObjectMapper.Map<List<ClassRoom>, List<ClassRoomDto>>(page.Queryable.ToList());
+                foreach (var item in classRoomDto)
+                {
+                    item.OrganizatioName = organization.FirstOrDefault(x => x.Id == item.OrganizationModelId).Name;
+                }
                 var result = new ApiPaging<List<ClassRoomDto>>
                 {
                     TotleCount = page.RowCount,

@@ -7,7 +7,7 @@ using Volo.Abp.Application.Dtos;
 
 namespace Educational.Dto.Positions
 {
-    public class PositionsDto:AuditedEntityDto<Guid>
+    public class PositionsDto: EntityDto<Guid>
     {
         /// <summary>Add commentMore actions
         /// 职位名称
