@@ -3,6 +3,8 @@ using Educational.Classgrade;
 using Educational.ClassSchedule;
 using Educational.Courses;
 using Educational.Datadictionary;
+using Educational.Evaluation;
+using Educational.HomeWork;
 using Educational.Menu;
 using Educational.Organization;
 using Educational.Positions;
@@ -70,12 +72,17 @@ public class EducationalDbContext :
     public DbSet<Grade> Grade { get; set; }   //年级
     public DbSet<Course> Course { get; set; } //课程信息表
 	public DbSet<ReletedCourse> ReletedCourse { get; set; } //课程关联表
-	#endregion
+    #endregion
 
+    #region 测评互动
+    public DbSet<CourseInStaff> CourseInStaff { get; set; }//课程员工关联表
+    public DbSet<StudentInCourse> StudentInCourse { get; set; }//学生课程关联表
+    public DbSet<EvaluationInfo> EvaluationInfo { get; set; }//评价信息表
+    public DbSet<HomeWorkInfo> HomeWorkInfo { get; set; }//作业信息表
+    #endregion
 
-
-
-	public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
+    #region 课程
+    public DbSet<StaffTypeInfo> StaffTypeInfos { get; set; }//人员类型信息表
     public DbSet<DictType> DictTypes { get; set; }//数据字典类型表
     public DbSet<DictItem> DictItems { get; set; }//数据字典数据表
     public DbSet<Educational.Subject.SubjectModel> SubjectModel { get; set; }//科目表
@@ -86,8 +93,9 @@ public class EducationalDbContext :
     public DbSet<Educational.ClassSchedule.ClassSchedule> ClassSchedule { get; set; }//排课表
     public DbSet<ScheduleTime> ScheduleTime { get; set; }//排课子表--上课时间表
     public DbSet<ConflictModel> ConflictModel { get; set; }//排课子表--冲突表
+    #endregion
 
-   #region 组织管理
+    #region 组织管理
     public DbSet<OrganizationModel> OrganizationModels { get; set; }//组织信息表
     public DbSet<OrganizationLevel> OrganizationLevels { get; set; }//组织级别表
     public DbSet<Position> positions { get; set; }//职位信息表
@@ -109,10 +117,6 @@ public class EducationalDbContext :
     public DbSet<SalarySettingModel> SalarySettingModel { get; set; } //薪资表
 
     #endregion
-
-
-
-
 
     public DbSet<ClassHourFeeSetting> ClassHourFeeSetting { get; set; }//上课时间表
 
