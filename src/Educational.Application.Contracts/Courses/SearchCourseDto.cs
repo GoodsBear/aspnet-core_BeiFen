@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Educational.Courses
 {
+	/// <summary>
+	/// 课程查询参数dto
+	/// </summary>
 	public class SearchCourseDto:Seach
 	{
 		/// <summary>

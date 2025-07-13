@@ -4,6 +4,7 @@ using Educational.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    partial class EducationalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250711054746_新增节假日信息表")]
+    partial class 新增节假日信息表
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -448,79 +451,6 @@ namespace Educational.Migrations
                     b.ToTable("AppClassInfo", (string)null);
                 });
 
-            modelBuilder.Entity("Educational.Classgrade.ClassRoom", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("ClassRoomAddress")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<int>("ClassRoomArea")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ClassRoomDescription")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<string>("ClassRoomName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("varchar(40)")
-                        .HasColumnName("ConcurrencyStamp");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("CreatorId");
-
-                    b.Property<Guid?>("DeleterId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("DeleterId");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("DeletionTime");
-
-                    b.Property<string>("ExtraProperties")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("ExtraProperties");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("LastModificationTime");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("LastModifierId");
-
-                    b.Property<Guid>("OrganizationModelId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ClassRoom");
-                });
-
             modelBuilder.Entity("Educational.Classgrade.Grade", b =>
                 {
                     b.Property<Guid>("Id")
@@ -916,7 +846,7 @@ namespace Educational.Migrations
                     b.ToTable("dict_type", (string)null);
                 });
 
-            modelBuilder.Entity("Educational.Evaluation.CourseInStaff", b =>
+            modelBuilder.Entity("Educational.Holidays.Holiday", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
@@ -927,34 +857,6 @@ namespace Educational.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("varchar(40)")
                         .HasColumnName("ConcurrencyStamp");
-                    b.Property<Guid>("CourseId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("StaffId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CourseInStaff");
-                });
-
-            modelBuilder.Entity("Educational.Evaluation.EvaluationInfo", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("Atmosphere")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Comprehensive")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid>("CourseId")
-                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime(6)")
@@ -990,68 +892,6 @@ namespace Educational.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("LastModificationTime");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("LastModifierId");
-
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("TeacherId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("TeachingAttitude")
-                        .HasColumnType("int");
-
-                    b.Property<int>("teachingResult")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EvaluationInfo");
-                });
-
-            modelBuilder.Entity("Educational.Evaluation.StudentInCourse", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("CourseId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StudentInCourse");
-                });
-
-            modelBuilder.Entity("Educational.HomeWork.HomeWorkInfo", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("ClassId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("CommitNum")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("CreatorId");
-
-                    b.Property<Guid>("Issuer")
-                        .HasColumnType("char(36)");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime(6)")
@@ -1075,13 +915,6 @@ namespace Educational.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Holiday");
-                    b.Property<string>("WorkTitle")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("HomeWorkInfo");
                 });
 
             modelBuilder.Entity("Educational.Materials.Material", b =>
@@ -1593,18 +1426,10 @@ namespace Educational.Migrations
                     b.Property<Guid>("ParentId")
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("PermissionCode")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("PermissionName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
-
-                    b.Property<string>("PermissionType")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<string>("PermissionsDesc")
                         .IsRequired()

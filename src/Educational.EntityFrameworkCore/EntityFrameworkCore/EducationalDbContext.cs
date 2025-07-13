@@ -3,6 +3,7 @@ using Educational.Classgrade;
 using Educational.ClassSchedule;
 using Educational.Courses;
 using Educational.Datadictionary;
+using Educational.Holidays;
 using Educational.Evaluation;
 using Educational.HomeWork;
 using Educational.Menu;
@@ -115,8 +116,9 @@ public class EducationalDbContext :
     public DbSet<Announcement> announcements { get; set; } //公告信息表
 
     public DbSet<SalarySettingModel> SalarySettingModel { get; set; } //薪资表
+	public DbSet<Holiday> Holiday { get; set; }//节假日表
 
-    #endregion
+	#endregion
 
     public DbSet<ClassHourFeeSetting> ClassHourFeeSetting { get; set; }//上课时间表
 

@@ -10,7 +10,7 @@ using Volo.Abp.Application.Dtos;
 namespace Educational.Courses
 {
 	/// <summary>
-	/// 课程Dto
+	/// 课程查询返回Dto
 	/// </summary>
 	public class CourseDto:AuditedEntityDto<Guid>
 	{

@@ -295,6 +295,8 @@ public class EducationalHttpApiHostModule : AbpModule
                 options.SwaggerDoc("物料", new OpenApiInfo { Title = "物料管理", Version = "v1" });
                 options.SwaggerDoc("成员分配角色", new OpenApiInfo { Title = "成员分配角色管理", Version = "v1" });
                 options.SwaggerDoc("角色分配权限", new OpenApiInfo { Title = "角色分配权限管理", Version = "v1" });
+                options.SwaggerDoc("科目管理", new OpenApiInfo { Title = "科目管理管理", Version = "v1" });
+                options.SwaggerDoc("节假日", new OpenApiInfo { Title = "节假日管理", Version = "v1" });
                 
                 options.DocInclusionPredicate((doc, desc) =>
                 {
@@ -442,6 +444,7 @@ public class EducationalHttpApiHostModule : AbpModule
             c.SwaggerEndpoint("/swagger/物料/swagger.json", "物料管理 v1");
             c.SwaggerEndpoint("/swagger/成员分配角色/swagger.json", "成员分配角色管理 v1");
             c.SwaggerEndpoint("/swagger/角色分配权限/swagger.json", "角色分配权限管理 v1");
+            c.SwaggerEndpoint("/swagger/节假日/swagger.json", "节假日管理 v1");
             //设置模型（Model）在 Swagger UI 中默认展开的层级深度为1
             //接口参数或返回值是嵌套对象时，默认只展开一层，便于界面简洁
             c.DefaultModelExpandDepth(1);
