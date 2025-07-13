@@ -5,11 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.SpecialSubject
 {
-    public class SpecialSubjectDto  
+    public class SpecialSubjectDto  :Entity<Guid>
     { 
         [Required]
         [StringLength(128)]

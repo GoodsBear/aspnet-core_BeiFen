@@ -441,7 +441,6 @@ public class EducationalHttpApiHostModule : AbpModule
             c.SwaggerEndpoint("/swagger/专题/swagger.json", "专题管理 v1");
             c.SwaggerEndpoint("/swagger/成员/swagger.json", "成员管理 v1");
             c.SwaggerEndpoint("/swagger/薪资/swagger.json", "薪资管理 v1");
-
             c.SwaggerEndpoint("/swagger/物料/swagger.json", "物料管理 v1");
             c.SwaggerEndpoint("/swagger/成员分配角色/swagger.json", "成员分配角色管理 v1");
             c.SwaggerEndpoint("/swagger/角色分配权限/swagger.json", "角色分配权限管理 v1");
