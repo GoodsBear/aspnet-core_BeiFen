@@ -12,14 +12,14 @@ namespace Educational.ClassSchedule.Update
     {   
         // 关联分校 (必填)
         [Required]
-        public Guid CampusId { get; set; }
+        public string OrganizationName { get; set; }
 
         // 关联班级 (必填)
         [Required]
-        public Guid ClassId { get; set; }
+        public string ClassName { get; set; }
         // 关联课程 (必填)
         [Required]
-        public Guid CourseId { get; set; }
+        public string CourseName { get; set; }
 
         [Required]
         public List<string> MainTeacher { get; set; }

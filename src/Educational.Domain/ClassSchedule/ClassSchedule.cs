@@ -47,7 +47,6 @@ namespace Educational.ClassSchedule
         [Range(0, int.MaxValue, ErrorMessage = "人数不能为负数")]
         public int? MaxAttendees { get; set; } = null;       // 人数限制 (null/0=无限制) 
         public int? MaxSchedules { get; set; } = null;         // 最大排课次数 (null=无限制)
-
         public bool SkipHolidays { get; set; }       // 跳过节假日开关
         public bool IsTimetableGenerated { get; set; } = false;       // 是否生成课表--生成之后则不允许修改
         public bool HasSchedulingConflict { get; set; } = false;      // 是否有冲突
