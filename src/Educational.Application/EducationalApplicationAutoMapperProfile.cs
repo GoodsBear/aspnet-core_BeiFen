@@ -38,6 +38,10 @@ using Educational.StudentsAndParents.StudentFollow;
 using Educational.StudentsAndParents.Students;
 using Educational.StudentsAndParents.StudentStore;
 using Educational.Subject;
+using Educational.Courses.ReletedCoursedtos;
+using Educational.Holidays.Dtos;
+using Educational.Holidays;
+using Educational.Evaluation;
 
 namespace Educational;
 
@@ -78,6 +82,9 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<StaffTypeInfo, ShowStaffTypeDTO>().ReverseMap(); 
         CreateMap<StaffInfo, StaffSelectDto>().ReverseMap();
         CreateMap<StaffInfo, StaffUpdateDTO>().ReverseMap();
+        //互动
+        CreateMap<EvaluationInfo, ShowEvaluationDTO>().ReverseMap();
+        CreateMap<AddEvaluationDTO, EvaluationInfo>().ReverseMap();
         /* You can configure your AutoMapper mapping configuration here.
          * Alternatively, you can split your mapping configurations
          * into multiple profile classes for a better organizationaaa. */
@@ -163,6 +170,7 @@ public class EducationalApplicationAutoMapperProfile : Profile
 
         //薪资
         CreateMap<SalarySettingModel, SalarySettingDto>().ReverseMap();
+        CreateMap<HolidayDto, Holiday>().ReverseMap();
        
     } 
 } 
