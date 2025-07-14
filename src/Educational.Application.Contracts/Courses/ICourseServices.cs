@@ -24,8 +24,6 @@ namespace Educational.Courses
 		//修改课程信息
         Task<ApiResult<Course>> UpdateCourse(CreateUpdateCourseDto coursedto);
 
-        Task<ApiResult<List<CourseDto>>> FTCouser();
-
 		/// <summary>
 		/// 添加关联课程
 		/// </summary>
