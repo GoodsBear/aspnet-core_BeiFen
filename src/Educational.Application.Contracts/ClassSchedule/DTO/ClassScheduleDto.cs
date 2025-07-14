@@ -12,21 +12,11 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Educational.ClassSchedule.DTO
 {   
-    public class ClassScheduleDto : FullAuditedAggregateRoot<Guid>
+    public class ClassScheduleDto   
     {
-        public Guid Id {  get; set; }
-        // 关联分校 (必填)组织机构表
-        [Required]
-        public Guid OrganizationId { get; set; }
-        public string? OrganizationName { get; set; }
-
-        // 关联班级 (必填)
-        [Required]
-        public Guid ClassId { get; set; }
-        public string? ClassName { get; set; }
-        // 关联课程 (必填)
-        [Required]
-        public Guid CourseId { get; set; }
+        public Guid Id { get; set; } 
+        public string  OrganizationName { get; set; } 
+        public string  ClassName { get; set; } 
         public string? CourseName { get; set; }
         //主课老师
         [Required]
@@ -37,7 +27,7 @@ namespace Educational.ClassSchedule.DTO
         [Required]
         public DateTime StartDate { get; set; }
         [Required]
-        public DateTime EndDate { get; set; }
+        public DateTime EndDate { get; set; }     
 
         // 排课规则 
         [Range(1, int.MaxValue, ErrorMessage = "消课基数必须大于0")]
@@ -48,8 +38,6 @@ namespace Educational.ClassSchedule.DTO
         public bool SkipHolidays { get; set; }       // 跳过节假日开关
         public bool IsTimetableGenerated { get; set; }       // 是否生成课表--生成之后则不允许修改
         public bool HasSchedulingConflict { get; set; }      // 是否有冲突
-        public Guid? ConflictId { get; set; }      // 冲突表外键 ConflictModel  
-        public Guid? ScheduleTimeId { get; set; }  //上课时间表 ScheduleTime 
         public int GeneratedSessionCount { get; set; } = 0;  // 生成课次
         public string? ScheduleTimes { get; set; }//上课时间表字段：星期+
     }

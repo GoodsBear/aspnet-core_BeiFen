@@ -46,5 +46,5 @@ namespace Educational.Dto.MaterialRecordsDtos
         /// 变动时间
         /// </summary>
         public DateTime ChangeDate { get; set; }
-    }
+	}
 }

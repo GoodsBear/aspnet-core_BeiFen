@@ -33,6 +33,14 @@ namespace Educational.Courses
 		Task<ApiResult> AddReletedCourse(ReletedCourseDto dto);
 
 		/// <summary>
+		/// 添加关联课程
+		/// </summary>
+		/// <param name="guid">课程id</param>
+		/// <param name="ids">要关联的课程id数组</param>
+		/// <returns></returns>
+		Task<ApiResult> AddReletedCourse(ReletedCourseDto dto);
+
+		/// <summary>
 		/// 获取关联课程
 		/// </summary>
 		/// <param name="guid">课程id</param>

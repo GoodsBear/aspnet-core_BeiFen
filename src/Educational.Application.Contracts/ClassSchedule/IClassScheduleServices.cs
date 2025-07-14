@@ -16,7 +16,7 @@ namespace Educational.ClassSchedule
     public interface IClassScheduleServices:IApplicationService
     {
         //添加排课表
-        Task<ApiResult<ClassScheduleDto>> CreateClassScheduleAsync(UpdateClassScheduleDto input);
+        Task<ApiResult> CreateClassScheduleAsync(UpdateClassScheduleDto input);
         //查询排课表
          Task<ApiResult<ApiPaging<List<ClassScheduleDto>>>> GetListAsync([FromQuery] ClassScheduleSearchDto search);
         //反填排课表

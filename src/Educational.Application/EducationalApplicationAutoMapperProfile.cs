@@ -1,4 +1,7 @@
 using AutoMapper;
+using AutoMapper.Internal.Mappers;
+using Educational.Courses;
+using Educational.Organization;
 using Educational.Announcements;
 using Educational.Classgrade;
 using Educational.ClassSchedule;
@@ -42,6 +45,18 @@ using Educational.Courses.ReletedCoursedtos;
 using Educational.Holidays.Dtos;
 using Educational.Holidays;
 using Educational.Evaluation;
+using Educational.StafRoles; 
+using Educational.Menu;
+using Educational.StudentsAndParents.Students;
+using Educational.Dto.MaterialRecordsDtos;
+using Educational.StudentsAndParents.StudentFollow;
+using Educational.StudentsAndParends.Students.Follow;
+using Educational.StudentsAndParends.Students.Store;
+using Educational.StudentsAndParents.Stores; 
+using Educational.StudentsAndParents.StudentStore;
+using Educational.StudentsAndParends.Students;
+using Educational.Subject;
+using System.Text.Json;
 
 namespace Educational;
 
@@ -55,8 +70,10 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<UpdateSalaryDto, ClassHourFeeSetting>().ReverseMap();
         CreateMap<Educational.Staffs.SalarySettingModel, SalarySettingDto>().ReverseMap();
         //排课  
-        CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap();
+        CreateMap<Educational.ClassSchedule.ClassSchedule, ClassScheduleDto>().ReverseMap(); 
         CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
+        CreateMap<UpdateScheduleTime, ScheduleTime>().ReverseMap();
+        CreateMap<UpdateClassScheduleDto, Educational.ClassSchedule.ClassSchedule>().ReverseMap();
         CreateMap<ConflictModel, ConflictModelDto>().ReverseMap();
         CreateMap<UpdateClassScheduleDto, Educational.ClassSchedule.ClassSchedule>().ReverseMap();
         //专题一套

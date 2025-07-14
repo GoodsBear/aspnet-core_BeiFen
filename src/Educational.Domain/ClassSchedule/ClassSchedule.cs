@@ -47,12 +47,11 @@ namespace Educational.ClassSchedule
         [Range(0, int.MaxValue, ErrorMessage = "人数不能为负数")]
         public int? MaxAttendees { get; set; } = null;       // 人数限制 (null/0=无限制) 
         public int? MaxSchedules { get; set; } = null;         // 最大排课次数 (null=无限制)
-
         public bool SkipHolidays { get; set; }       // 跳过节假日开关
-        public bool IsTimetableGenerated { get; set; }       // 是否生成课表--生成之后则不允许修改
-        public bool HasSchedulingConflict { get; set; }      // 是否有冲突
+        public bool IsTimetableGenerated { get; set; } = false;       // 是否生成课表--生成之后则不允许修改
+        public bool HasSchedulingConflict { get; set; } = false;      // 是否有冲突
         public Guid?  ConflictId { get; set; }      // 冲突表外键 ConflictModel  
-        public Guid?  ScheduleTimeId { get; set; }  //上课时间表 ScheduleTime 
+        public Guid?  ScheduleTimeId { get; set; }  //上课时间表 ScheduleTime 废了，先添加排课表，获取排课表主键再去添加上课时间表。永远为空把
         public int GeneratedSessionCount { get; set; } = 0;  // 生成课次
     }
 }

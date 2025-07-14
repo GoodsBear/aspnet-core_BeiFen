@@ -20,7 +20,9 @@ using Educational.StudentsAndParends.Students.EnrollmentRecords;
 using Educational.StudentsAndParends.Students.Follow;
 using Educational.StudentsAndParends.Students.Store;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Reflection.Emit;
+using System.Text.Json;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -138,6 +140,12 @@ public class EducationalDbContext :
             b.ConfigureByConvention(); //auto configure for the base class props
             //...
         });
+        //教室表
+        //builder.Entity<ClassRoom>(b =>
+        //{
+        //    b.ToTable(EducationalConsts.DbTablePrefix + "ClassRoom", EducationalConsts.DbSchema);
+        //    b.ConfigureByConvention(); //auto configure for the base class props
+        //});
         //薪资表
         // 配置SalarySetting聚合根
         builder.Entity<ClassHourFeeSetting>(b =>
@@ -163,7 +171,20 @@ public class EducationalDbContext :
         {
             b.ToTable(EducationalConsts.DbTablePrefix + "ClassSchedule", EducationalConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
-            //...
+                                       //...
+                                       // 配置MainTeacher属性的JSON序列化
+            b.Property(e => e.MainTeacher)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
+                    v => JsonSerializer.Deserialize<List<string>>(v, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
+                );
+
+            // 配置AssistantTeacher属性的JSON序列化
+            b.Property(e => e.AssistantTeacher)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
+                    v => JsonSerializer.Deserialize<List<string>>(v, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
+                );
         });
 
 

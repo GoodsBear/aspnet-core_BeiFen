@@ -81,7 +81,7 @@ namespace Educational.Controllers
 		/// <param name="files">上传的图片文件集合</param>
 		/// <returns>所有图片的完整访问URL列表</returns>
 		[HttpPost("images")]
-		public async Task<string> UploadImagesAsync(List<IFormFile> files)
+		public async Task<List<string>> UploadImagesAsync(List<IFormFile> files)
 		{
 			if (files == null || files.Count == 0)
 				throw new UserFriendlyException("请选择要上传的图片！");
@@ -94,7 +94,7 @@ namespace Educational.Controllers
 			if (!Directory.Exists(uploadFolder))
 				Directory.CreateDirectory(uploadFolder);
 
-			string fileUrls = "";
+			var fileUrls = new List<string>();
 			var request = HttpContext.Request;
 			var baseUrl = $"{request.Scheme}://{request.Host}";
 
@@ -133,10 +133,10 @@ namespace Educational.Controllers
 				}
 			}
 
-			if (fileUrls == "")
+			if (fileUrls.Count == 0)
 				throw new UserFriendlyException("没有有效的图片被上传！");
 
-			return fileUrls.Trim(',');
+			return fileUrls;
 		}
 	}
 }

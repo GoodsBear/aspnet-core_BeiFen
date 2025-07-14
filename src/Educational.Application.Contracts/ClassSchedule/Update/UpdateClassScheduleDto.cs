@@ -12,14 +12,14 @@ namespace Educational.ClassSchedule.Update
     {   
         // 关联分校 (必填)
         [Required]
-        public Guid CampusId { get; set; }
+        public string OrganizationName { get; set; }
 
         // 关联班级 (必填)
         [Required]
-        public Guid ClassId { get; set; }
+        public string ClassName { get; set; }
         // 关联课程 (必填)
         [Required]
-        public Guid CourseId { get; set; }
+        public string CourseName { get; set; }
 
         [Required]
         public List<string> MainTeacher { get; set; }
@@ -40,12 +40,11 @@ namespace Educational.ClassSchedule.Update
         public int? MaxSchedules { get; set; }          // 最大排课次数 (null=无限制)
 
         public bool SkipHolidays { get; set; }       // 跳过节假日开关
-        public bool IsTimetableGenerated { get; set; }       // 是否生成课表--生成之后则不允许修改
-        public bool HasSchedulingConflict { get; set; }      // 是否有冲突
-        public ICollection<ConflictModel>? ConflictModel { get; set; } = new List<ConflictModel>();//冲突表==为空不清楚 
+        public bool IsTimetableGenerated { get; set; } = false;      // 是否生成课表--生成之后则不允许修改
+        public bool HasSchedulingConflict { get; set; } = false;     // 是否有冲突 
         public int GeneratedSessionCount { get; set; } = 0;  // 生成课次
         // 子集合：具体上课时间
-        public ICollection<ScheduleTime>? ScheduleTimes { get; set; } = new List<ScheduleTime>();
+        public List<UpdateScheduleTime>? ScheduleTimes { get; set; } = new List<UpdateScheduleTime>();
 
     }
 }

@@ -1,3 +1,5 @@
+using Abp.Authorization;
+using Castle.Components.DictionaryAdapter;
 using Educational.Enmu;
 using Educational.Organization;
 using Educational.Positions;
@@ -50,7 +52,8 @@ namespace Educational.Staffs
         private readonly ICaptcha captcha;
         
         public StaffServices(IConfiguration configuration, IRepository<StaffInfo, Guid> basicRepository, IRepository<Position, Guid> positionRep, IRepository<Role, Guid> roleRep, IRepository<StaffTypeInfo, Guid> typeRep, IRepository<OrganizationModel, Guid> organizationRepository,
-            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Educational.RBAC.Permissions, Guid> permissionrepository, IRepository<Educational.Menu.Menu, Guid> menuRepository)
+            IRepository<SalarySettingModel, Guid> salarySettingRepository, ILogger<StaffServices> logger, ICaptcha captcha, IRepository<StaffRole, Guid> staffrolerepository, IRepository<RolePermission, Guid> rolepermissionrepository, IRepository<Educational.RBAC.Permissions, Guid> permissionrepository,
+            IRepository<ClassHourFeeSetting, Guid> classHourFeeSettingRepository)
         {
             this.configuration = configuration;
             this.basicRepository = basicRepository;
@@ -66,6 +69,7 @@ namespace Educational.Staffs
             this.classHourFeeSettingRepository = classHourFeeSettingRepository;
             this.logger = logger;
             this.captcha = captcha;
+            this.permissionrepository = permissionrepository; 
         }
 
 
@@ -272,12 +276,26 @@ namespace Educational.Staffs
                 //获取机构主键
                 var OrganizationId = await organizationRepository.FirstOrDefaultAsync(x => x.Name == staffinfo.Organization);
 
-                ////添加职位表的同时添加薪资表
-                //SalarySettingModel salary = new SalarySettingModel() {
-                //    StaffId = staffinfo.Id,
-                //    OrganizationId= OrganizationId.Id
-                //};
-                //var a=await salarySettingRepository.InsertAsync(salary); 
+                //添加职位表的同时添加薪资表
+                SalarySettingModel salary = new SalarySettingModel()
+                {
+                    StaffId = staffinfo.Id,
+                    StaffName = staffinfo.StaffName,
+                    OrganizationId = OrganizationId.Id
+                };
+                var a=await salarySettingRepository.InsertAsync(salary);
+
+                if (a != null)
+                {  
+                    ClassHourFeeSetting money = new ClassHourFeeSetting()
+                    {
+                        SalarySettingId = a.Id,
+                        ClassHourDuration = 0,
+                        ClassHourFee = 0,
+                        AssistantFee = 0
+                    };
+                    await classHourFeeSettingRepository.InsertAsync(money);
+                }
 
                 //添加职位表的同时添加薪资表
                 //SalarySettingModel salary = new SalarySettingModel()

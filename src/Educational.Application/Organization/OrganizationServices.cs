@@ -29,7 +29,35 @@ namespace Educational.Organization
             _organizationLevelRepository = organizationLevelRepository;
             this.logger = logger;
         }
-        
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="ids">批删数组</param>
+        /// <returns>返回受影响行数</returns>
+        [HttpDelete]
+        public async Task<ApiResult> BatchDelete(List<Guid> ids)
+        {
+            try
+            {
+                foreach (var item in ids)
+                {
+                    var organization = await _organizationRepository.GetAsync(item);
+                    if (organization == null)
+                    {
+                        return ApiResult.Fail(ResultCode.Fail, "组织不存在！");
+                    }
+                    await _organizationRepository.DeleteAsync(organization);
+
+                }
+                return ApiResult.Success(ResultCode.Ok);
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("组织批量删除出错！" + ex.Message);
+                throw;
+            }
+        }
 
         /// <summary>
         /// 创建组织机构
@@ -323,8 +351,6 @@ namespace Educational.Organization
                 throw;
             }
         }
-
-
         /// <summary>
         /// 字段全显示树形组织机构表
         /// </summary>
@@ -402,7 +428,6 @@ namespace Educational.Organization
             {
                 BuildTree(item, orgLookup);
             }
-
             return ApiResult<List<OrganizationTreeDto>>.Success(ResultCode.Ok, tree);
         }
 

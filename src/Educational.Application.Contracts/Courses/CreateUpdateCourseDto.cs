@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Educational.Courses
 {
 	/// <summary>
-	/// 修改课程参数 Dto
+	/// 创建/修改课程的 Dto
 	/// </summary>
 	public class CreateUpdateCourseDto
 	{

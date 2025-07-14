@@ -147,6 +147,7 @@ namespace Educational.Materials
 		{
 			try
 			{
+				
 				var material=await _materialRepository.GetAsync(id);
 				Material mater=new Material
 				{
