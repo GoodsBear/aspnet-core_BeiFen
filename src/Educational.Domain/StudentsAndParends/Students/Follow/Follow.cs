@@ -10,21 +10,23 @@ namespace Educational.StudentsAndParends.Students.Follow
     public class Follow : FullAuditedAggregateRoot<Guid>
     {
         /// <summary>
-        /// 联系途径枚举
+        /// 跟进方式途径枚举
         /// </summary>
         public GetInTouchEnum GetInTouchEnum { get; set; }
         /// <summary>
         /// 跟进阶段枚举
         /// </summary>
-        public FollowStageEnum FollowStageEnum { get; set; }
-
-
+        public FollowStageEnums FollowStageEnum { get; set; }
+        /// <summary>
+        /// 记录时间
+        /// </summary>
+        public DateTime RecordDate { get; set;}
         /// <summary>
         /// 联系时间
         /// </summary>
         public DateTime TouchTIme { get; set; }
         /// <summary>
-        /// 下次联系时间
+        /// 下次跟进时间
         /// </summary>
         public DateTime? NextTouchTime { get; set; }
         /// <summary>

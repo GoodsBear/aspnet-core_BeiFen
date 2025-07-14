@@ -1,9 +1,6 @@
-﻿using EFCore.NamingConventions.Internal;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata; // Npgsql 驱动自身的元数据命名空间
-using System;
 using System.IO;
 
 namespace Educational.EntityFrameworkCore;

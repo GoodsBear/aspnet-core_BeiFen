@@ -4,6 +4,7 @@ using Educational.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Educational.Migrations
 {
     [DbContext(typeof(EducationalDbContext))]
-    partial class EducationalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250711061532_报名表学生字段")]
+    partial class 报名表学生字段
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2199,8 +2202,8 @@ namespace Educational.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<decimal>("DisCountPrice")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<float>("DisCountPrice")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("EnrollmentDate")
                         .HasColumnType("datetime(6)");
@@ -2213,8 +2216,8 @@ namespace Educational.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("ExtraProperties");
 
-                    b.Property<decimal>("FactGetPrice")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<float>("FactGetPrice")
+                        .HasColumnType("float");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -2230,17 +2233,14 @@ namespace Educational.Migrations
                         .HasColumnType("char(36)")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<decimal>("LessonPrice")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("RecordType")
-                        .HasColumnType("int");
+                    b.Property<float>("LessonPrice")
+                        .HasColumnType("float");
 
                     b.Property<string>("RefundDesc")
                         .HasColumnType("longtext");
 
-                    b.Property<decimal?>("RefundMoney")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<float?>("RefundMoney")
+                        .HasColumnType("float");
 
                     b.Property<int?>("RefundNumber")
                         .HasColumnType("int");
@@ -2320,9 +2320,6 @@ namespace Educational.Migrations
                         .HasColumnName("LastModifierId");
 
                     b.Property<DateTime?>("NextTouchTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("RecordDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("TouchTIme")

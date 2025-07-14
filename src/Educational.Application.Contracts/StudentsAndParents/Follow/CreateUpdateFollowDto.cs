@@ -17,7 +17,7 @@ namespace Educational.StudentsAndParents.StudentFollow
         /// <summary>
         /// 跟进阶段枚举
         /// </summary>
-        public FollowStageEnum FollowStageEnum { get; set; }
+        public FollowStageEnums FollowStageEnum { get; set; }
         /// <summary>
         /// 联系时间
         /// </summary>

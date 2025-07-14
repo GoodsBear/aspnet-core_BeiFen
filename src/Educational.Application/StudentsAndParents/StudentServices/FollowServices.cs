@@ -1,4 +1,8 @@
-﻿using Educational.StudentsAndParends.Students.Follow;
+﻿using Educational.Enums;
+using Educational.Staffs;
+using Educational.StudentsAndParends.Students;
+using Educational.StudentsAndParends.Students.Follow;
+using Educational.StudentsAndParents.Follow;
 using Educational.StudentsAndParents.StudentFollow;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -17,15 +21,19 @@ namespace Educational.StudentsAndParents.StudentServices
     [ApiExplorerSettings(GroupName ="跟进")]
     public class FollowServices : ApplicationService, IFollowServices
     {
-        private readonly IRepository<Follow> followrepository;
-        private readonly IRepository<StudentFollowRelation> studentfollowrepository;
+        private readonly IRepository<Educational.StudentsAndParends.Students.Follow.Follow,Guid> followrepository;
+        private readonly IRepository<StudentFollowRelation,Guid> studentfollowrepository;
+        private readonly IRepository<Student, Guid> studentrepository;
+        private readonly IRepository<StaffInfo, Guid>  staffinforepository;
         private readonly ILogger<FollowServices> logger;
 
-        public FollowServices(IRepository<Follow> followrepository,IRepository<StudentFollowRelation> studentfollowrepository, ILogger<FollowServices> logger)
+        public FollowServices(IRepository<StudentsAndParends.Students.Follow.Follow, Guid> followrepository, IRepository<StudentFollowRelation, Guid> studentfollowrepository, ILogger<FollowServices> logger, IRepository<Student, Guid> studentrepository, IRepository<StaffInfo, Guid> staffinforepository)
         {
             this.followrepository = followrepository;
             this.studentfollowrepository = studentfollowrepository;
             this.logger = logger;
+            this.studentrepository = studentrepository;
+            this.staffinforepository = staffinforepository;
         }
         /// <summary>
         /// 新增学员跟进
@@ -40,7 +48,7 @@ namespace Educational.StudentsAndParents.StudentServices
             {
                 using (var tran = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    var data = ObjectMapper.Map<CreateUpdateFollowDto, Follow>(createUpdateFollowDto);
+                    var data = ObjectMapper.Map<CreateUpdateFollowDto, Educational.StudentsAndParends.Students.Follow.Follow>(createUpdateFollowDto);
 
                     await followrepository.InsertAsync(data);
 
@@ -54,7 +62,7 @@ namespace Educational.StudentsAndParents.StudentServices
                     tran.Complete();
                     if(query != null)
                     {
-                        return  ApiResult<FollowDto>.Success(ResultCode.Ok,ObjectMapper.Map<Follow, FollowDto>(data));
+                        return  ApiResult<FollowDto>.Success(ResultCode.Ok,ObjectMapper.Map<Educational.StudentsAndParends.Students.Follow.Follow, FollowDto>(data));
                     }
                     else
                     {
@@ -117,7 +125,7 @@ namespace Educational.StudentsAndParents.StudentServices
                     {
                         // 将跟进详情映射到FollowDto并加入列表
 
-                        var dto = ObjectMapper.Map<Follow, FollowDto>(follow);
+                        var dto = ObjectMapper.Map<Educational.StudentsAndParends.Students.Follow.Follow, FollowDto>(follow);
                         followDtos.Add(dto);
                     }
                 }
@@ -130,6 +138,69 @@ namespace Educational.StudentsAndParents.StudentServices
             catch (Exception ex)
             {
                 logger.LogError("学员跟踪列表出错" + ex.Message);
+                throw;
+            }
+        }
+        /// <summary>
+        /// 获取跟进列表
+        /// </summary>
+        /// <param name="searchDto"></param>
+        /// <returns></returns>
+        public async Task<ApiResult<ApiPaging<List<FollowDto>>>> GetFollowRecordList([FromQuery] FollowSearchDto searchDto)
+        {
+            try
+            {
+                var studentfollowList = await studentfollowrepository.GetQueryableAsync();
+                var followList = await followrepository.GetQueryableAsync();
+                var staffinfoList = await staffinforepository.GetQueryableAsync();
+                var studentList = await studentrepository.GetQueryableAsync();
+                var list = from studentfollow in studentfollowList
+                           join follow in followList on studentfollow.FollowId equals follow.Id
+                           join student in studentList on studentfollow.StudentId equals student.Id
+                           join staffinfo in staffinfoList on student.Consultant equals staffinfo.Id
+                           select new FollowDto
+                           {
+                               Id = follow.Id,
+                               StudentId = student.Id,
+                               StudentName = student.Name,
+                               Consultant = student.Consultant,
+                               ConsultantName = staffinfo.StaffName,
+                               FollowId = follow.Id,
+                               RecordDate = follow.RecordDate,
+                               FollowStageEnum = follow.FollowStageEnum,
+                               GetInTouchEnum = follow.GetInTouchEnum,
+                               TouchTIme = follow.TouchTIme,
+                               NextTouchTime = follow.NextTouchTime,
+                               TouchWay = follow.TouchWay,
+                               FollowDesc = follow.FollowDesc
+                           };
+                // 条件过滤
+                if (!string.IsNullOrEmpty(searchDto.Name))
+                {
+                    
+                    list = list.Where(x => x.StudentName.Contains(searchDto.Name));
+                }
+                if (searchDto.FollowStageEnum != null)
+                {
+                    list = list.Where(x => x.FollowStageEnum == (FollowStageEnums)searchDto.FollowStageEnum);
+                }
+                if (searchDto.Consultant != null)
+                {
+                    list = list.Where(x => x.Consultant == searchDto.Consultant);
+                }
+                var paging = list.PageResult(searchDto.PageIndex, searchDto.PageSize);
+                var result = new ApiPaging<List<FollowDto>>
+                {
+                    TotleCount = paging.RowCount,
+                    TotlePage = (int)Math.Ceiling(paging.RowCount * 1.0 / searchDto.PageSize),
+                    Data = paging.Queryable.ToList()
+                };
+                
+                return ApiResult<ApiPaging<List<FollowDto>>>.Success(ResultCode.Ok, result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("学员跟进列表出错" + ex.Message);
                 throw;
             }
         }

@@ -5,6 +5,7 @@ using Educational.ClassSchedule;
 using Educational.ClassSchedule.DTO;
 using Educational.ClassSchedule.Update;
 using Educational.Courses;
+using Educational.Courses.ReletedCoursedtos;
 using Educational.Datadictionary;
 using Educational.Dto.Announcements;
 using Educational.Dto.ClassRooms;
@@ -28,14 +29,15 @@ using Educational.Staffs.SalarySetting;
 using Educational.StaffTypes;
 using Educational.StafRoles;
 using Educational.StudentsAndParends.Students;
+using Educational.StudentsAndParends.Students.EnrollmentRecords;
 using Educational.StudentsAndParends.Students.Follow;
 using Educational.StudentsAndParends.Students.Store;
+using Educational.StudentsAndParents.EnrollmentRecords;
 using Educational.StudentsAndParents.Stores;
 using Educational.StudentsAndParents.StudentFollow;
 using Educational.StudentsAndParents.Students;
 using Educational.StudentsAndParents.StudentStore;
 using Educational.Subject;
-using Educational.Courses.ReletedCoursedtos;
 
 namespace Educational;
 
@@ -142,7 +144,9 @@ public class EducationalApplicationAutoMapperProfile : Profile
         CreateMap<CreateUpdateMenuDto,Educational.Menu.Menu>().ReverseMap();
         CreateMap<Educational.Menu.Menu, MenuDto>().ReverseMap();
         CreateMap<Educational.Menu.Menu, Educational.Shared.Models.MenuInfo>().ReverseMap();
-
+        //报名记录
+        CreateMap<EnrollmentRecord, CreateUpdateEnrollmentRecordDto>().ReverseMap();
+        CreateMap<EnrollmentRecord, EnrollmentRecordDto>().ReverseMap();
         //学员
         CreateMap<CreateUpdateStudentDto, Educational.StudentsAndParends.Students.Student>().ReverseMap();
         CreateMap<Educational.StudentsAndParends.Students.Student, StudentsDto>().ReverseMap();

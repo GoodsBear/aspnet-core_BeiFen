@@ -1,17 +1,13 @@
-﻿using System;
+﻿using Educational.StudentsAndParends.Students.EnrollmentRecords;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Volo.Abp.Domain.Entities.Auditing;
 
-namespace Educational.StudentsAndParends.Students.EnrollmentRecords
+namespace Educational.StudentsAndParents.EnrollmentRecords
 {
-    /// <summary>
-    /// 报名记录表
-    /// </summary>
-    public class EnrollmentRecord:FullAuditedAggregateRoot<Guid>
+    public class CreateUpdateEnrollmentRecordDto
     {
         /// <summary>
         /// 课程Id
@@ -20,56 +16,47 @@ namespace Educational.StudentsAndParends.Students.EnrollmentRecords
         /// <summary>
         /// 学生id
         /// </summary>
-        public Guid StudentId { get; set;}
+        public Guid StudentId { get; set; }
         /// <summary>
         /// 报名类型枚举
         /// </summary>
-        public RecordTypes RecordType {  get; set; }
+        public RecordTypes RecordType { get; set; }
         /// <summary>
         /// 开始日期
         /// </summary>
-        [Required(ErrorMessage = "开始日期不能为空")]
         public DateTime StartTime { get; set; }
         /// <summary>
         /// 有效期
         /// </summary>
-        [Required(ErrorMessage = "有效期不能为空")]
         public DateTime ValidTime { get; set; }
         /// <summary>
         /// 购买课时数
         /// </summary>
-        [Required(ErrorMessage = "购买课时数不能为空")]
         public int BugLessons { get; set; }
         /// <summary>
         /// 课程金额
         /// </summary>
-        [Required(ErrorMessage = "课程金额不能为空")]
         public decimal LessonPrice { get; set; }
         /// <summary>
         /// 实收金额
         /// </summary>
-        [Required(ErrorMessage = "实收金额不能为空")]
         public decimal FactGetPrice { get; set; }
         /// <summary>
         /// 优惠金额
         /// </summary>
-        [Required(ErrorMessage = "优惠金额不能为空")]
-        public decimal DisCountPrice  { get; set; }
+        public decimal DisCountPrice { get; set; }
         /// <summary>
         /// 收款经收人
         /// </summary>
-        [Required(ErrorMessage = "收款经收人不能为空")]
         public Guid StaffId { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
-        [Required(ErrorMessage = "备注不能为空")]
         public string Desc { get; set; }
         // <summary>
         /// 报名日期
         /// </summary>
-        [Required(ErrorMessage = "报名日期不能为空")]
-        public DateTime EnrollmentDate { get; set;}
+        public DateTime EnrollmentDate { get; set; }
         /// <summary>
         /// 审核状态
         /// </summary>
@@ -87,16 +74,5 @@ namespace Educational.StudentsAndParends.Students.EnrollmentRecords
         /// </summary>
         public string? RefundDesc { get; set; }
 
-}
-    public enum Examine
-    {
-        审核中=1,
-        审核通过=2,
-        审核未通过=3
-    }
-    public enum RecordTypes
-    {
-        新签 = 1,
-        续签 = 2
     }
 }
