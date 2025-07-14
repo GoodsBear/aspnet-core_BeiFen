@@ -161,7 +161,7 @@ namespace Educational.StudentsAndParents.StudentServices
                 }
                 if (!string.IsNullOrEmpty(seachDto.EndTime))
                 {
-                    list = list.Where(x => x.ValidTime == DateTime.Parse(seachDto.EndTime).AddDays(1));
+                    list = list.Where(x => x.ValidTime == DateTime.Parse(seachDto.EndTime));
                 }
                 if (seachDto.CourseId != null)
                 {
