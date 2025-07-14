@@ -43,10 +43,6 @@ namespace Educational.Organization
         /// </summary>
         Task<ApiResult> BatchDelete(List<Guid> ids);
         /// <summary>
-        /// 批量删除
-        /// </summary>
-        Task<ApiResult> BatchDelete(List<Guid> ids);
-        /// <summary>
         /// 主键删除
         /// </summary> 
         Task<ApiResult> DeleteAsync(Guid id);

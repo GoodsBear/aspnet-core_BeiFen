@@ -12,7 +12,6 @@ namespace Educational.Courses
 	/// </summary>
 	public class CreateCourseDto
 	{
-		public Guid Id { get; set; }
 		/// <summary>
 		/// 课程id
 		/// </summary>
